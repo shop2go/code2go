@@ -180,7 +180,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 
 					<div class="container" id="date" style="color:white; font-size:30px;">
-					` + strconv.Itoa(c.Year) + ` - ` + strconv.Itoa(c.Month) + `
+					` + strconv.Itoa(c.Year) + ` - <button type="button" class="btn btn-link">` + strconv.Itoa(c.Month-1) + `</button>` + strconv.Itoa(c.Month) + `<button type="button" class="btn btn-link">` + strconv.Itoa(c.Month+1) + `</button>
 					<form class="form-inline" role="form" method="post">
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button>
@@ -316,11 +316,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</div><div class="row">
 
 			<span class="border">
-			<a href="mailto:medienwerksalzburg@gmail.com?subject=` + c.Days[k] + `, ` + strconv.Itoa(k) + `.` + strconv.Itoa(c.Month) + `.` + strconv.Itoa(c.Year) + `" target="_top">
-
+			
 			<div class="col-sm">
 			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div> </a></span>
+				</div> </span>
 
 				`
 
@@ -329,12 +328,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 
 			<span class="border">
-			<a href="mailto:medienwerksalzburg@gmail.com?subject=` + c.Days[k] + `, ` + strconv.Itoa(k) + `.` + strconv.Itoa(c.Month) + `.` + strconv.Itoa(c.Year) + `" target="_top">
-
+			
 			<div class="col-sm">
 
 			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></a> </span>
+				</div> </span>
 
 				`
 
@@ -343,11 +341,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 
 			<span class="border">
-			<a href="mailto:medienwerksalzburg@gmail.com?subject=` + c.Days[k] + `, ` + strconv.Itoa(k) + `.` + strconv.Itoa(c.Month) + `.` + strconv.Itoa(c.Year) + `" target="_top">
-
+			
 			<div class="col-sm">
 			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></a> </span>
+				</div> </span>
 
 				`
 
@@ -356,11 +353,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 
 			<span class="border">
-			<a href="mailto:medienwerksalzburg@gmail.com?subject=` + c.Days[k] + `, ` + strconv.Itoa(k) + `.` + strconv.Itoa(c.Month) + `.` + strconv.Itoa(c.Year) + `" target="_top">
-
+			
 			<div class="col-sm">
 			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></a> </span>
+				</div> </span>
 
 				`
 
@@ -369,11 +365,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 
 			<span class="border">
-			<a href="mailto:medienwerksalzburg@gmail.com?subject=` + c.Days[k] + `, ` + strconv.Itoa(k) + `.` + strconv.Itoa(c.Month) + `.` + strconv.Itoa(c.Year) + `" target="_top">
-
+			
 			<div class="col-sm">
 			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></a> </span>
+				</div> </span>
 
 				`
 
@@ -382,11 +377,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 
 			<span class="border">
-			<a href="mailto:medienwerksalzburg@gmail.com?subject=` + c.Days[k] + `, ` + strconv.Itoa(k) + `.` + strconv.Itoa(c.Month) + `.` + strconv.Itoa(c.Year) + `" target="_top">
-
+			
 			<div class="col-sm">
 			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></a></span>
+				</div></span>
 
 				`
 
@@ -395,11 +389,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 
 			<span class="border">
-			<a href="mailto:medienwerksalzburg@gmail.com?subject=` + c.Days[k] + `, ` + strconv.Itoa(k) + `.` + strconv.Itoa(c.Month) + `.` + strconv.Itoa(c.Year) + `" target="_top">
-
+			
 			<div class="col-sm">
 			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></a></span>
+				</div></span>
 
 				`
 
