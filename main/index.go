@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -31,17 +31,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	res, err := http.Get("https://api.github.com/search/repositories?q=language:go&sort=stars")
 
 	if err != nil {
-		log.Println(err)
+		fmt.Fprint(w, err.Error())
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 
 	if err != nil {
-		log.Println(err)
+		fmt.Fprint(w, err.Error())
 	}
 	if res.StatusCode != 200 {
-		log.Println("Unexpected status code", res.StatusCode)
+		fmt.Fprint(w, res.StatusCode)
 	}
 
 	var data Items
@@ -75,11 +75,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < j; i++ {
 
-		/* 		fmt.Println(data.Repos[i].Name)
-
-		   		fmt.Println(data.Repos[i].HtmlUrl)
-		   		fmt.Println(data.Repos[i].Description) */
-
 		s := strings.SplitAfterN(data.Repos[i].Owner.AvatarUrl, "?", 2)
 
 		data.Repos[i].Owner.AvatarUrl = s[0] + "s=50&" + s[1]
@@ -96,8 +91,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</li><br>
 		`
 
-		//fmt.Println(data.Repos[i].Owner.AvatarUrl)
-
 	}
 
 	str = str + `
@@ -109,27 +102,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 							  </html>
 	`
 
-	/* 	m := minify.New()
-	   	m.AddFunc("text/css", css.Minify)
-	   	m.AddFunc("text/html", html.Minify)
-	   	m.AddFuncRegexp(regexp.MustCompile("^(application|text)/(x-)?(java|ecma)script$"), js.Minify)
-	   	m.Add("text/html", &html.Minifier{
-	   		KeepDocumentTags: true,
-	   	})
-
-	   	mt, err := m.String("text/html", str)
-	   	if err != nil {
-	   		panic(err)
-		   } */
-
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
-
-	/* 	w.Write([]byte(str))
-
-	fmt.Println(w) */
-
-	//fmt.Println(str)
 
 }
