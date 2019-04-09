@@ -3,8 +3,10 @@ package main
 import (
 	//"fmt"
 
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -90,7 +92,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		end = o.AddDate(0, 0, -7)
 
 	}
-*/
+	*/
 
 	var c Cal
 
@@ -174,6 +176,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 					</head>
 					<body style="background-color: #bcbcbc;">
+
+					<form class="form-inline" role="form" method="post">
+    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
+    <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button>
+  </form>
 
 					<div class="container" id="date" style="color:white; font-size:30px;">
 					` + strconv.Itoa(c.Year) + ` - ` + strconv.Itoa(c.Month) + `
@@ -522,8 +529,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str))
+	if r.Method == "GET" {
+
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
+
+	} else {
+
+		r.ParseForm()
+
+		s := strings.Join(r.Form["find"], " ")
+
+		fmt.Fprint(w, s)
+
+	}
 
 }
