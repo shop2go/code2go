@@ -177,15 +177,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					</head>
 					<body style="background-color: #bcbcbc;">
 
+					
+
+					<div class="container" id="date" style="color:white; font-size:30px;">
+					` + strconv.Itoa(c.Year) + ` - ` + strconv.Itoa(c.Month) + `
 					<form class="form-inline" role="form" method="post">
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button>
   </form>
-
-					<div class="container" id="date" style="color:white; font-size:30px;">
-					` + strconv.Itoa(c.Year) + ` - ` + strconv.Itoa(c.Month) + `
 					</div>
-					<div class="container" id="data" style="color:white; font-size:30px;">
+					<div class="container" id="data" style="color:white;">
 	<br>
 
 		`
