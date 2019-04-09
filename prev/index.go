@@ -21,7 +21,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	/* 	var start time.Time
 	   	var end time.Time */
 
-	k := 0
+	k := -1
 
 	now := time.Now().AddDate(0, k, 0)
 	/* year, _ := strconv.Atoi(now.Format("2006"))
@@ -180,7 +180,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 
 					<div class="container" id="date" style="color:white; font-size:30px;">
-					` + strconv.Itoa(c.Year) + ` -> <button type="button" class="btn btn-link" onclick="window.location.href='prev'">` + now.AddDate(0, -1, 0).Month().String() + `</button>` + now.Month().String + `<button type="button" class="btn btn-link">` + now.AddDate(0, +1, 0).Month().String() + `</button>
+					` + strconv.Itoa(c.Year) + ` -> <button type="button" class="btn btn-link" onclick="window.location.href='prev'">` + strconv.Itoa(c.Month-1) + `</button>` + strconv.Itoa(c.Month) + `<button type="button" class="btn btn-link">` + strconv.Itoa(c.Month+1) + `</button>
 					<form class="form-inline" role="form" method="post">
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button>
