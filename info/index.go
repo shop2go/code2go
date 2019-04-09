@@ -90,8 +90,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		end = o.AddDate(0, 0, -7)
 
 	}
-
-	fmt.Println(start, end) */
+*/
 
 	var c Cal
 
@@ -123,18 +122,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		i++
 
 	}
-
-	/* 	for j := range c.Days {
-
-		d := strconv.Itoa(j)
-
-		if d <= now.Format("02") {
-
-			delete(c.Days, j)
-
-		}
-
-	} */
 
 	j := 1
 
@@ -168,10 +155,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		q = i
 
 	}
-
-	//fmt.Println(q)
-
-	//fmt.Println(c.Days[1])
 
 	str := `
 
@@ -538,70 +521,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		break
 
 	}
-
-	/* 	for w := 1; w < 8; w++ {
-
-	   		switch c.Days[k] {
-
-	   		case "Monday":
-
-	   		if k == 1 {
-
-	   			str = str + `
-	   			<div class="container" id="data" style="color:white; font-size:30px;">
-	   			`
-	   		}
-
-	   		switch c.Days[k] {
-
-	   		case "Monday":
-
-	   			if k == 1 {
-
-	   				str = str + `
-	   				<div class="container" id="data" style="color:white; font-size:30px;">
-	   				<div class="row">
-	   				`
-	   			}
-
-	   			str = str + `</div><div class="row">`
-
-	   		case "Sunday":
-
-	   			str = str + `<br>`
-
-	   		}
-
-	   		if k > len(c.Days) {
-
-	   			str = str + `
-	   			<div class="col-sm">
-
-	   			</div>
-
-	   			`
-	   		} else {
-
-	   			str = str + `
-	   			<div class="col-sm">
-	   			` + strconv.Itoa(k) + " " + c.Days[k] + `
-	   			</div>
-	   			`
-
-	   		}
-
-	   	}
-
-	   	str = str + `
-	   		</div>
-	   								  </div>
-	   								  <!-- Then Material JavaScript on top of Bootstrap JavaScript -->
-	   	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-	   								  </body>
-	   								  </html>
-	   		`
-	*/
-	//fmt.Println(str)
 
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
