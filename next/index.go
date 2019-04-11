@@ -192,9 +192,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button>
   </form><br>
-  <form class="form-inline" role="form" method="get">
-					` + strconv.Itoa(c.Year) + ` -> <button id="nav" type="submit" class="btn btn-link" onclick="window.location.href='prev'" value="` + strconv.Itoa(c.Month) + `">` + now.AddDate(0, -1, 0).Month().String() + `</button>` + now.Month().String() + `<button type="button" class="btn btn-link" onclick="window.location.href='next'">` + now.AddDate(0, +1, 0).Month().String() + `</button>
-					</form>
+					` + strconv.Itoa(c.Year) + ` -> <button type="button" class="btn btn-link" onclick="window.location.href='prev'">` + now.AddDate(0, -1, 0).Month().String() + `</button>` + now.Month().String() + `<button type="button" class="btn btn-link" onclick="window.location.href='next'">` + now.AddDate(0, +1, 0).Month().String() + `</button>
+					
 					</div>
 					<div class="container" id="data" style="color:white;">
 	<br>
@@ -534,17 +533,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "GET" {
-		
 
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
-
-		r.ParseForm()
-
-		s := strings.Join(r.Form["nav"], " ")
-
-		fmt.Fprint(w, s)
 
 	} else {
 
