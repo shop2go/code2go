@@ -1,7 +1,7 @@
 { 
     "version": 2,
     "builds": [{ "src": "./main/index.go", "use": "@now/go" },
-      {"src": "./info/index.go", "use": "@now/go"},
+      {"src": "./now/index.go", "use": "@now/go"},
       {"src": "./prev/index.go", "use": "@now/go"}
 
     ],
