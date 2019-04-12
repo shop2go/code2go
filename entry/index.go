@@ -107,7 +107,73 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<ul class="list-group">
  `
 
-	for k := q; k < l; k++ {
+	for k := q; k <= l; k++ {
+
+		str = str + `
+	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+
+	` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `
+
+	 </li><br>
+	 `
+	}
+
+	now = time.Now().AddDate(0, 1, 0)
+
+	c.Year = now.Year()
+	month, _ = strconv.Atoi(now.Format("01"))
+	c.Month = month
+	day = map[int]string{now.Day(): now.Weekday().String()}
+
+	c.Days = day
+
+	i = 1
+
+	for i < 32 {
+
+		d := now.AddDate(0, 0, i)
+
+		m, _ := strconv.Atoi(d.Format("01"))
+
+		if m != month {
+
+			break
+
+		}
+
+		e, _ := strconv.Atoi(d.Format("02"))
+
+		c.Days[e] = d.Weekday().String()
+
+		i++
+
+	}
+
+	j = 1
+
+	for j > 0 {
+
+		d := now.AddDate(0, 0, -j)
+
+		m, _ := strconv.Atoi(d.Format("01"))
+
+		if m != month {
+
+			break
+
+		}
+
+		e, _ := strconv.Atoi(d.Format("02"))
+
+		c.Days[e] = d.Weekday().String()
+
+		j++
+
+	}
+
+	l = len(c.Days)
+
+	for k := 1; k <= l; k++ {
 
 		str = str + `
 	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
