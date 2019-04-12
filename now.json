@@ -3,7 +3,8 @@
     "builds": [{ "src": "./main/index.go", "use": "@now/go" },
       {"src": "./now/index.go", "use": "@now/go"},
       {"src": "./prev/index.go", "use": "@now/go"},
-      {"src": "./next/index.go", "use": "@now/go"}
+      {"src": "./next/index.go", "use": "@now/go"},
+      {"src": "./entry/index.go", "use": "@now/go"}
 
     ],
     "routes": [
