@@ -76,15 +76,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	l := len(c.Days)
 
-	if time.Now().Month() == now.Month() {
-
-		p, _ = strconv.Atoi(time.Now().Format("02"))
-
-	} else {
-
-		p = 1
-
-	}
+	p, _ = strconv.Atoi(time.Now().Format("02"))
 
 	for i := l; i >= p; i-- {
 
@@ -115,16 +107,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<ul class="list-group">
  `
 
- for k := q; k < 32; k++ {
+	for k := q; k < l; k++ {
 
-	str = str + `
+		str = str + `
 	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 
 	` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `
 
 	 </li><br>
 	 `
- }
+	}
 
 	str = str + `
  </ul>
