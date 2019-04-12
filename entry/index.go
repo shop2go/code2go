@@ -120,7 +120,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	str = str + `
 	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 
-	Element
+	` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `
 
 	 </li><br>
 	 `
