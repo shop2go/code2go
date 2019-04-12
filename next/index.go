@@ -327,8 +327,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="border">
 			
 			<div class="col-sm">
-			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div> </span>
+			` + c.Days[k] + `<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(k) + `</button>
+			</div> </span>
 
 				`
 
@@ -340,8 +340,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<div class="col-sm">
 
-			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div> </span>
+			` + c.Days[k] + `<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(k) + `</button>
+			</div> </span>
 
 				`
 
@@ -352,8 +352,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="border">
 			
 			<div class="col-sm">
-			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div> </span>
+			` + c.Days[k] + `<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(k) + `</button>
+			</div> </span>
 
 				`
 
@@ -364,8 +364,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="border">
 			
 			<div class="col-sm">
-			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div> </span>
+			` + c.Days[k] + `<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(k) + `</button>
+			</div> </span>
 
 				`
 
@@ -376,8 +376,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="border">
 			
 			<div class="col-sm">
-			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div> </span>
+			` + c.Days[k] + `<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(k) + `</button>
+			</div> </span>
 
 				`
 
@@ -388,8 +388,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="border">
 			
 			<div class="col-sm">
-			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></span>
+			` + c.Days[k] + `<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(k) + `</button>
+			</div></span>
 
 				`
 
@@ -400,8 +400,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="border">
 			
 			<div class="col-sm">
-			` + c.Days[k] + `<br>` + strconv.Itoa(k) + `
-				</div></span>
+			` + c.Days[k] + `<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(k) + `</button>
+			</div></span>
 
 				`
 
