@@ -268,6 +268,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 																																	<span class="border">
 																																	<div class="col-sm">
 																																	<span class="badge badge-pill badge-light">Thursday<br></span></div></span>
+																																	<span class="border">
 																																	<div class="col-sm">
 																																	<span class="badge badge-pill badge-light">Friday<br></span></div></span>
 																																	`
@@ -287,8 +288,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 																																																																	<span class="border">
 																																																																	<div class="col-sm">
 																																																																	<span class="badge badge-pill badge-light">Thursday<br></span></div></span>
+																																																																	<span class="border">
 																																																																	<div class="col-sm">
 																																																																	<span class="badge badge-pill badge-light">Friday<br></span></div></span>
+																																																																	<span class="border">
 																																																																	<div class="col-sm">
 																																																																	<span class="badge badge-pill badge-light">Saturday<br></span></div></span>
 																																																																	`
