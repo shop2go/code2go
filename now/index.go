@@ -211,7 +211,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="row">
 		<span class="border">
 		<div class="col-sm">
-		<span class="badge badge-pill badge-light">Monday&#8291;</span></div></span>
+		<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday&#8291;</span></button></div></span>
 		`
 	case "Wednesday":
 		str = str + `
@@ -219,58 +219,58 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					<span class="border">
 					<div class="col-sm">
-					<span class="badge badge-pill badge-light">Monday&#8291;</span></div></span>
+					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday&#8291;</span></button>s</div></span>
 					<span class="border">
 					<div class="col-sm">
-					<span class="badge badge-pill badge-light">Tuesday&#8291;</span></div></span>`
+					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday&#8291;</span></button></div></span>`
 	case "Thursday":
 		str = str + `
 									<div class="row">
 									
 									<span class="border">
 									<div class="col-sm">
-									<span class="badge badge-pill badge-light">Monday&#8291;</span></div></span>
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday&#8291;</span></button></div></span>
 									<span class="border">
 									<div class="col-sm">
-									<span class="badge badge-pill badge-light">Tuesday&#8291;</span></div></span>
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday&#8291;</span></button></div></span>
 									<span class="border">
 									<div class="col-sm">
-									<span class="badge badge-pill badge-light">Wednesday&#8291;</span></div></span>`
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday&#8291;</span></button></div></span>`
 	case "Friday":
 		str = str + `
 									<div class="row">
 																	
 									<span class="border">
 									<div class="col-sm">
-									<span class="badge badge-pill badge-light">Monday&#8291;</span></div></span>
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday&#8291;</span></button></div></span>
 									<span class="border">
 									<div class="col-sm">
-									<span class="badge badge-pill badge-light">Tuesday&#8291;</span></div></span>
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday&#8291;</span></button></div></span>
 									<span class="border">
 									<div class="col-sm">
-									<span class="badge badge-pill badge-light">Wednesday&#8291;</span></div></span>
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday&#8291;</span></button></div></span>
 									<span class="border">
 									<div class="col-sm">
-									<span class="badge badge-pill badge-light">Thursday&#8291;</span></div></span>`
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday&#8291;</span></button></div></span>`
 	case "Saturday":
 		str = str + `
 																																	<div class="row">
 																																	
 																																	<span class="border">
 																																	<div class="col-sm">
-																																	<span class="badge badge-pill badge-light">Monday&#8291;</span></div></span>
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday&#8291;</span></button></div></span>
 																																	<span class="border">
 																																	<div class="col-sm">
-																																	<span class="badge badge-pill badge-light">Tuesday&#8291;</span></div></span>
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday&#8291;</span></button></div></span>
 																																	<span class="border">
 																																	<div class="col-sm">
-																																	<span class="badge badge-pill badge-light">Wednesday&#8291;</span></div></span>
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday&#8291;</span></button></div></span>
 																																	<span class="border">
 																																	<div class="col-sm">
-																																	<span class="badge badge-pill badge-light">Thursday&#8291;</span></div></span>
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday&#8291;</span></button></div></span>
 																																	<span class="border">
 																																	<div class="col-sm">
-																																	<span class="badge badge-pill badge-light">Friday&#8291;</span></div></span>
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday&#8291;</span></button></div></span>
 																																	`
 	case "Sunday":
 		str = str + `
@@ -278,22 +278,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 																																																																	
 																																																																	<span class="border">
 																																																																	<div class="col-sm">
-																																																																	<span class="badge badge-pill badge-light">Monday&#8291;</span></div></span>
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday&#8291;</span></button></div></span>
 																																																																	<span class="border">
 																																																																	<div class="col-sm">
-																																																																	<span class="badge badge-pill badge-light">Tuesday&#8291;</span></div></span>
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday&#8291;</span></button></div></span>
 																																																																	<span class="border">
 																																																																	<div class="col-sm">
-																																																																	<span class="badge badge-pill badge-light">Wednesday&#8291;</span></div></span>
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday&#8291;</span></button></div></span>
 																																																																	<span class="border">
 																																																																	<div class="col-sm">
-																																																																	<span class="badge badge-pill badge-light">Thursday&#8291;</span></div></span>
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday&#8291;</span></button></div></span>
 																																																																	<span class="border">
 																																																																	<div class="col-sm">
-																																																																	<span class="badge badge-pill badge-light">Friday&#8291;</span></div></span>
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday&#8291;</span></button></div></span>
 																																																																	<span class="border">
 																																																																	<div class="col-sm">
-																																																																	<span class="badge badge-pill badge-light">Saturday&#8291;</span></div></span>
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday&#8291;</span></button></div></span>
 																																																																	`
 	}
 
