@@ -284,10 +284,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 																																		<div class="col-sm">
 																																		   Friday
 																																		<br></div>
-																																		</span><span class="border">
-																																		<div class="col-sm">
-																																		   Saturday
-																																		<br></div></span>
+																																		</span>
 																																		`
 	case "Sunday":
 		str = str + `
@@ -311,6 +308,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 																																																																		</span><span class="border">
 																																																																		<div class="col-sm">
 																																																																		   Friday
+																																																																		<br></div></span><span class="border">
+																																																																		<div class="col-sm">
+																																																																			Saturday
 																																																																		<br></div></span>
 																																																																		`
 	}
