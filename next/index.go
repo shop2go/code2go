@@ -219,7 +219,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					<span class="border">
 					<div class="col-sm">
-					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>s</div></span>
+					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button></div></span>
 					<span class="border">
 					<div class="col-sm">
 					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button></div></span>`
