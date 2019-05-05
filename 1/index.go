@@ -197,9 +197,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<form class="form-inline" role="form" method="post">
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
+<<<<<<< HEAD
   </div><div class="container" id="nav" style="color:white;">`
 
 	for t := 0; t < n; t++ {
+=======
+  </div><div class="container" id="nav" style="color:white;">
+  <button type="button" class="btn btn-link" onclick="window.location.href='0'">` + strconv.Itoa(now.AddDate(0, -1, 0).Year()) + `/` + now.AddDate(0, -1, 0).Month().String() + `</button>`
+>>>>>>> 514f90d3703d05b54bc3ffe1b34347ed3e7f449d
 
 		str = str + `
 	
