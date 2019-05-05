@@ -204,7 +204,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		str = str + `
   
 	
-	<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+	<button type="button" class="btn" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
 
 	
 	`
@@ -219,7 +219,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for t := n + 1; t < 21; t++ {
 		str = str + `
-  <button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `
+  <button type="button" class="btn" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `
   </button>
   `
 	}
@@ -230,7 +230,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</div>
 	<div class="container" id="act" style="color:white; font-size:30px;">
   <form class="form-inline" role="form" method="get">
-  ` + strconv.Itoa(c.Year) + `/` + now.Month().String() + `<button type="button" class="btn btn-link" onclick="window.location.href='` + o + `'">` + now.AddDate(0, n+1, 0).Month().String() + `</button>
+  ` + strconv.Itoa(c.Year) + `/` + now.Month().String() + `
    </form>
 					</div>
 					<div class="container" id="data" style="color:white;">
