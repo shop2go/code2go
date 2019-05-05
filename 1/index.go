@@ -205,13 +205,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		str = str + `
   <button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(now.AddDate(0, t, 0).Year()) + `/` + now.AddDate(0, t, 0).Month().String() + `
   </button>
-  `	} 
-	`
+  `
+	}
+
+	str = str + `
 	</form><br>
   <form class="form-inline" role="form" method="get">
 
   `
-  str = str + `
+	str = str + `
   <button type="button" class="btn btn-link" onclick="window.location.href='` + b + `'">` + now.AddDate(0, -1, 0).Month().String() + `</button>` + strconv.Itoa(c.Year) + `/` + now.Month().String() + `<button type="button" class="btn btn-link" onclick="window.location.href='` + o + `'">` + now.AddDate(0, n+1, 0).Month().String() + `</button></form>
 					</div>
 					<div class="container" id="data" style="color:white;">
