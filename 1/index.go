@@ -199,6 +199,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button>
   </form><br>
+  <button type="button" class="btn btn-link" onclick="window.location.href='0'">` + strconv.Itoa(now.AddDate(0, -1, 0).Year()) +`/` + now.AddDate(0, -1, 0).Month().String() + `</button>`
+  
+  
+  for t:= 1; t < 21; t++ {
+str =str + `
+  <button type="button" class="btn btn-link" onclick="window.location.href='`+strconv.Itoa(t)+`'">` + strconv.Itoa(now.AddDate(0, t, 0).Year()) +`/` + now.AddDate(0, t, 0).Month().String() + `</button>`
+  }`
   <form class="form-inline" role="form" method="get">
   <button type="button" class="btn btn-link" onclick="window.location.href='` + b + `'">` + now.AddDate(0, -1, 0).Month().String() + `</button>` + strconv.Itoa(c.Year) + `/` + now.Month().String() + `<button type="button" class="btn btn-link" onclick="window.location.href='` + o + `'">` + now.AddDate(0, n+1, 0).Month().String() + `</button></form>
 					</div>
