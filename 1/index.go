@@ -212,12 +212,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	str = str + `
 
-	<button type="button" class="btn btn-link">` + strconv.Itoa(now.Year()) + `/` + now.Month().String() + `
+	<button type="button" class="btn">` + strconv.Itoa(now.Year()) + `/` + now.Month().String() + `
 	</button>
  
  `
 
-	for t := n + 1; t < 20; t++ {
+	for t := n + 1; t < 21; t++ {
 		str = str + `
   <button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `
   </button>
