@@ -18,10 +18,14 @@ type Cal struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	url := strings.TrimPrefix(r.URL.Path, "/")
+
+	n, _ := strconv.Atoi(url)
+
 	/* 	var start time.Time
 	   	var end time.Time */
 
-	now := time.Now().AddDate(0, 1, 0)
+	now := time.Now().AddDate(0, n, 0)
 	/* year, _ := strconv.Atoi(now.Format("2006"))
 
 	m := time.Date(year, 04, 01, 00, 00, 00, 0, time.UTC)
