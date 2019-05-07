@@ -205,13 +205,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for t := 0; t < n; t++ {
 
-			str = str + `
+			if time.Now().AddDate(0, t, 0).Year() != c.Year {
+
+				str = str + `
   
-	
-	<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+	<p>` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `</p><br>
+	<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
 
 	
 	`
+
+			} else {
+
+				str = str + `
+  
+	
+	<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+
+	
+	`
+			}
 
 		}
 
@@ -224,10 +237,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
  `
 
 		for t := n + 1; t < 21; t++ {
-			str = str + `
-  <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `
-  </button>
-  `
+
+			if time.Now().AddDate(0, t, 0).Year() != c.Year {
+
+				str = str + `
+  
+	<p>` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `</p><br>
+	<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+
+	
+	`
+
+			} else {
+
+				str = str + `
+  
+	
+	<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+
+	
+	`
+			}
 		}
 
 		str = str + `
