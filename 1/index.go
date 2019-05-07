@@ -199,19 +199,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
   </div><br><div class="container" id="nav" style="color:white;">`
 
+  
+
 	for t := 0; t < n; t++ {
 
-		str = str + `
+		
+
+			str = str + `
   
 	
 	<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
 
 	
 	`
+
+		
 	}
 
 	str = str + `
 
+	
 	<button type="button" class="btn btn-light">` + strconv.Itoa(now.Year()) + `/` + now.Month().String() + `
 	</button>
  
