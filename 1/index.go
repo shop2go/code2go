@@ -26,8 +26,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		n, _ := strconv.Atoi(url)
 
+		now := time.Now().AddDate(0, n, 0)
+
 		/* 	var start time.Time
 		var end time.Time */
+		var c Cal
+
+		c.Year = now.Year()
 
 		str := `
 
@@ -54,9 +59,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					   <form class="form-inline" role="form" method="post">
 	   <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
 	   <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-	 </div><br><div class="container" id="nav" style="color:white;">`
+	 </div><br><div class="container" id="nav" style="color:white;">
+	 <p>` + strconv.Itoa(time.Now().Year()) + `</p><br>
+	 `
 
-		now := time.Now().AddDate(0, n, 0)
 		/* year, _ := strconv.Atoi(now.Format("2006"))
 
 		m := time.Date(year, 04, 01, 00, 00, 00, 0, time.UTC)
@@ -127,9 +133,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 		*/
 
-		var c Cal
-
-		c.Year = now.Year()
 		month, _ := strconv.Atoi(now.Format("01"))
 		c.Month = month
 		day := map[int]string{now.Day(): now.Weekday().String()}
