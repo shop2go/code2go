@@ -120,73 +120,73 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for o := 1; o < 21; o++ {
 
-	now = time.Now().AddDate(0, o, 0)
+		now = time.Now().AddDate(0, o, 0)
 
-	c.Year = now.Year()
-	month, _ = strconv.Atoi(now.Format("01"))
-	c.Month = month
-	day = map[int]string{now.Day(): now.Weekday().String()}
+		c.Year = now.Year()
+		month, _ = strconv.Atoi(now.Format("01"))
+		c.Month = month
+		day = map[int]string{now.Day(): now.Weekday().String()}
 
-	c.Days = day
+		c.Days = day
 
-	i = 1
+		i = 1
 
-	for i < 32 {
+		for i < 32 {
 
-		d := now.AddDate(0, 0, i)
+			d := now.AddDate(0, 0, i)
 
-		m, _ := strconv.Atoi(d.Format("01"))
+			m, _ := strconv.Atoi(d.Format("01"))
 
-		if m != month {
+			if m != month {
 
-			break
+				break
 
-		}
+			}
 
-		e, _ := strconv.Atoi(d.Format("02"))
+			e, _ := strconv.Atoi(d.Format("02"))
 
-		c.Days[e] = d.Weekday().String()
+			c.Days[e] = d.Weekday().String()
 
-		i++
-
-	}
-
-	j = 1
-
-	for j > 0 {
-
-		d := now.AddDate(0, 0, -j)
-
-		m, _ := strconv.Atoi(d.Format("01"))
-
-		if m != month {
-
-			break
+			i++
 
 		}
 
-		e, _ := strconv.Atoi(d.Format("02"))
+		j = 1
 
-		c.Days[e] = d.Weekday().String()
+		for j > 0 {
 
-		j++
+			d := now.AddDate(0, 0, -j)
 
-	}
+			m, _ := strconv.Atoi(d.Format("01"))
 
-	l = len(c.Days)
+			if m != month {
 
-	for k := 1; k <= l; k++ {
+				break
 
-		str = str + `
-	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+			}
 
-	` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `
+			e, _ := strconv.Atoi(d.Format("02"))
+
+			c.Days[e] = d.Weekday().String()
+
+			j++
+
+		}
+
+		l = len(c.Days)
+
+		for k := 1; k <= l; k++ {
+
+			str = str + `
+	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `">
+
+	` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `
 
 	 </li><br>
 	 `
-	}
+		}
 
-	str = str + `
+		str = str + `
  </ul>
 						   </div>
 						   <!-- Then Material JavaScript on top of Bootstrap JavaScript -->
@@ -198,7 +198,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					</html>
 					`
 
-}
+	}
 
 	if r.Method == "GET" {
 
