@@ -344,7 +344,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 
 			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
 				</div>
 
 				`
@@ -356,7 +356,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 
 			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
 				</div>
 
 			`
@@ -368,7 +368,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 
 			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
 				</div> 
 
 				`
@@ -380,7 +380,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 
 			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
 				</div>
 
 				`
@@ -392,7 +392,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 
 			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
 				</div>
 
 				`
@@ -404,7 +404,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 
 			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
 				</div>
 
 				`
@@ -416,7 +416,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 
 			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
 				</div>
 
 				`
