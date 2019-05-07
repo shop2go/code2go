@@ -112,7 +112,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		str = str + `
 	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 
-	` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `
+	`
+		strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] `
 
 	 </li><br>
 	 `
@@ -180,7 +181,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 	 <li class="list-group-item" id="` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `">
 
-	` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `-` + strconv.Itoa(c.Year) + `
+	` 
+	
+	strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] 
+	
+	`
 
 	 </li><br>
 	 `
