@@ -16,7 +16,11 @@ type Cal struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	str := `
+	switch r.Method {
+
+	case "GET":
+
+		str := `
 
 	<!DOCTYPE html>
 	<html lang="en">
@@ -39,95 +43,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<ul class="list-group">
 `
 
-	now := time.Now()
+		now := time.Now()
 
-	var c Cal
-
-	c.Year = now.Year()
-	month, _ := strconv.Atoi(now.Format("01"))
-	c.Month = month
-	day := map[int]string{now.Day(): now.Weekday().String()}
-
-	c.Days = day
-
-	i := 1
-
-	for i < 32 {
-
-		d := now.AddDate(0, 0, i)
-
-		m, _ := strconv.Atoi(d.Format("01"))
-
-		if m != month {
-
-			break
-
-		}
-
-		e, _ := strconv.Atoi(d.Format("02"))
-
-		c.Days[e] = d.Weekday().String()
-
-		i++
-
-	}
-
-	j := 1
-
-	for j > 0 {
-
-		d := now.AddDate(0, 0, -j)
-
-		m, _ := strconv.Atoi(d.Format("01"))
-
-		if m != month {
-
-			break
-
-		}
-
-		e, _ := strconv.Atoi(d.Format("02"))
-
-		c.Days[e] = d.Weekday().String()
-
-		j++
-
-	}
-
-	var p int
-	var q int
-
-	l := len(c.Days)
-
-	p, _ = strconv.Atoi(time.Now().Format("02"))
-
-	for i := l; i >= p; i-- {
-
-		q = i
-
-	}
-
-	for k := q; k <= l; k++ {
-
-		str = str + `
-	 <li class="list-group-item" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] + `
-
-	 </li><br>
-	 `
-	}
-
-	for o := 1; o < 21; o++ {
-
-		now = time.Now().AddDate(0, o, 0)
+		var c Cal
 
 		c.Year = now.Year()
-		month, _ = strconv.Atoi(now.Format("01"))
+		month, _ := strconv.Atoi(now.Format("01"))
 		c.Month = month
-		day = map[int]string{now.Day(): now.Weekday().String()}
+		day := map[int]string{now.Day(): now.Weekday().String()}
 
 		c.Days = day
 
-		i = 1
+		i := 1
 
 		for i < 32 {
 
@@ -149,7 +76,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		j = 1
+		j := 1
 
 		for j > 0 {
 
@@ -171,15 +98,94 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		l = len(c.Days)
+		var p int
+		var q int
 
-		for k := 1; k <= l; k++ {
+		l := len(c.Days)
+
+		p, _ = strconv.Atoi(time.Now().Format("02"))
+
+		for i := l; i >= p; i-- {
+
+			q = i
+
+		}
+
+		for k := q; k <= l; k++ {
 
 			str = str + `
 	 <li class="list-group-item" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] + `
 
 	 </li><br>
 	 `
+		}
+
+		for o := 1; o < 21; o++ {
+
+			now = time.Now().AddDate(0, o, 0)
+
+			c.Year = now.Year()
+			month, _ = strconv.Atoi(now.Format("01"))
+			c.Month = month
+			day = map[int]string{now.Day(): now.Weekday().String()}
+
+			c.Days = day
+
+			i = 1
+
+			for i < 32 {
+
+				d := now.AddDate(0, 0, i)
+
+				m, _ := strconv.Atoi(d.Format("01"))
+
+				if m != month {
+
+					break
+
+				}
+
+				e, _ := strconv.Atoi(d.Format("02"))
+
+				c.Days[e] = d.Weekday().String()
+
+				i++
+
+			}
+
+			j = 1
+
+			for j > 0 {
+
+				d := now.AddDate(0, 0, -j)
+
+				m, _ := strconv.Atoi(d.Format("01"))
+
+				if m != month {
+
+					break
+
+				}
+
+				e, _ := strconv.Atoi(d.Format("02"))
+
+				c.Days[e] = d.Weekday().String()
+
+				j++
+
+			}
+
+			l = len(c.Days)
+
+			for k := 1; k <= l; k++ {
+
+				str = str + `
+	 <li class="list-group-item" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] + `
+
+	 </li><br>
+	 `
+			}
+
 		}
 
 		str = str + `
@@ -194,15 +200,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					</html>
 					`
 
-	}
-
-	if r.Method == "GET" {
-
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	} else {
+	case "POST":
 
 		r.ParseForm()
 
