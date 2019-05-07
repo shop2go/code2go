@@ -234,7 +234,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		str = str + `
 
 	
-	<button type="button" class="btn btn-light">` + strconv.Itoa(now.Year()) + `/` + now.Month().String() + `
+	<button type="button" class="btn btn-light">` + now.Month().String() + `
 	</button>
  
  `
