@@ -1,27 +1,11 @@
 {
     "version": 2,
-    "builds": [{ "src": "./main/index.go", "use": "@now/go" },
+    "builds": [
+      
+      { "src": "./main/index.go", "use": "@now/go" },
       {"src": "./0/index.go", "use": "@now/go"},
       {"src": "./1/index.go", "use": "@now/go"},
-      {"src": "./2/index.go", "use": "@now/go"},
-      {"src": "./3/index.go", "use": "@now/go"},
-      {"src": "./4/index.go", "use": "@now/go"},
-      {"src": "./5/index.go", "use": "@now/go"},
-      {"src": "./6/index.go", "use": "@now/go"},
-      {"src": "./7/index.go", "use": "@now/go"},
-      {"src": "./8/index.go", "use": "@now/go"},
-      {"src": "./9/index.go", "use": "@now/go"},
-      {"src": "./10/index.go", "use": "@now/go"},
-      {"src": "./11/index.go", "use": "@now/go"},
-      {"src": "./12/index.go", "use": "@now/go"},
-      {"src": "./13/index.go", "use": "@now/go"},
-      {"src": "./14/index.go", "use": "@now/go"},
-      {"src": "./15/index.go", "use": "@now/go"},
-      {"src": "./16/index.go", "use": "@now/go"},
-      {"src": "./17/index.go", "use": "@now/go"},
-      {"src": "./18/index.go", "use": "@now/go"},
-      {"src": "./19/index.go", "use": "@now/go"},
-      {"src": "./20/index.go", "use": "@now/go"},
+      
 
       {"src": "./entry/index.go", "use": "@now/go"}
 
