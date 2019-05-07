@@ -1,9 +1,8 @@
 package main
 
 import (
-	//"fmt"
-
-	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -588,14 +587,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	case "POST":
+	case "PUT":
 
 		r.ParseForm()
 
 		s := strings.Join(r.Form["find"], " ")
 
-		fmt.Fprint(w, s)
+		/* fmt.Fprint(w, s)
+		 */
+		//http.PUT("localhost:5000/bolt/users/user2")
+
+		client := &http.Client{}
+		req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
+		if err != nil {
+			// handle error
+			log.Fatal(err)
+		}
+		_, err = client.Do(req)
+		if err != nil {
+			// handle error
+			log.Fatal(err)
+		}
 
 	}
 
+}
+
+func Reader(s string) io.Reader {
+
+	return strings.NewReader(s)
 }
