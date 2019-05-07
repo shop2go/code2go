@@ -118,7 +118,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	 `
 	}
 
-	now = time.Now().AddDate(0, 1, 0)
+	for o := 1; o < 21; o++ {
+
+	now = time.Now().AddDate(0, o, 0)
 
 	c.Year = now.Year()
 	month, _ = strconv.Atoi(now.Format("01"))
@@ -195,6 +197,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					</body>
 					</html>
 					`
+
+}
 
 	if r.Method == "GET" {
 
