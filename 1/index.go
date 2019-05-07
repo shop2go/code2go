@@ -197,14 +197,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<form class="form-inline" role="form" method="post">
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
     <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-  </div><div class="container" id="nav" style="color:white;">`
+  </div><br><div class="container" id="nav" style="color:white;">`
 
 	for t := 0; t < n; t++ {
 
 		str = str + `
   
 	
-	<button type="button" class="btn" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+	<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
 
 	
 	`
@@ -212,14 +212,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	str = str + `
 
-	<button type="button" class="btn">` + strconv.Itoa(now.Year()) + `/` + now.Month().String() + `
+	<button type="button" class="btn btn-light">` + strconv.Itoa(now.Year()) + `/` + now.Month().String() + `
 	</button>
  
  `
 
 	for t := n + 1; t < 21; t++ {
 		str = str + `
-  <button type="button" class="btn" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `
+  <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `/` + time.Now().AddDate(0, t, 0).Month().String() + `
   </button>
   `
 	}
@@ -228,11 +228,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	</form><br>
 	</div>
-	<div class="container" id="act" style="color:white; font-size:30px;">
-  <form class="form-inline" role="form" method="get">
-  ` + strconv.Itoa(c.Year) + `/` + now.Month().String() + `
-   </form>
-					</div>
+
 					<div class="container" id="data" style="color:white;">
 	<br>
 
