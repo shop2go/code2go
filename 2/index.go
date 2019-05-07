@@ -517,7 +517,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<div class="col-sm">
 			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button></div>
 
-
 `
 		case "Friday":
 			str = str + `
