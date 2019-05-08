@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -593,20 +593,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		s := strings.Join(r.Form["find"], " ")
 
-		/* fmt.Fprint(w, s)
-		 */
-		//http.PUT("localhost:5000/bolt/users/user2")
-
 		client := &http.Client{}
 		req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
 		if err != nil {
-			// handle error
-			log.Fatal(err)
+			fmt.Fprint(w, err)
 		}
 		_, err = client.Do(req)
 		if err != nil {
-			// handle error
-			log.Fatal(err)
+			fmt.Fprint(w, err)
 		}
 
 	}
