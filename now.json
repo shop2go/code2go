@@ -8,6 +8,8 @@
       
       {"src": "./1/index.go", "use": "@now/go"},
 
+      {"src": "./2/index.go", "use": "@now/go"},
+
       {"src": "./entry/index.go", "use": "@now/go"}
 
     ],
