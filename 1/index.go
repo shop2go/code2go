@@ -216,6 +216,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	
 	`
+				c.Year = time.Now().AddDate(0, t, 0).Year()
 
 			} else {
 
@@ -249,6 +250,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	
 	`
+
+				c.Year = time.Now().AddDate(0, t, 0).Year()
 
 			} else {
 
