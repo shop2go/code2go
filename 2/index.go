@@ -272,6 +272,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		`
 
+		c.Year = now.Year()
+
 		switch c.Days[q] {
 
 		case "Monday":
