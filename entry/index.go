@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
-)
+	/* 	"github.com/google/uuid"
+	   	"github.com/gorilla/schema" */)
 
 type Cal struct {
 	Year  int
@@ -14,7 +15,28 @@ type Cal struct {
 	Days  map[int]string
 }
 
+/* type Form struct {
+	Id    uuid.UUID
+	Topic string
+	Tag   string
+	Event string
+	Date  string
+	Time  time.Time
+} */
+
 func Handler(w http.ResponseWriter, r *http.Request) {
+
+	url := r.URL
+
+	f := url.Fragment
+
+	resp, _ := http.Get("http://example.com/" + f)
+
+	b, _ := ioutil.ReadAll(resp.Body)
+
+	resp.Body.Close()
+
+	fmt.Fprint(w, string(b))
 
 	switch r.Method {
 
@@ -203,14 +225,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
-
-	case "POST":
-
-		r.ParseForm()
-
-		s := strings.Join(r.Form["find"], " ")
-
-		fmt.Fprint(w, s)
 
 	}
 

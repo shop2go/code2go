@@ -1,9 +1,8 @@
 package main
 
 import (
-	//"fmt"
-
-	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -18,529 +17,595 @@ type Cal struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	n, _ := strconv.Atoi(url)
+	switch r.Method {
 
-	/* 	var start time.Time
-	   	var end time.Time */
+	case "GET":
 
-	now := time.Now().AddDate(0, n, 0)
-	/* year, _ := strconv.Atoi(now.Format("2006"))
+		url := strings.TrimPrefix(r.URL.Path, "/")
 
-	m := time.Date(year, 04, 01, 00, 00, 00, 0, time.UTC)
-	o := time.Date(year, 10, 01, 00, 00, 00, 0, time.UTC)
+		n, _ := strconv.Atoi(url)
 
-	switch {
+		now := time.Now().AddDate(0, n, 0)
 
-	case m.AddDate(0, 0, -1).Weekday() == 0:
+		/* 	var start time.Time
+		var end time.Time */
+		var c Cal
 
-		start = m.AddDate(0, 0, -1)
+		c.Year = now.Year()
 
-	case m.AddDate(0, 0, -2).Weekday() == 0:
+		str := `
 
-		start = m.AddDate(0, 0, -2)
+		   <!DOCTYPE html>
+		   <html lang="en">
+				<head>
+					   <meta charset="UTF-8">
+					   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+					   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+					   <title>CODE2GO</title>
+					   <!-- CSS -->
+					   <!-- Add Material font (Roboto) and Material icon as needed -->
+					   <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+					   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   
+					   <!-- Add Material CSS, replace Bootstrap CSS -->
+					   <link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+					   </head>
+					   <body style="background-color: #bcbcbc;">
+   
+   
+   
+					   <div class="container" id="search" style="color:white; font-size:30px;">
+					   <form class="form-inline" role="form" method="post">
+	   <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
+	   <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
+	 </div><br><div class="container" id="nav" style="color:white;">
+	 ` + strconv.Itoa(time.Now().Year()) + `<br>
+	 `
 
-	case m.AddDate(0, 0, -3).Weekday() == 0:
+		month, _ := strconv.Atoi(now.Format("01"))
+		c.Month = month
+		day := map[int]string{now.Day(): now.Weekday().String()}
 
-		start = m.AddDate(0, 0, -3)
+		c.Days = day
 
-	case m.AddDate(0, 0, -4).Weekday() == 0:
+		i := 1
 
-		start = m.AddDate(0, 0, -4)
+		for i < 32 {
 
-	case m.AddDate(0, 0, -5).Weekday() == 0:
+			d := now.AddDate(0, 0, i)
 
-		start = m.AddDate(0, 0, -5)
+			m, _ := strconv.Atoi(d.Format("01"))
 
-	case m.AddDate(0, 0, -6).Weekday() == 0:
+			if m != month {
 
-		start = m.AddDate(0, 0, -6)
+				break
 
-	case m.AddDate(0, 0, -7).Weekday() == 0:
+			}
 
-		start = m.AddDate(0, 0, -7)
+			e, _ := strconv.Atoi(d.Format("02"))
 
-	}
+			c.Days[e] = d.Weekday().String()
 
-	switch {
-
-	case o.AddDate(0, 0, -1).Weekday() == 0:
-
-		end = o.AddDate(0, 0, -1)
-
-	case o.AddDate(0, 0, -2).Weekday() == 0:
-
-		end = o.AddDate(0, 0, -2)
-
-	case o.AddDate(0, 0, -3).Weekday() == 0:
-
-		end = o.AddDate(0, 0, -3)
-
-	case o.AddDate(0, 0, -4).Weekday() == 0:
-
-		end = o.AddDate(0, 0, -4)
-
-	case o.AddDate(0, 0, -5).Weekday() == 0:
-
-		end = o.AddDate(0, 0, -5)
-
-	case o.AddDate(0, 0, -6).Weekday() == 0:
-
-		end = o.AddDate(0, 0, -6)
-
-	case o.AddDate(0, 0, -7).Weekday() == 0:
-
-		end = o.AddDate(0, 0, -7)
-
-	}
-	*/
-
-	var c Cal
-
-	c.Year = now.Year()
-	month, _ := strconv.Atoi(now.Format("01"))
-	c.Month = month
-	day := map[int]string{now.Day(): now.Weekday().String()}
-
-	c.Days = day
-
-	i := 1
-
-	for i < 32 {
-
-		d := now.AddDate(0, 0, i)
-
-		m, _ := strconv.Atoi(d.Format("01"))
-
-		if m != month {
-
-			break
+			i++
 
 		}
 
-		e, _ := strconv.Atoi(d.Format("02"))
+		j := 1
 
-		c.Days[e] = d.Weekday().String()
+		for j > 0 {
 
-		i++
+			d := now.AddDate(0, 0, -j)
 
-	}
+			m, _ := strconv.Atoi(d.Format("01"))
 
-	j := 1
+			if m != month {
 
-	for j > 0 {
+				break
 
-		d := now.AddDate(0, 0, -j)
+			}
 
-		m, _ := strconv.Atoi(d.Format("01"))
+			e, _ := strconv.Atoi(d.Format("02"))
 
-		if m != month {
+			c.Days[e] = d.Weekday().String()
 
-			break
+			j++
 
 		}
 
-		e, _ := strconv.Atoi(d.Format("02"))
+		var p int
+		var q int
 
-		c.Days[e] = d.Weekday().String()
+		l := len(c.Days)
 
-		j++
+		if time.Now().Month() == now.Month() {
 
-	}
+			p, _ = strconv.Atoi(time.Now().Format("02"))
 
-	var p int
-	var q int
+		} else {
 
-	l := len(c.Days)
+			p = 1
 
-	if time.Now().Month() == now.Month() {
+		}
 
-		p, _ = strconv.Atoi(time.Now().Format("02"))
+		for i := l; i >= p; i-- {
 
-	} else {
+			q = i
 
-		p = 1
+		}
 
-	}
+		//o := strconv.Itoa(n + 1)
 
-	for i := l; i >= p; i-- {
+		for t := 0; t < n; t++ {
 
-		q = i
+			if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
-	}
+				str = str + `<br> ` +
 
-	o := strconv.Itoa(n + 1)
+					strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `<br>
+ <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
 
-	str := `
+ 
+ `
+				c.Year = time.Now().AddDate(0, t, 0).Year()
 
-		<!DOCTYPE html>
-		<html lang="en">
-			 <head>
-					<meta charset="UTF-8">
-					<meta name="viewport" content="width=device-width, initial-scale=1.0">
-					<meta http-equiv="X-UA-Compatible" content="ie=edge">
-					<title>CODE2GO</title>
-					<!-- CSS -->
-					<!-- Add Material font (Roboto) and Material icon as needed -->
-					<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-					<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+			} else {
 
-					<!-- Add Material CSS, replace Bootstrap CSS -->
-					<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-					</head>
-					<body style="background-color: #bcbcbc;">
+				str = str + `
 
+ 
+ <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
 
+ 
+ `
+			}
 
-					<div class="container" id="date" style="color:white; font-size:30px;">
-					<form class="form-inline" role="form" method="post">
-    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
-    <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button>
-  </form><br>
-  <form class="form-inline" role="form" method="get">
-					` + strconv.Itoa(c.Year) + `/` + now.Month().String() + `<button type="button" class="btn btn-link" onclick="window.location.href='` + o + `'">` + now.AddDate(0, n+1, 0).Month().String() + `</button>
-					</form>
-					</div>
+		}
+
+		str = str + `
+
+ 
+ <button type="button" class="btn btn-light">` + now.Month().String() + `
+ </button>
+
+`
+
+		for t := n + 1; t < 21; t++ {
+
+			if time.Now().AddDate(0, t, 0).Year() != c.Year {
+
+				str = str + `<br> ` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `<br>
+ <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+
+ 
+ `
+
+				c.Year = time.Now().AddDate(0, t, 0).Year()
+
+			} else {
+
+				str = str + `
+
+ 
+ <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+
+ 
+ `
+			}
+		}
+
+		str = str + `
+ 
+ </form><br>
+ </div>
+ 
 					<div class="container" id="data" style="color:white;">
 	<br>
 
 		`
 
-	switch c.Days[q] {
+		c.Year = now.Year()
 
-	case "Monday":
-		break
-	case "Tuesday":
-		str = str + `
-
-		<div class="row">
-		<span class="border">
-		<div class="col-sm">
-		<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button></div></span>
-		`
-	case "Wednesday":
-		str = str + `
-					<div class="row">
-
-					<span class="border">
-					<div class="col-sm">
-					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button></div></span>
-					<span class="border">
-					<div class="col-sm">
-					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button></div></span>`
-	case "Thursday":
-		str = str + `
-									<div class="row">
-
-									<span class="border">
-									<div class="col-sm">
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button></div></span>
-									<span class="border">
-									<div class="col-sm">
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button></div></span>
-									<span class="border">
-									<div class="col-sm">
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button></div></span>`
-	case "Friday":
-		str = str + `
-									<div class="row">
-
-									<span class="border">
-									<div class="col-sm">
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button></div></span>
-									<span class="border">
-									<div class="col-sm">
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button></div></span>
-									<span class="border">
-									<div class="col-sm">
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button></div></span>
-									<span class="border">
-									<div class="col-sm">
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button></div></span>`
-	case "Saturday":
-		str = str + `
-																																	<div class="row">
-
-																																	<span class="border">
-																																	<div class="col-sm">
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button></div></span>
-																																	<span class="border">
-																																	<div class="col-sm">
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button></div></span>
-																																	<span class="border">
-																																	<div class="col-sm">
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button></div></span>
-																																	<span class="border">
-																																	<div class="col-sm">
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button></div></span>
-																																	<span class="border">
-																																	<div class="col-sm">
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button></div></span>
-																																	`
-	case "Sunday":
-		str = str + `
-																																																																	<div class="row">
-
-																																																																	<span class="border">
-																																																																	<div class="col-sm">
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button></div></span>
-																																																																	<span class="border">
-																																																																	<div class="col-sm">
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button></div></span>
-																																																																	<span class="border">
-																																																																	<div class="col-sm">
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button></div></span>
-																																																																	<span class="border">
-																																																																	<div class="col-sm">
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button></div></span>
-																																																																	<span class="border">
-																																																																	<div class="col-sm">
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button></div></span>
-																																																																	<span class="border">
-																																																																	<div class="col-sm">
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button></div></span>
-																																																																	`
-	}
-
-	for k := q; k < 32; k++ {
-
-		switch c.Days[k] {
+		switch c.Days[q] {
 
 		case "Monday":
-
-			str = str + `
-			</div><div class="row">
-
-			<span class="border">
-
-			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				</div> </span>
-
-				`
-
+			break
 		case "Tuesday":
-
 			str = str + `
 
-			<span class="border">
-
-			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				</div> </span>
-
-			`
-
+		
+		
+		
+		<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
+		`
 		case "Wednesday":
-
 			str = str + `
+					
 
-			<span class="border">
-
-			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				</div> </span>
-
-				`
-
+					
+					
+					<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
+					
+					
+					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>`
 		case "Thursday":
-
 			str = str + `
+									
 
-			<span class="border">
-
-			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				</div> </span>
-
-				`
-
+									
+									
+									<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
+									
+									
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
+									
+									
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>`
 		case "Friday":
-
 			str = str + `
+									
 
-			<span class="border">
-
-			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				</div> </span>
-
-				`
-
+									
+									
+									<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
+									
+									
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
+									
+									
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
+									
+									
+									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>`
 		case "Saturday":
-
 			str = str + `
+																																	
 
-			<span class="border">
-
-			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				</div> </span>
-
-				`
-
+																																	
+																																	
+																																	<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
+																																	
+																																	
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
+																																	
+																																	
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
+																																	
+																																	
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
+																																	
+																																	
+																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
+																																	`
 		case "Sunday":
-
 			str = str + `
+																																																																	
 
-			<span class="border">
+																																																																	
+																																																																	
+																																																																	<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
+																																																																	
+																																																																	
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
+																																																																	
+																																																																	
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
+																																																																	
+																																																																	
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
+																																																																	
+																																																																	
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
+																																																																	
+																																																																	
+																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
+																																																																	`
+		}
 
-			<div class="col-sm">
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				</div> </span>
+		resp, _ := http.Get("http://examole.com/" + url)
+
+		b, _ := ioutil.ReadAll(resp.Body)
+
+		resp.Body.Close()
+
+		for k := q; k < 32; k++ {
+
+			//resp, _ := http.Get(".../" + now.Format("2006") + "/" + now.Format("1") + "/" + strconv.Itoa(k))
+
+			switch c.Days[k] {
+
+			case "Monday":
+
+				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
 
 				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
+
+			case "Tuesday":
+
+				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
+
+				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
+
+			case "Wednesday":
+
+				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
+
+				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
+
+			case "Thursday":
+
+				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
+
+				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
+
+			case "Friday":
+
+				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
+
+				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
+
+			case "Saturday":
+
+				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
+
+				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
+
+			case "Sunday":
+
+				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
+
+				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
+
+			}
 
 		}
 
-	}
+		switch c.Days[len(c.Days)] {
 
-	switch c.Days[len(c.Days)] {
+		case "Monday":
+			str = str + `
+		
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
 
-	case "Monday":
-		str = str + `
-		<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
 
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button></div></span>
+			   
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
 
-			   <span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button></div></span>
+			   
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
 
-			   <span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button></div></span>
+			   
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
 
-			   <span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button></div></span>
-
-			   <span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button></div></span>
+			   
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
 
 
 `
-	case "Tuesday":
-		str = str + `
-		<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button></div></span>
+		case "Tuesday":
+			str = str + `
+		
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
 
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
 
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
 
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
 
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button></div></span>
-
-
-`
-	case "Wednesday":
-		str = str + `
-		<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button></div></span>
-
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button></div></span>
-
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button></div></span>
-
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
 
 
 `
-	case "Thursday":
-		str = str + `
-		<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button></div></span>
+		case "Wednesday":
+			str = str + `
+		
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
 
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
 
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
 
-
-`
-	case "Friday":
-		str = str + `
-		<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button></div></span>
-
-			<span class="border">
-			<div class="col-sm">
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
 
 
 `
-	case "Saturday":
-		str = str + `
-		<span class="border">
+		case "Thursday":
+			str = str + `
+		
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
 
-		<div class="col-sm">
-		<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button></div></span>
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
+
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
+
+`
+		case "Friday":
+			str = str + `
+		
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
+
+			
+			
+			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
+
+
+`
+		case "Saturday":
+			str = str + `
+		
+
+		
+		<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
 
 
 `
 
-	case "Sunday":
-		str = str + `
+		case "Sunday":
+			str = str + `
 
-
-		</div>
+		
+		</div><br>
 
 `
-		break
+			break
 
-	}
+		}
 
-	str = str + `<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+		str = str + `<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 
 
 
-	</body>
-	</html>
-	`
-
-	if r.Method == "GET" {
+		</body>
+		</html>
+		`
 
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	} else {
+	case "POST":
 
 		r.ParseForm()
 
-		s := strings.Join(r.Form["find"], " ")
+		//s := strings.Join(r.Form["find"], " ")
 
-		fmt.Fprint(w, s)
+		/* client := &http.Client{}
+		req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
+		if err != nil {
+			fmt.Fprint(w, err)
+		}
+		_, err = client.Do(req)
+		if err != nil {
+			fmt.Fprint(w, err)
+		} */
 
 	}
 
+}
+
+func Reader(s string) io.Reader {
+
+	return strings.NewReader(s)
 }

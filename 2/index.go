@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -300,94 +301,150 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 																																																																	`
 		}
 
+		resp, _ := http.Get("http://example.com/" + url)
+
+		b, _ := ioutil.ReadAll(resp.Body)
+
+		resp.Body.Close()
+
 		for k := q; k < 32; k++ {
+
+			//resp, _ := http.Get(".../" + now.Format("2006") + "/" + now.Format("1") + "/" + strconv.Itoa(k))
 
 			switch c.Days[k] {
 
 			case "Monday":
 
 				str = str + `
-			
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
 
-			
-
-			
-			<br><button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
 
 			case "Tuesday":
 
 				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
 
-			
-
-			
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
 				
 
-			`
+				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
 
 			case "Wednesday":
 
 				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
 
-			
-
-			
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
-				 
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+				
 
 				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
 
 			case "Thursday":
 
 				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
 
-			
-
-			
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
 
 			case "Friday":
 
 				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
 
-			
-
-			
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
 
 			case "Saturday":
 
 				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
 
-			
-
-			
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
 
 			case "Sunday":
 
 				str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + c.Days[k] + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
 
-			
-
-			
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k) + `</span></button>
+				if string(b[k-q]) != "0" {
+					str = str +
+						`<span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
+				} else {
+
+					str = str +
+						`</span></button>
+				`
+				}
 
 			}
 
