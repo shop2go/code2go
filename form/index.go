@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,6 +12,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
 	f := strings.Replace(url, "form", "", -1)
+
+	fmt.Fprint(w, f)
 
 	switch r.Method {
 
