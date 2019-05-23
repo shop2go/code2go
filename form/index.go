@@ -10,8 +10,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	f := strings.TrimPrefix(url, "form+")
-
 	//fmt.Fprint(w, f)
 
 	switch r.Method {
@@ -38,12 +36,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 
 
-						<div class="container" id="` + f + `" style="color:white; font-size:30px;">
+						<div class="container" id="` + strings.ReplaceAll(url, "form", "") + `" style="color:white; font-size:30px;">
 						<form class="form-inline" role="form" method="POST">
 		<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required><br>
 		<input class="form-control mr-sm-2" type="text" placeholder="event" aria-label="Event" id ="Event" name ="Event" required><br>
 		<input class="form-control mr-sm-2" type="text" placeholder="tag" aria-label="Tag" id ="Tag" name ="Tag"><br>
-		<input class="form-control mr-sm-2" type="text" placeholder="` + f + `" aria-label="Date" id ="Date" name ="Date" value="` + f + `" readonly><br>
+		<input class="form-control mr-sm-2" type="text" placeholder="` + strings.ReplaceAll(url, "form", "") `" aria-label="Date" id ="Date" name ="Date" value="` + strings.ReplaceAll(url, "form", "") `" readonly><br>
 
 		<button class="btn btn-outline-light my-2 my-sm-1" type="submit">set</button><br>
 	  </div>
