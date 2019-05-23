@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL
+	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	f := url.Fragment
+	f := strings.TrimPrefix(url, "form#")
 
 	fmt.Fprint(w, f)
 
