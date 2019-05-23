@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
