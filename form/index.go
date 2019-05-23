@@ -11,9 +11,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	f := strings.TrimPrefix(url, "form#")
+	f := strings.TrimPrefix(url, "form+")
 
-	fmt.Fprint(w, f)
+	//fmt.Fprint(w, f)
 
 	switch r.Method {
 
