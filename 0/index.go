@@ -321,7 +321,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(b[k-q]) != "0" {
 					str = str +
-						`<br><span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
@@ -340,7 +340,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(b[k-q]) != "0" {
 					str = str +
-						`<br><span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
@@ -359,7 +359,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(b[k-q]) != "0" {
 					str = str +
-						`<br><span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
@@ -378,7 +378,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(b[k-q]) != "0" {
 					str = str +
-						`<br><span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
@@ -397,7 +397,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(b[k-q]) != "0" {
 					str = str +
-						`<br><span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
@@ -416,7 +416,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(b[k-q]) != "0" {
 					str = str +
-						`<br><span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
@@ -435,7 +435,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(b[k-q]) != "0" {
 					str = str +
-						`<br><span class="badge badge-light">` + string(b[k-q]) + `</span></span></button>
+						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
 				
 
 				`
