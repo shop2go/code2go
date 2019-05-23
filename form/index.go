@@ -12,7 +12,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 
-	case "GET":
+	case "POST":
 
 		t, _ := template.New("").Parse(`
 			<!DOCTYPE html>
