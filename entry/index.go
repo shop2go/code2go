@@ -136,9 +136,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for k := q; k <= l; k++ {
 
 			str = str + `
-	 <li class="list-group-item" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] + `
+			<li class="list-group-item" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" onclick="window.location.href='form#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] + `
 
-	 </li><br>
+			</li><br>
 	 `
 		}
 
@@ -202,7 +202,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for k := 1; k <= l; k++ {
 
 				str = str + `
-	 <li class="list-group-item" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] + `
+	 <li class="list-group-item" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" onclick="window.location.href='form#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + ` - ` + c.Days[k] + `
 
 	 </li><br>
 	 `

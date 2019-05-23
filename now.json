@@ -10,7 +10,9 @@
 
       {"src": "./2/index.go", "use": "@now/go"},
 
-      {"src": "./entry/index.go", "use": "@now/go"}
+      {"src": "./entry/index.go", "use": "@now/go"},
+
+      {"src": "./form/index.go", "use": "@now/go"}
 
     ],
     "routes": [
