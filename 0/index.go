@@ -301,7 +301,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 																																																																	`
 		}
 
-		resp, _ := http.Get("http://examole.com/" + url)
+		resp, _ := http.Get("http://example.com/" + url)
 
 		b, _ := ioutil.ReadAll(resp.Body)
 
