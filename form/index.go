@@ -1,8 +1,8 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -14,7 +14,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		t, _ := template.New("").Parse(`
+		str := `
 			<!DOCTYPE html>
 			<html lang="en">
 				 <head>
@@ -39,7 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required><br>
 		<input class="form-control mr-sm-2" type="text" placeholder="event" aria-label="Event" id ="Event" name ="Event" required><br>
 		<input class="form-control mr-sm-2" type="text" placeholder="tag" aria-label="Tag" id ="Tag" name ="Tag"><br>
-		<input class="form-control mr-sm-2" type="text" placeholder="{{.}}" aria-label="Date" id ="Date" name ="Date" value="{{.}} readonly><br>
+		<input class="form-control mr-sm-2" type="text" placeholder="`+url+`" aria-label="Date" id ="Date" name ="Date" value="`+url+`" readonly><br>
 
 		<button class="btn btn-outline-light my-2 my-sm-1" type="submit">set</button><br>
 	  </div>
@@ -48,9 +48,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	  <script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 		</body>
 		</html>
-		`)
+		`
 
-		t.Execute(w, url)
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
 
 	case "POST":
 
