@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -10,6 +11,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	url := r.URL
 
 	f := url.Fragment
+
+	fmt.Fprint(w, f)
 
 	switch r.Method {
 
