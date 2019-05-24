@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	
 	"net/http"
 	"strconv"
 	"strings"
@@ -62,9 +62,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		url := strings.TrimPrefix(r.URL.Path, "/")
 
-		fmt.Fprint(w, url)
 
-		/* str := `
+		str := `
 			<!DOCTYPE html>
 			<html lang="en">
 				 <head>
@@ -88,6 +87,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						<p>` + url + `</p>
 
+						</div>
+
 						<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 		</body>
 		</html>
@@ -95,7 +96,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str)) */
+		w.Write([]byte(str))
 
 	}
 
