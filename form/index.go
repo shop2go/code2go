@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -61,7 +62,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		url := strings.TrimPrefix(r.URL.Path, "/")
 
-		str := `
+		fmt.Fprint(w, url)
+
+		/* str := `
 			<!DOCTYPE html>
 			<html lang="en">
 				 <head>
@@ -92,7 +95,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+		w.Write([]byte(str)) */
 
 	}
 
