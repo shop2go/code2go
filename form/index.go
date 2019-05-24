@@ -1,7 +1,7 @@
 package main
 
 import (
-	
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -60,10 +60,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		url := strings.TrimPrefix(r.URL.Path, "/")
+		//url := strings.TrimPrefix(r.URL.Path, "/")
 
+		url := r.URL
 
-		str := `
+		f := url.Fragment
+
+		fmt.Fprint(w, f)
+
+		/* str := `
 			<!DOCTYPE html>
 			<html lang="en">
 				 <head>
@@ -85,7 +90,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						<div class="container" id="data" style="color:white; font-size:30px;">
 
-						<p>` + url + `</p>
+						<p>` + f + `</p>
 
 						</div>
 
@@ -96,7 +101,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+		w.Write([]byte(str)) */
 
 	}
 
