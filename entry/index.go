@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
+	/* "fmt" */
+
 	"net/http"
 	"strconv"
 	"time"
@@ -26,7 +26,7 @@ type Cal struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL
+	/* url := r.URL
 
 	f := url.Fragment
 
@@ -34,9 +34,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	b, _ := ioutil.ReadAll(resp.Body)
 
-	resp.Body.Close()
+	resp.Body.Close() */
 
-	fmt.Fprint(w, string(b))
+	//fmt.Fprint(w, string(b))
 
 	switch r.Method {
 
@@ -62,6 +62,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<body style="background-color: #bcbcbc;">
 
 				<div class="container" id="data" style="color:white; font-size:30px;">
+
+				<form class="form-inline" role="form" method="POST">
 				<ul class="list-group">
 `
 
@@ -136,9 +138,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for k := q; k <= l; k++ {
 
 			str = str + `
-
-			<button type="button" class="list-group-item list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" onclick="window.location.href='form#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `<span class="badge badge-pill badge-light">` + c.Days[k] + `</span>
-	 <br>`
+			<button type="button">
+			<span class="badge badge-pill badge-light">` + c.Days[k] + `</span>
+			<input type ="submit" class="form-control mr-sm-2 list-group-item list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<br>
+			</button>`
 		}
 
 		for o := 1; o < 21; o++ {
@@ -201,14 +205,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for k := 1; k <= l; k++ {
 
 				str = str + `
-				<button type="button" class="list-group-item list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" onclick="window.location.href='form#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `<span class="badge badge-pill badge-light">` + c.Days[k] + `</span>
-				<br>`
+				<button type="button">
+			<span class="badge badge-pill badge-light">` + c.Days[k] + `</span>
+			<input type ="submit" class="form-control mr-sm-2 list-group-item list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<br>
+			</button>`
 			}
 
 		}
 
+		// onclick="window.location.href='form#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"
+		// <button type="submit" class="list-group-item list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `<span class="badge badge-pill badge-light">` + c.Days[k] + `</span>
+
 		str = str + `
  </ul>
+
+ </form>
 						   </div>
 						   <!-- Then Material JavaScript on top of Bootstrap JavaScript -->
 <script src="https://assets.medienwerk.now.sh/material.min.js"></script>
@@ -222,6 +234,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
+
+	case "POST":
 
 	}
 
