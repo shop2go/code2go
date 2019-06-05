@@ -1,13 +1,10 @@
 package main
 
 import (
-	/* "fmt" */
-
 	"net/http"
 	"strconv"
 	"time"
-	/* 	"github.com/google/uuid"
-	   	"github.com/gorilla/schema" */)
+)
 
 type Cal struct {
 	Year  int
@@ -15,28 +12,7 @@ type Cal struct {
 	Days  map[int]string
 }
 
-/* type Form struct {
-	Id    uuid.UUID
-	Topic string
-	Tag   string
-	Event string
-	Date  string
-	Time  time.Time
-} */
-
 func Handler(w http.ResponseWriter, r *http.Request) {
-
-	/* url := r.URL
-
-	f := url.Fragment
-
-	resp, _ := http.Get("http://example.com/" + f)
-
-	b, _ := ioutil.ReadAll(resp.Body)
-
-	resp.Body.Close() */
-
-	//fmt.Fprint(w, string(b))
 
 	switch r.Method {
 
@@ -140,8 +116,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 			<button type="button">
 			<span class="badge badge-pill badge-light">` + c.Days[k] + `</span>
+			<span class="badge badge-pill badge-light">
 			<input type ="submit" class="form-control mr-sm-2 list-group-item list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
-				<br>
+			</span>	<br>
 			</button>`
 		}
 
@@ -207,8 +184,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = str + `
 				<button type="button">
 			<span class="badge badge-pill badge-light">` + c.Days[k] + `</span>
+			<span class="badge badge-pill badge-light">
 			<input type ="submit" class="form-control mr-sm-2 list-group-item list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
-				<br>
+			<span><br>
 			</button>`
 			}
 
