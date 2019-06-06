@@ -210,12 +210,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Wednesday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Monday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Tuesday">
 			</span>
 			</button>
@@ -224,16 +225,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Thursday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Monday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Tuesday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Wednesday">
 			</span>
 			</button>
@@ -241,20 +244,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Friday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Monday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Tuesday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Wednesday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Thursday">
 			</span>
 			</button>
@@ -262,24 +268,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Saturday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Monday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Tuesday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Wednesday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Thursday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Friday">
 			</span>
 			</button>
@@ -287,28 +297,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Sunday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Monday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Tuesday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Wednesday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Thursday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark list-group-item-action">
-			<input readonly class="form-control-plaintext" placeholder="Friday">
-			</span></button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Friday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Saturday">
 			</span>
 			</button>
