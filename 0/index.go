@@ -487,19 +487,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		case "Sunday":
 			str = str + `
+			</ul>
+			</form>	
+			</div>
+			<br>
+			`
 
-		
-		</div><br>
-
-`
 			break
 
 		}
 
-		str = str + `<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-
-
-
+		str = str + `
+		<script src="https://assets.medienwerk.now.sh/material.min.js">
+		</script>
 		</body>
 		</html>
 		`
