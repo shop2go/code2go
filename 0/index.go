@@ -34,33 +34,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		c.Year = now.Year()
 
 		str := `
-
-		   <!DOCTYPE html>
-		   <html lang="en">
-				<head>
-					   <meta charset="UTF-8">
-					   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-					   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-					   <title>CODE2GO</title>
-					   <!-- CSS -->
-					   <!-- Add Material font (Roboto) and Material icon as needed -->
-					   <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-					   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   
-					   <!-- Add Material CSS, replace Bootstrap CSS -->
-					   <link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-					   </head>
-					   <body style="background-color: #bcbcbc;">
-   
-   
-   
-					   <div class="container" id="search" style="color:white; font-size:30px;">
-					   <form class="form-inline" role="form" method="post">
-	   <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
-	   <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-	 </div><br><div class="container" id="nav" style="color:white;">
-	 ` + strconv.Itoa(time.Now().Year()) + `<br>
-	 `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>CODE2GO</title>
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+		</head>
+		<body style="background-color: #bcbcbc;">
+   		<div class="container" id="search" style="color:white; font-size:30px;">
+		<form class="form-inline" role="form" method="post">
+	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
+	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
+		 </div>
+		 <br>
+		 <div class="container" id="nav" style="color:white;">
+		 ` + strconv.Itoa(time.Now().Year()) + `
+		 <br>
+		 `
 
 		month, _ := strconv.Atoi(now.Format("01"))
 		c.Month = month
@@ -133,74 +128,67 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//o := strconv.Itoa(n + 1)
-
 		for t := 0; t < n; t++ {
 
 			if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
-				str = str + `<br> ` +
+				str = str + `
+				<br> 
+				` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `
+				</button>
+				`
 
-					strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `<br>
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
-
- 
- `
 				c.Year = time.Now().AddDate(0, t, 0).Year()
 
 			} else {
 
-				str = str + `
+				str = str + ` 
+				 <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `
+				 </button>
+				 `
 
- 
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
-
- 
- `
 			}
 
 		}
 
 		str = str + `
-
- 
- <button type="button" class="btn btn-light">` + now.Month().String() + `
- </button>
-
-`
+		<button type="button" class="btn btn-light">` + now.Month().String() + `
+		 </button>
+		 `
 
 		for t := n + 1; t < 21; t++ {
 
 			if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
-				str = str + `<br> ` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `<br>
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
-
- 
- `
+				str = str + `
+				<br>
+				` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `
+				</button>
+				`
 
 				c.Year = time.Now().AddDate(0, t, 0).Year()
 
 			} else {
 
 				str = str + `
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `
+				</button>
+				`
 
- 
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
-
- 
- `
 			}
 		}
 
 		str = str + `
- 
- </form><br>
- </div>
- 
-					<div class="container" id="data" style="color:white;">
-	<br>
-
+		</form>
+		<br>
+		</div>
+		<div class="container" id="data" style="color:white;">
+		<form class="form-inline" role="form">
+		<ul class="list-group">
 		`
 
 		c.Year = now.Year()
@@ -211,97 +199,111 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			break
 		case "Tuesday":
 			str = str + `
-
-		
-		
-		
-		<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-		`
+			<br><button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Monday">
+				</span></button>
+			`
 		case "Wednesday":
 			str = str + `
-					
+			<br><button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Monday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			</span></button>
+			`
 
-					
-					
-					<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-					
-					
-					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>`
 		case "Thursday":
 			str = str + `
-									
-
-									
-									
-									<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>`
+			<br><button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Monday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			</span></button>
+			`
 		case "Friday":
 			str = str + `
-									
-
-									
-									
-									<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>`
+			<br><button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Monday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Thursday">
+			</span></button>
+			`
 		case "Saturday":
 			str = str + `
-																																	
-
-																																	
-																																	
-																																	<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-																																	`
+			<br><button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Monday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Thursday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Friday">
+			</span></button>
+			`
 		case "Sunday":
 			str = str + `
-																																																																	
-
-																																																																	
-																																																																	
-																																																																	<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-																																																																	`
+			<br><button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Monday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Thursday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Friday">
+			</span></button>
+			<button type="button" class="btn btn-light">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext" placeholder="Saturday">
+			</span></button>
+			`
 		}
 
-		resp, _ := http.Get("http://example.com/" + url)
+		//make cert client
+		resp, _ := http.Get("http://example.org/0" + url)
 
 		b, _ := ioutil.ReadAll(resp.Body)
 
@@ -309,141 +311,63 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for k := q; k < 32; k++ {
 
-			//resp, _ := http.Get(".../" + now.Format("2006") + "/" + now.Format("1") + "/" + strconv.Itoa(k))
-
 			switch c.Days[k] {
 
 			case "Monday":
 
 				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+				<br>
+				<button type="button" class="btn btn-light">
+				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<span>
+				<br>
+			`
 
 				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-pill badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
+					str = str + `
+					<span class="badge badge-pill badge-dark">` + string(b[k-q]) + `
+					</span>
+					</span>
+					</button>
+					`
 
-				`
 				} else {
 
-					str = str +
-						`</span></button>
-				`
+					str = str + `
+					</span>
+					</button>
+					`
+
 				}
 
-			case "Tuesday":
+			default:
 
 				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+				<button type="button" class="btn btn-light">
+				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<span>
+				<br>
+			`
 
 				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-pill badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
+					str = str + `
+					<span class="badge badge-pill badge-dark">` + string(b[k-q]) + `
+					</span>
+					</span>
+					</button>
+					`
 
-				`
 				} else {
 
-					str = str +
-						`</span></button>
-				`
-				}
+					str = str + `
+					</span>
+					</button>
+					`
 
-			case "Wednesday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-pill badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Thursday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-pill badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Friday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-pill badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Saturday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-pill badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Sunday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-pill badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
 				}
 
 			}
