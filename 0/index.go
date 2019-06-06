@@ -371,7 +371,152 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-			default:
+			case "Tuesday":
+
+				str = str + `
+				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				</span>
+				`
+
+				if string(b[k-q]) != "0" {
+
+					str = str + `
+					<span class="badge badge-pill badge-dark">
+					` + string(b[k-q]) + `
+					</span>
+					</button>
+					`
+
+				} else {
+
+					str = str + `
+					</button>
+					`
+
+				}
+
+			case "Wednesday":
+
+				str = str + `
+				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				</span>
+				`
+
+				if string(b[k-q]) != "0" {
+
+					str = str + `
+					<span class="badge badge-pill badge-dark">
+					` + string(b[k-q]) + `
+					</span>
+					</button>
+					`
+
+				} else {
+
+					str = str + `
+					</button>
+					`
+
+				}
+
+			case "Thursday":
+
+				str = str + `
+				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				</span>
+				`
+
+				if string(b[k-q]) != "0" {
+
+					str = str + `
+					<span class="badge badge-pill badge-dark">
+					` + string(b[k-q]) + `
+					</span>
+					</button>
+					`
+
+				} else {
+
+					str = str + `
+					</button>
+					`
+
+				}
+
+			case "Friday":
+
+				str = str + `
+				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				</span>
+				`
+
+				if string(b[k-q]) != "0" {
+
+					str = str + `
+					<span class="badge badge-pill badge-dark">
+					` + string(b[k-q]) + `
+					</span>
+					</button>
+					`
+
+				} else {
+
+					str = str + `
+					</button>
+					`
+
+				}
+
+			case "Saturday":
+
+				str = str + `
+				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				</span>
+				`
+
+				if string(b[k-q]) != "0" {
+
+					str = str + `
+					<span class="badge badge-pill badge-dark">
+					` + string(b[k-q]) + `
+					</span>
+					</button>
+					`
+
+				} else {
+
+					str = str + `
+					</button>
+					`
+
+				}
+
+			case "Sunday":
 
 				str = str + `
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
