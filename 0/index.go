@@ -201,12 +201,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Tuesday":
 			str = str + `
 			<br>
-			<li class="list-group-item-action">
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-dark">
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Monday">
 			</span>
-			</li>
 			</button>
 			`
 		case "Wednesday":
@@ -337,7 +335,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 				</span>
 				`
 
@@ -367,7 +365,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 				</span>
 				`
 
