@@ -374,7 +374,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			default:
 
 				str = str + `
-				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -409,112 +408,132 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		case "Monday":
 			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Tuesday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Wednesday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Thursday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Friday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Saturday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Sunday">
+			</span>
+			</button>
+			`
 
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
 		case "Tuesday":
 			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Wednesday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Thursday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Friday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Saturday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Sunday">
+			</span>
+			</button>
+			`
 
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
 		case "Wednesday":
 			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Thursday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Friday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Saturday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Sunday">
+			</span>
+			</button>
+			`
 
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
 		case "Thursday":
 			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
+			button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Friday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Saturday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Sunday">
+			</span>
+			</button>
+			`
 
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-`
 		case "Friday":
 			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Saturday">
+			</span>
+			</button>
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Sunday">
+			</span>
+			</button>
+			`
 
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
 		case "Saturday":
 			str = str + `
-		
-
-		
-		<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
+			<button type="button" class="btn btn-dark">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" placeholder="Sunday">
+			</span>
+			</button>
+			`
 
 		case "Sunday":
 			str = str + `
