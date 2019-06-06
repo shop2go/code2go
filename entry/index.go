@@ -119,7 +119,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="badge badge-pill badge-light">
 			
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
-			<span>
+			</span>
 			
 			<span class="badge badge-pill badge-dark">` + c.Days[k] + `</span>
 			<br></button>`
@@ -189,7 +189,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="badge badge-pill badge-light">
 			
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
-			<span>
+			</span>
 			
 			<span class="badge badge-pill badge-dark">` + c.Days[k] + `</span>
 			<br></button>`

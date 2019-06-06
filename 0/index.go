@@ -330,12 +330,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				<br>
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 				</span>
 				`
 
@@ -345,12 +346,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<span class="badge badge-pill badge-dark">
 					` + string(b[k-q]) + `
 					</span>
+					</li>
 					</button>
 					`
 
 				} else {
 
 					str = str + `
+					</li>
 					</button>
 					`
 
@@ -360,12 +363,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				<br>
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 				</span>
 				`
 
@@ -375,12 +379,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<span class="badge badge-pill badge-dark">
 					` + string(b[k-q]) + `
 					</span>
+					</li>
 					</button>
 					`
 
 				} else {
 
 					str = str + `
+					</li>
 					</button>
 					`
 
