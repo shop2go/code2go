@@ -186,6 +186,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</form>
 		<br>
 		</div>
+		<br>
 		<div class="container" id="data" style="color:white;">
 		<form class="form-inline" role="form">
 		<ul class="list-group">
@@ -317,18 +318,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				<br>
-				<button type="button" class="btn btn-light">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
-				<span>
-				<br>
-			`
+				</span>
+				`
 
 				if string(b[k-q]) != "0" {
 					str = str + `
 					<span class="badge badge-pill badge-dark">` + string(b[k-q]) + `
-					</span>
 					</span>
 					</button>
 					`
@@ -336,7 +338,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} else {
 
 					str = str + `
-					</span>
 					</button>
 					`
 
@@ -345,18 +346,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			default:
 
 				str = str + `
-				<button type="button" class="btn btn-light">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
-				<span>
-				<br>
-			`
+				</span>
+				`
 
 				if string(b[k-q]) != "0" {
 					str = str + `
 					<span class="badge badge-pill badge-dark">` + string(b[k-q]) + `
-					</span>
 					</span>
 					</button>
 					`
@@ -364,7 +366,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} else {
 
 					str = str + `
-					</span>
 					</button>
 					`
 
