@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</head>
 		<body style="background-color: #bcbcbc;">
    		<div class="container" id="search" style="color:white; font-size:30px;">
-		<form class="form-inline" role="form" method="post">
+		<form class="form-inline" role="form">
 	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		 </div>
@@ -188,7 +188,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 		<br>
 		<div class="container" id="data" style="color:white;">
-		<form class="form-inline" role="form">
+		<form class="form-inline" role="form"  method="post">
 		<ul class="list-group">
 		`
 
@@ -203,7 +203,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Monday">
+			<input id="Monday" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
 			</span>
 			</button>
 			`
@@ -212,12 +212,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Monday">
+			<input id="Monday" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			<input id="Tuesday" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
 			</span>
 			</button>
 			`
@@ -227,17 +227,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Monday">
+			<input id="Monday" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			<input id="Tuesday" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			<input id="Wednesday" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
 			</span>
 			</button>
 			`
@@ -246,22 +246,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Monday">
+			<input id="Monday" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			<input id="Tuesday" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			<input id="Wednesday" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Thursday">
+			<input id="Thursday" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
 			</span>
 			</button>
 			`
@@ -270,27 +270,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Monday">
+			<input id="Monday" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			<input id="Tuesday" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			<input id="Wednesday" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Thursday">
+			<input id="Thursday" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Friday">
+			<input id="Friday" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
 			</span>
 			</button>
 			`
@@ -299,32 +299,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Monday">
+			<input id="Monday" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Tuesday">
+			<input id="Tuesday" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Wednesday">
+			<input id="Wednesday" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Thursday">
+			<input id="Thursday" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Friday">
+			<input id="Friday" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
 			</span>
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext" placeholder="Saturday">
+			<input id="Saturday" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
 			</span>
 			</button>
 			`
@@ -346,8 +346,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = str + `
 				<br>
 				<li class="list-group-item-action">
-				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<button type="submit" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
+				<input id="Monday" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
@@ -380,6 +381,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
+				<input id="Tuesday" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
@@ -412,6 +414,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
+				<input id="Wednesday" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
@@ -444,6 +447,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
+				<input id="Thursday" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
@@ -476,6 +480,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
+				<input id="Friday" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
@@ -508,6 +513,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
+				<input id="Saturday" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
@@ -540,6 +546,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
+				<input id="Sunday" readonly class="form-control-plaintext" value="Sunday" placeholder="Sunday">
 				` + c.Days[k] + `
 				</span>
 				<span class="badge badge-pill badge-light">
