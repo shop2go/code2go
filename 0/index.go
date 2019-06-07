@@ -345,6 +345,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				<br>
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -361,12 +362,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					` + string(b[k-q]) + `
 					</span>
 					</button>
+					</li>
 					`
 
 				} else {
 
 					str = str + `
 					</button>
+					</li>
 					`
 
 				}
@@ -374,6 +377,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Tuesday":
 
 				str = str + `
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -390,12 +394,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					` + string(b[k-q]) + `
 					</span>
 					</button>
+					</li>
 					`
 
 				} else {
 
 					str = str + `
 					</button>
+					</li>
 					`
 
 				}
@@ -403,6 +409,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Wednesday":
 
 				str = str + `
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -419,12 +426,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					` + string(b[k-q]) + `
 					</span>
 					</button>
+					</li>
 					`
 
 				} else {
 
 					str = str + `
 					</button>
+					</li>
 					`
 
 				}
@@ -432,6 +441,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Thursday":
 
 				str = str + `
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -448,12 +458,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					` + string(b[k-q]) + `
 					</span>
 					</button>
+					</li>
 					`
 
 				} else {
 
 					str = str + `
 					</button>
+					</li>
 					`
 
 				}
@@ -461,6 +473,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Friday":
 
 				str = str + `
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -477,12 +490,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					` + string(b[k-q]) + `
 					</span>
 					</button>
+					</li>
 					`
 
 				} else {
 
 					str = str + `
 					</button>
+					</li>
 					`
 
 				}
@@ -490,6 +505,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Saturday":
 
 				str = str + `
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -506,12 +522,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					` + string(b[k-q]) + `
 					</span>
 					</button>
+					</li>
 					`
 
 				} else {
 
 					str = str + `
 					</button>
+					</li>
 					`
 
 				}
@@ -519,6 +537,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Sunday":
 
 				str = str + `
+				<li class="list-group-item-action">
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
@@ -535,12 +554,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					` + string(b[k-q]) + `
 					</span>
 					</button>
+					</li>
 					`
 
 				} else {
 
 					str = str + `
 					</button>
+					</li>
 					`
 
 				}
