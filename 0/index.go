@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -753,9 +752,4 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-}
-
-func Reader(s string) io.Reader {
-
-	return strings.NewReader(s)
 }
