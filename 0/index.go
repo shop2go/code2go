@@ -49,12 +49,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<form class="form-inline" role="form">
 	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-		 </div>
-		 <br>
-		 <div class="container" id="nav" style="color:white;">
-		 ` + strconv.Itoa(time.Now().Year()) + `
-		 <br>
-		 `
+		</form>
+		</div>
+		<br>
+		<div class="container" id="nav" style="color:white;">
+		` + strconv.Itoa(time.Now().Year()) + `
+		<br>
+		`
 
 		month, _ := strconv.Atoi(now.Format("01"))
 		c.Month = month
@@ -516,7 +517,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + `-` + strconv.Itoa(k) + `" >
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -549,7 +550,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + `-` + strconv.Itoa(k) + `" >
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
