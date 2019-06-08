@@ -150,13 +150,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="container" id="data" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form" method="POST">
 		<ul class="list-group">
+		<span class="badge badge-pill badge-light">
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='entry#` + day.Format("2006") + `-` + day.Format("1") + `-` + day.Format("2") + `'">` + day.Format("2006") + `-` + day.Format("1") + `-` + day.Format("2") + `
+		</button>
+		</span>
 		`
 
 		for i := 1; i < 53; i++ {
 
 			str = str + `
+			<span class="badge badge-pill badge-light">
 			<button type="button" class="btn btn-outline-dark" onclick="window.location.href='entry#` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `'">` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `
 			</button>
+			</span>
 			`
 		}
 
