@@ -52,6 +52,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</div>
 		<br>
+		<div class="container" id="nav" style="color:white;">
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='Monday'">Monday</button>
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='Tuesday'">Tuesday</button>
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='Wednesday'">Wednesday</button>
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='Thursday'">Thursday</button>
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='Friday'">Friday</button>
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='Saturday'">Saturday</button>
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='Sunday'">Sunday</button>
+		</div>
 		<div class="container" id="data" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form" method="POST">
 		<ul class="list-group">
@@ -60,7 +69,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for i := 1; i < 53; i++ {
 
 			str = str + `
-			<button type="button" class="btn btn-outline-dark" onclick="window.location.href='entry#` + day.AddDate(0, 0, i*7).Format("2016") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `'">` + day.AddDate(0, 0, i*7).Format("2016") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `
+			<button type="button" class="btn btn-outline-dark" onclick="window.location.href='entry#` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `'">` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `
 			</button>
 			`
 		}

@@ -183,7 +183,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		str = str + `
-		</form>
 		<br>
 		</div>
 		<br>
