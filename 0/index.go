@@ -330,7 +330,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//make cert client
-		resp, _ := http.Get("http://example.org" + url)
+		resp, _ := http.Get("http://example.org/" + url)
 
 		b, _ := ioutil.ReadAll(resp.Body)
 

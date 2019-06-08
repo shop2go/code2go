@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type Cal struct {
@@ -35,20 +34,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="container" id="data" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form" method="POST">
 		<ul class="list-group">
-`
-
-		now := time.Now()
-
-		var c Cal
-
-		c.Year = now.Year()
-		month, _ := strconv.Atoi(now.Format("01"))
-		c.Month = month
-		day := map[int]string{now.Day(): now.Weekday().String()}
-
-		c.Days = day
-
-		str = str + `
 		</ul>
 	   	</form>
 		</div>
@@ -57,11 +42,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</body>
 		</html>
 		`
-	   
+
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
-	   
 
 	}
 
