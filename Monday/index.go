@@ -57,14 +57,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<ul class="list-group">
 		`
 
-		for i := 1; i < 7; i++ {
+		for i := 1; i < 53; i++ {
 
-		str = str + `
-		<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(day.AddDate(0,0,i*7).Year()) + `-` + strconv.Itoa(int(day.AddDate(0,0,i*7).Month()) + `-` + strconv.Itoa(day.AddDate(0,0,i*7).Day()) + `'">
-		<span class="badge badge-pill badge-light">
-		` + strconv.Itoa(day.AddDate(0,0,i*7).Year()) + `-` + strconv.Itoa(int(day.AddDate(0,0,i*7).Month())) + `-` + strconv.Itoa(day.AddDate(0,0,i*7).Day()) + `</span>
-		</button>`
-
+			str = str + `
+			<button type="button" class="btn btn-outline-dark" onclick="window.location.href='entry#` + strconv.Itoa(day.AddDate(0, 0, i*7).Year()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Month()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Day()) + `'">` + strconv.Itoa(day.AddDate(0, 0, i*7).Year()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Month()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Day()) + `
+			</button>
+			`
 		}
 
 		str = str + `
