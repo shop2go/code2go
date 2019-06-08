@@ -200,23 +200,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Tuesday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
 			</span>
 			</button>
 			`
 		case "Wednesday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
 			</span>
 			</button>
 			`
@@ -224,106 +224,106 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Thursday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
 			</span>
 			</button>
 			`
 		case "Friday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
 			</span>
 			</button>
 			`
 		case "Saturday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
 			</span>
 			</button>
 			`
 		case "Sunday":
 			str = str + `
 			<br>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Monday" placeholder="Monday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
 			</span>
 			</button>
 			`
@@ -348,10 +348,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
-				</button
+				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -381,10 +381,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
-				</button
+				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -414,10 +414,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
-				</button
+				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -447,10 +447,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
-				</button
+				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -480,10 +480,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
-				</button
+				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -513,10 +513,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
-				</button
+				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + `-` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -546,10 +546,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
-				</button
+				</button>
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + `-` + strconv.Itoa(k) + `" >
 				</span>
 				`
 
@@ -580,129 +580,129 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		case "Monday":
 			str = str + `
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Tuesday" placeholder="Tuesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Sunday" placeholder="Sunday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
 			</span>
 			</button>
 			`
 
 		case "Tuesday":
 			str = str + `
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Wednesday" placeholder="Wednesday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Sunday" placeholder="Sunday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
 			</span>
 			</button>
 			`
 
 		case "Wednesday":
 			str = str + `
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Thursday" placeholder="Thursday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Sunday" placeholder="Sunday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
 			</span>
 			</button>
 			`
 
 		case "Thursday":
 			str = str + `
-			button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Friday" placeholder="Friday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Sunday" placeholder="Sunday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
 			</span>
 			</button>
 			`
 
 		case "Friday":
 			str = str + `
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Saturday" placeholder="Saturday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
 			</span>
 			</button>
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Sunday" placeholder="Sunday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
 			</span>
 			</button>
 			`
 
 		case "Saturday":
 			str = str + `
-			<button type="button" class="btn btn-light">
-			<span class="badge badge-pill badge-light">
-			<input id="day" readonly class="form-control-plaintext" value="Sunday" placeholder="Sunday">
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
 			</span>
 			</button>
 			`
