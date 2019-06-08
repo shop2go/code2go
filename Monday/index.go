@@ -60,7 +60,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for i := 1; i < 53; i++ {
 
 			str = str + `
-			<button type="button" class="btn btn-outline-dark" onclick="window.location.href='entry#` + strconv.Itoa(day.AddDate(0, 0, i*7).Year()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Month()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Day()) + `'">` + strconv.Itoa(day.AddDate(0, 0, i*7).Year()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Month()) + `-` + strconv.Itoa(day.AddDate(0, 0, i*7).Day()) + `
+			<button type="button" class="btn btn-outline-dark" onclick="window.location.href='entry#` + day.AddDate(0, 0, i*7).Format("2016") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `'">` + day.AddDate(0, 0, i*7).Format("2016") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `
 			</button>
 			`
 		}
