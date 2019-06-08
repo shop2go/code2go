@@ -344,22 +344,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				<br>
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
-				<input id="` + c.Days[k] + `" readonly class="form-control-plaintext" value="` + c.Days[k] + `" placeholder="` + c.Days[k] + `">
 				` + c.Days[k] + `
 				</span>
 				</button
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
 				</span>
 				`
 
 				if string(b[k-q]) != "0" {
 
 					str = str + `
-					<span class="badge badge-pill badge-dark">
+					<span class="badge badge-dark">
 					` + string(b[k-q]) + `
 					</span>
 					</button>
@@ -378,22 +377,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Tuesday":
 
 				str = str + `
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
-				<input id="` + c.Days[k] + `" readonly class="form-control-plaintext" value="` + c.Days[k] + `" placeholder="` + c.Days[k] + `">
 				` + c.Days[k] + `
 				</span>
 				</button
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
 				</span>
 				`
 
 				if string(b[k-q]) != "0" {
 
 					str = str + `
-					<span class="badge badge-pill badge-dark">
+					<span class="badge badge-dark">
 					` + string(b[k-q]) + `
 					</span>
 					</button>
@@ -412,22 +410,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Wednesday":
 
 				str = str + `
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
-				<input id="` + c.Days[k] + `" readonly class="form-control-plaintext" value="` + c.Days[k] + `" placeholder="` + c.Days[k] + `">
 				` + c.Days[k] + `
 				</span>
 				</button
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
 				</span>
 				`
 
 				if string(b[k-q]) != "0" {
 
 					str = str + `
-					<span class="badge badge-pill badge-dark">
+					<span class="badge badge-dark">
 					` + string(b[k-q]) + `
 					</span>
 					</button>
@@ -446,22 +443,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Thursday":
 
 				str = str + `
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
-				<input id="` + c.Days[k] + `" readonly class="form-control-plaintext" value="` + c.Days[k] + `" placeholder="` + c.Days[k] + `">
 				` + c.Days[k] + `
 				</span>
 				</button
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
 				</span>
 				`
 
 				if string(b[k-q]) != "0" {
 
 					str = str + `
-					<span class="badge badge-pill badge-dark">
+					<span class="badge badge-dark">
 					` + string(b[k-q]) + `
 					</span>
 					</button>
@@ -480,22 +476,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Friday":
 
 				str = str + `
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
-				<input id="` + c.Days[k] + `" readonly class="form-control-plaintext" value="` + c.Days[k] + `" placeholder="` + c.Days[k] + `">
 				` + c.Days[k] + `
 				</span>
 				</button
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
 				</span>
 				`
 
 				if string(b[k-q]) != "0" {
 
 					str = str + `
-					<span class="badge badge-pill badge-dark">
+					<span class="badge badge-dark">
 					` + string(b[k-q]) + `
 					</span>
 					</button>
@@ -514,22 +509,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Saturday":
 
 				str = str + `
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
-				<input id="` + c.Days[k] + `" readonly class="form-control-plaintext" value="` + c.Days[k] + `" placeholder="` + c.Days[k] + `">
 				` + c.Days[k] + `
 				</span>
 				</button
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
 				</span>
 				`
 
 				if string(b[k-q]) != "0" {
 
 					str = str + `
-					<span class="badge badge-pill badge-dark">
+					<span class="badge badge-dark">
 					` + string(b[k-q]) + `
 					</span>
 					</button>
@@ -548,22 +542,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Sunday":
 
 				str = str + `
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
-				<input id="` + c.Days[k] + `" readonly class="form-control-plaintext" value="` + c.Days[k] + `" placeholder="` + c.Days[k] + `">
 				` + c.Days[k] + `
 				</span>
 				</button
 				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(k) + `">
 				</span>
 				`
 
 				if string(b[k-q]) != "0" {
 
 					str = str + `
-					<span class="badge badge-pill badge-dark">
+					<span class="badge badge-dark">
 					` + string(b[k-q]) + `
 					</span>
 					</button>
