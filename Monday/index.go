@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	pb "https://assets.medienwerk.now.sh/traffic.pb.go"
+	pb "github.com/mmaedel/code2go/traffic.pb.go"
 
 )
 
