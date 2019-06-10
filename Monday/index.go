@@ -6,13 +6,13 @@ import (
 	"strings"
 	"time"
 
-	pb "github.com/mmaedel/code2go/traffic.pb.go"
+	//pb "github.com/mmaedel/code2go/traffic.pb.go"
 
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	form := &pb.Request{}
+	//form := &pb.Request{}
 
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
