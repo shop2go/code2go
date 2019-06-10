@@ -184,7 +184,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		`
 
 		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str))
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 	}
 
