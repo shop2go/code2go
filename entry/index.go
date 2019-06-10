@@ -118,18 +118,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for k := q; k <= l; k++ {
 
 			str = str + `
-			
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
 			<button type="submit" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
 			
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 			</span>
 			</button>
-			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
-			<span class="badge badge-pill badge-dark">
-			` + c.Days[k] + `
-			</span>
-			</button>
+			
 			`
 		}
 
@@ -193,17 +193,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for k := 1; k <= l; k++ {
 
 				str = str + `
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
 				<button type="submit" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
 			
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 			</span>
 			</button>			
-			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
-			<span class="badge badge-pill badge-dark">
-			` + c.Days[k] + `
-			</span>
-			</button>
+			
 			`
 			}
 
