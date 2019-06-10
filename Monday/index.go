@@ -157,7 +157,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for i := 1; i < 53; i++ {
 
 			str = str + `
-			<button type="button" class="btn btn-link btn-outline-dark" onclick="window.location.href='entry#` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `'">` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `
+			<button type="button" class="btn btn-link btn-outline-dark" onclick="window.location.href='entry#` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `'">
+			<span class="badge badge-pill badge-light">
+			` + day.AddDate(0, 0, i*7).Format("2006") + `-` + day.AddDate(0, 0, i*7).Format("1") + `-` + day.AddDate(0, 0, i*7).Format("2") + `
+			</span>
 			</button>
 			`
 		}
