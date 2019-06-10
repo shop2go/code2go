@@ -5,9 +5,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	pb "https://assets.medienwerk.now.sh/traffic.pb.go"
+
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+
+	form := &pb.Request{}
 
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
