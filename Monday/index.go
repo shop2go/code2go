@@ -56,6 +56,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</div>
 		<br>
+		`+ string(form.Id)+` 
 		
 		<div class="container" id="nav" style="color:white;">
 		<br>`
@@ -183,8 +184,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		`
 
 		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(form.Id))
-		w.Write(form.Id)
+		w.Header().Set("Content-Length", strconv.Itoa(len(str))
+		w.Write([]byte(str))
 	}
 
 }
