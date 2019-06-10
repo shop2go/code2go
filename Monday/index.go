@@ -6,13 +6,12 @@ import (
 	"strings"
 	"time"
 
-	//pb "github.com/mmaedel/code2go/traffic.pb.go"
-
+	"github.com/mmaedel/code2go/pb"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	//form := &pb.Request{}
+	form := &pb.Request{[]byte("test"), 12345, 6789, []byte("Release"), []byte("Klangkarussell"), []byte("2019-08-01"), []byte("newTime")}
 
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
@@ -184,8 +183,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		`
 
 		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+		w.Header().Set("Content-Length", strconv.Itoa(len(form.Id))
+		w.Write(form.Id)
 	}
 
 }
