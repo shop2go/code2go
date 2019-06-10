@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -120,9 +124,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 			</span>
-			
-			<span class="badge badge-pill badge-dark">` + c.Days[k] + `</span>
-			<br></button>`
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			`
 		}
 
 		for o := 1; o < 21; o++ {
@@ -190,9 +198,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" value="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `" placeholder="` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `">
 			</span>
-			
-			<span class="badge badge-pill badge-dark">` + c.Days[k] + `</span>
-			<br></button>`
+			</button>			
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			`
 			}
 
 		}
@@ -219,6 +231,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
+
+		url := strings.TrimPrefix(r.URL.Path, "/entry#")
+
+		r.ParseForm()
+
+		s := strings.Join(r.Form[url], " ")
+
+		client := &http.Client{}
+
+		req, err := http.NewRequest("POST", "http://localhost/"+url, bytes.NewBuffer([]byte(s)))
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value") // This makes it work
+		if err != nil {
+			log.Println(err)
+		}
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Println(err)
+		}
+
+		defer resp.Body.Close()
+
+		body, _ := ioutil.ReadAll(resp.Body)
+		w.Header().Set("Content-Length", strconv.Itoa(len(body)))
+		w.Write(body)
 
 	}
 

@@ -732,14 +732,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		r.ParseForm()
-
-		s := strings.Join(r.Form["day"], " ")
-
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(s)))
-		w.Write([]byte(s))
-
 		/* client := &http.Client{}
 		req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
 		if err != nil {
