@@ -349,7 +349,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -382,7 +382,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -415,7 +415,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -443,7 +443,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Thursday":
 
 				str = str + `
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
 				</span>
@@ -481,7 +481,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -514,7 +514,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -547,7 +547,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
