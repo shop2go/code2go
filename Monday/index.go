@@ -11,7 +11,15 @@ import (
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	form := &pb.Request{[]byte("test"), 12345, 6789, []byte("Release"), []byte("Klangkarussell"), []byte("2019-08-01"), []byte("newTime")}
+	form := &pb.Request{
+		Id:       []byte("test"),
+		Time:     12345,
+		Key:      6789,
+		Topic:    []byte("Release"),
+		Event:    []byte("Klangkarussell"),
+		Schedule: []byte("2019-08-01"),
+		Tag:      []byte("newTime"),
+	}
 
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
@@ -56,7 +64,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</div>
 		<br>
-		`+ string(form.Id)+` 
+		` + string(form.Id) + ` 
 		
 		<div class="container" id="nav" style="color:white;">
 		<br>`
