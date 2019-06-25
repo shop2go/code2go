@@ -1,0 +1,30 @@
+
+syntax = "proto3";
+
+package pb;
+
+//command
+message RequestPost {
+
+  bytes Id = 1;
+  bytes Topic = 2;
+  bytes Entry = 3;
+  bytes Schedule = 4;
+  bytes Tags = 5;
+
+}
+
+message TransferPostFromRequest {
+  bytes Id = 1;
+  int64 Time = 2;
+  int64 Key = 3;
+
+}
+
+message TransferPost {
+
+  bytes Id = 1;
+  int64 Time = 2;
+  int64 Key = 3;
+
+}
