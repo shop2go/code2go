@@ -25,7 +25,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		store := make([]pb.ReqPost, 0)
+		/* store := make([]pb.ReqPost, 0)
 
 		query := strings.TrimPrefix(r.URL.Path, "/entry#")
 
@@ -64,7 +64,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		dec.Decode(&store)
 
-		numberOfEntries := len(store)
+		numberOfEntries := len(store) */
 
 		str := `
 
@@ -186,7 +186,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</button>
 			`
 
-			if numberOfEntries > 0 {
+			/* if numberOfEntries > 0 {
 
 				for n := 0; n < numberOfEntries; n++ {
 
@@ -202,7 +202,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-			}
+			} */
 
 		}
 
