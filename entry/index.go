@@ -87,7 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<body style="background-color: #bcbcbc;">
 
 		<div class="container" id="data" style="color:white; font-size:30px;">
-		<!--form class="form-inline" role="form" method="POST"-->
+		<form class="form-inline" role="form">
 		<ul class="list-group">
 		`
 
@@ -170,10 +170,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			` + c.Days[k] + `
 			</span>
 			</button>
-			<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#form" aria-expanded="false" aria-controls="form">
+
+			<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#unveil" aria-expanded="false" aria-controls="unveil">
 			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-			<div class="collapse" id="form">
+			<div class="collapse" id="unveil">
 			<div class="card card-body">
 			<input readonly class="form-control-plaintext list-group-item-action" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" placeholder="` + schedule + `" required>>
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required><br>
