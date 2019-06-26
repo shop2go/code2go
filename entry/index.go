@@ -171,23 +171,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			</button>
 
-			<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#unveil` + schedule + `" aria-expanded="false" aria-controls="unveil` + schedule + `">
 			<span class="badge badge-pill badge-light">
-
+			<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#unveil` + schedule + `" aria-expanded="false" aria-controls="unveil` + schedule + `">
 			<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-			
-			</span>
 			</button>
+			</span>
 
 			<div class="collapse" id="unveil` + schedule + `" style="color:white; font-size:30px;">
+			<div class="card card-body">
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="event" aria-label="Event" id ="Event" name ="Event" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
-			<button type="submit" class="btn btn-light">submit
-			</button>
+			<button type="submit" class="btn btn-light">submit</button>
 			</form>
+			</div>
 			</div>
 			`
 
