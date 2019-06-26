@@ -264,7 +264,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//all following months without entries
 
-			store = nil
+			//store = nil
 
 			l = len(c.Days)
 
