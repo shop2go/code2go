@@ -158,7 +158,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//expose the anchor of specified date++; list apropriate entries for this month form persitence layer
+		//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month form persitence layer
 
 		for k := q; k <= l; k++ {
 
@@ -363,8 +363,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if req.Topic != nil {
-
-			
 			
 			w.Write(req.Schedule)
 
