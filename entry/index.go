@@ -170,20 +170,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			</button>
 
-			<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#unveil` + schedule + `" aria-expanded="false" aria-controls="unveil` + schedule + `">
+			<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#post` + schedule + `" aria-expanded="false" aria-controls="post` + schedule + `">
 			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			</span>
 			</button>	
 			
-			<div class="container" id="unveil` + schedule + `">
+			<div class="container" id="post` + schedule + `">
 			
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="event" aria-label="Event" id ="Event" name ="Event" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
-			<button type="submit" class="btn btn-light">submit</button>
+			<button type="submit" class="btn btn-light badge-pill">submit</button>
 			</form>
 			
 			</div>
@@ -280,11 +280,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="submit" class="btn btn-light">
+				<button type="button" class="btn btn-light">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 				</span>
-				</button>	
+				</button>
+
+				<div class="container" id="post` + schedule + `">
+			
+			<form class="form-inline" role="form">
+			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
+			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
+			<input class="form-control mr-sm-2" type="text" placeholder="event" aria-label="Event" id ="Event" name ="Event" required>
+			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
+			<button type="submit" class="btn btn-light badge-pill">submit</button>
+			</form>
+			
+			</div>
 				`
 
 			}
@@ -318,7 +330,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				//req.Topic = []byte(s)
 
-			case "Entry":
+			case "Event":
 
 				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
