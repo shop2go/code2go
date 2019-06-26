@@ -363,7 +363,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if req.Topic != nil {
-
 			
 			w.Write(req.Schedule)
 
