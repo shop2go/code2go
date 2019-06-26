@@ -179,7 +179,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			</button>
 
-			<div class="container" id="unveil` + schedule + `" style="color:white; font-size:30px;">
+			<div class="collapse" id="unveil` + schedule + `" style="color:white; font-size:30px;">
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
