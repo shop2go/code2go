@@ -8,8 +8,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unsafe"
+
 	//"github.com/aerogo/packet"
-	//"github.com/mmaedel/code2go/pb"
+	"github.com/mmaedel/code2go/pb"
 )
 
 type Cal struct {
@@ -181,7 +183,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
-			<input class="form-control mr-sm-2" type="text" placeholder="event" aria-label="Event" id ="Event" name ="Event" required>
+			<input class="form-control mr-sm-2" type="text" placeholder="enty" aria-label="Entry" id ="Entry" name ="Entry" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
 			<button type="submit" class="btn btn-light badge-pill">submit</button>
 			</form>
@@ -291,7 +293,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
-			<input class="form-control mr-sm-2" type="text" placeholder="event" aria-label="Event" id ="Event" name ="Event" required>
+			<input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
 			<button type="submit" class="btn btn-light badge-pill">submit</button>
 			</form>
@@ -315,8 +317,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
-		var s string
-		//var req pb.ReqPost
+		//var s string
+		var req pb.ReqPost
 
 		r.ParseForm()
 
@@ -326,27 +328,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case "Topic":
 
-				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
-				//req.Topic = []byte(s)
+				s := strings.Join(v, " ")
 
-			case "Event":
+				req.Topic = []byte(s)
 
-				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+			case "Entry":
 
-				//req.Entry = []byte(s)
+				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+				s := strings.Join(v, " ")
+
+				req.Entry = []byte(s)
 
 			case "Schedule":
 
-				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+				s := strings.Join(v, " ")
 
-				//req.Schedule = []byte(s)
+				req.Schedule = []byte(s)
 
 			case "Tags":
 
-				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+				s := strings.Join(v, " ")
 
-				//req.Tags = []byte(s)
+				req.Tags = []byte(s)
 
 			default:
 
@@ -356,9 +363,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if s != "" {
-			w.Header().Set("Content-Length", strconv.Itoa(len(s)))
-			w.Write([]byte(s))
+		if req.Topic != nil {
+
+			w.Header().Set("Content-Length", strconv.Itoa(int(unsafe.Sizeof(req))))
+			w.Write([]byte(req))
 
 		} else {
 
