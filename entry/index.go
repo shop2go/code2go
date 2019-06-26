@@ -368,7 +368,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			/*
 
-				//persistence layer
+				//Post data
 
 				// Create a stream
 				stream = packet.NewStream(1024)
