@@ -314,25 +314,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case "Topic":
 
-				s = s + k+": "+strings.Join(v, " ") + " "
+				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
 				//req.Topic = []byte(s)
 
 			case "Entry":
 
-				s = s + k+": "+strings.Join(v, " ") + " "
+				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
 				//req.Entry = []byte(s)
 
 			case "Schedule":
 
-				s = s + k+": "+strings.Join(v, " ") + " "
+				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
 				//req.Schedule = []byte(s)
 
 			case "Tags":
 
-				s = s + k+": "+strings.Join(v, " ") + " "
+				s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
 				//req.Tags = []byte(s)
 
@@ -351,31 +351,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+			w.Write([]byte(str))
 
 		}
 
 		/*
 
-		//persistence layer
+			//persistence layer
 
-		conn, err := net.Dial("tcp", "localhost:80")
+			conn, err := net.Dial("tcp", "localhost:80")
 
-		if err != nil {
+			if err != nil {
 
-			log.Println(err)
+				log.Println(err)
 
-		}
+			}
 
-		// Create a stream
-		stream := packet.NewStream(1024)
+			// Create a stream
+			stream := packet.NewStream(1024)
 
-		stream.SetConnection(conn)
+			stream.SetConnection(conn)
 
-		// Send a message
-		stream.Outgoing <- packet.New('P', []byte(req)) */
+			// Send a message
+			stream.Outgoing <- packet.New('P', []byte(req)) */
 
 		/* client := &http.Client{}
 
