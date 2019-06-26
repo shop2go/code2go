@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unsafe"
 
 	//"github.com/aerogo/packet"
 	"github.com/mmaedel/code2go/pb"
@@ -365,8 +364,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if req.Topic != nil {
 
-			w.Header().Set("Content-Length", strconv.Itoa(int(unsafe.Sizeof(req))))
-			w.Write([]byte(req))
+			w.Header().Set("Content-Length", strconv.Itoa(len(req.Schedule)))
+			w.Write(req.Schedule)
 
 		} else {
 
