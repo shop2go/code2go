@@ -364,7 +364,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if req.Topic != nil {
 
-			w.Header().Set("Content-Length", strconv.Itoa(len(req.Schedule)))
+			
 			w.Write(req.Schedule)
 
 		} else {
