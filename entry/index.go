@@ -174,7 +174,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			<div class="collapse" id="entry">
-  			<div class="card card-body">
+			<div class="card card-body">
+			<input readonly class="form-control-plaintext list-group-item-action" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" placeholder="` + schedule + `" required>>
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required><br>
 			<input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Event" id ="Event" name ="Event" required><br>
 			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tag" id ="Tag" name ="Tag"><br>
