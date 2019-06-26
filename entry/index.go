@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 	//"github.com/aerogo/packet"
-	"github.com/mmaedel/code2go/pb"
+	//"github.com/mmaedel/code2go/pb"
 )
 
 type Cal struct {
@@ -303,9 +303,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
-		var req pb.ReqPost
-
-		//url := strings.TrimPrefix(r.URL.Path, "/entry#")
+		var s string
+		//var req pb.ReqPost
 
 		r.ParseForm()
 
@@ -315,27 +314,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case "Topic":
 
-				s := strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ")
 
-				req.Topic = []byte(s)
+				//req.Topic = []byte(s)
 
 			case "Entry":
 
-				s := strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ")
 
-				req.Entry = []byte(s)
+				//req.Entry = []byte(s)
 
 			case "Schedule":
 
-				s := strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ")
 
-				req.Schedule = []byte(s)
+				//req.Schedule = []byte(s)
 
 			case "Tags":
 
-				s := strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ")
 
-				req.Tags = []byte(s)
+				//req.Tags = []byte(s)
 
 			default:
 
@@ -345,9 +344,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if req != nil {
+		if req != {
 
-		w.Write([]byte(req))
+			w.Header().Set("Content-Length", strconv.Itoa(len(s)))
+			w.Write([]byte(s))
 
 		} else {
 
