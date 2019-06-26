@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/gob"
 
 	//"encoding/gob"
 	//"log"
@@ -353,7 +351,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			case "Tags":
 
 				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-				s := strings.Join(v, " ")
+				s := strings.Join(v, "#")
 
 				req.Tags = []byte(s)
 
@@ -367,12 +365,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if req.Topic != nil {
 
-			/* var b bytes.Buffer
-
-			enc := gob.NewEncoder(&b)
-
-			enc.Encode(req) */
-
 			/*
 
 				//persistence layer
@@ -382,8 +374,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				stream.SetConnection(conn)
 
-				// Send a message
-				stream.Outgoing <- packet.New('P', b)
+				// Send data
+				stream.Outgoing <- packet.New('T', req.Topic)
+				stream.Outgoing <- packet.New('E', req.Entry)
+				stream.Outgoing <- packet.New('S', req.Schedule)
+				stream.Outgoing <- packet.New('#', req.Tags)
+
 
 			*/
 
