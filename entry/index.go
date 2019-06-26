@@ -174,7 +174,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#unveil`+schedule+`" aria-expanded="false" aria-controls="unveil`+schedule+`">
 			<span class="badge badge-pill badge-light">
 
-			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
+			<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			
 			</span>
 			</button>
