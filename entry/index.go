@@ -1,16 +1,16 @@
 package main
 
 import (
-	"encoding/gob"
-	"log"
-	"net"
+	//"encoding/gob"
+	//"log"
+	//"net"
 	"net/http"
 	"strconv"
-	"strings"
+	//"strings"
 	"time"
 
-	"github.com/aerogo/packet"
-	"github.com/mmaedel/code2go/pb"
+	//"github.com/aerogo/packet"
+	//"github.com/mmaedel/code2go/pb"
 )
 
 type Cal struct {
