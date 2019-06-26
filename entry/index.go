@@ -2,12 +2,12 @@ package main
 
 import (
 	//"encoding/gob"
+	"fmt"
 	//"log"
 	//"net"
 	"net/http"
 	"strconv"
-
-	//"strings"
+	"strings"
 	"time"
 	//"github.com/aerogo/packet"
 	//"github.com/mmaedel/code2go/pb"
@@ -304,13 +304,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+		var req pb.ReqPost
 
-		/* var req pb.ReqPost
-
-		url := strings.TrimPrefix(r.URL.Path, "/entry#")
+		//url := strings.TrimPrefix(r.URL.Path, "/entry#")
 
 		r.ParseForm()
 
@@ -349,6 +345,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
+
+		if req != nil {
+
+		w.Write([]byte(req))
+
+		} else {
+
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
+
+		}
+
+		/*
 
 		//persistence layer
 
