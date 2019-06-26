@@ -345,7 +345,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if s != "" {
-			w.Header().Set("Content-Type", "text/text")
 			w.Header().Set("Content-Length", strconv.Itoa(len(s)))
 			w.Write([]byte(s))
 
