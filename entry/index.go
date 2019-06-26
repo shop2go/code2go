@@ -166,6 +166,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
 
 			str = str + `
+			<br>
 			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 			<span class="badge badge-pill badge-dark">
 			` + c.Days[k] + `
@@ -277,6 +278,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
 
 				str = str + `
+				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
 				` + c.Days[k] + `
