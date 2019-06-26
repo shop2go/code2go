@@ -26,9 +26,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		/* store := make([]pb.ReqPost, 0)
+		store := make([]pb.ReqPost, 0)
 
-		query := strings.TrimPrefix(r.URL.Path, "/entry#")
+/*		query := strings.TrimPrefix(r.URL.Path, "/entry#")
 
 		qu := strings.SplitN(query, "-", -1)
 
@@ -159,7 +159,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month form persitence layer
+		//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
 
 		for k := q; k <= l; k++ {
 
@@ -269,7 +269,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//all following months without entries
 
-			//store = nil
+			store = nil
 
 			l = len(c.Days)
 
