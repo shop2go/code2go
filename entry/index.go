@@ -314,25 +314,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case "Topic":
 
-				s = s + k+": "+strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ") + " "
 
 				//req.Topic = []byte(s)
 
 			case "Entry":
 
-				s = s + k+": "+strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ") + " "
 
 				//req.Entry = []byte(s)
 
 			case "Schedule":
 
-				s = s + k+": "+strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ") + " "
 
 				//req.Schedule = []byte(s)
 
 			case "Tags":
 
-				s = s + k+": "+strings.Join(v, " ")
+				s = s + k+": "+strings.Join(v, " ") + " "
 
 				//req.Tags = []byte(s)
 
@@ -344,7 +344,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if req != {
+		if s != "" {
 
 			w.Header().Set("Content-Length", strconv.Itoa(len(s)))
 			w.Write([]byte(s))
