@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
+
 	//"encoding/gob"
 	//"log"
 	//"net"
@@ -363,7 +366,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if req.Topic != nil {
-			
+
+			/* var b bytes.Buffer
+
+			enc := gob.NewEncoder(&b)
+
+			enc.Encode(req) */
+
+			/*
+
+				//persistence layer
+
+				// Create a stream
+				stream = packet.NewStream(1024)
+
+				stream.SetConnection(conn)
+
+				// Send a message
+				stream.Outgoing <- packet.New('P', b)
+
+			*/
+
 			w.Write(req.Schedule)
 
 		} else {
@@ -373,26 +396,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(str))
 
 		}
-
-		/*
-
-			//persistence layer
-
-			conn, err := net.Dial("tcp", "localhost:80")
-
-			if err != nil {
-
-				log.Println(err)
-
-			}
-
-			// Create a stream
-			stream := packet.NewStream(1024)
-
-			stream.SetConnection(conn)
-
-			// Send a message
-			stream.Outgoing <- packet.New('P', []byte(req)) */
 
 		/* client := &http.Client{}
 
