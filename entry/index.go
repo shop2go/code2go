@@ -171,15 +171,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			</button>
 
+			<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#unveil` + schedule + `" aria-expanded="false" aria-controls="unveil` + schedule + `">
 			<span class="badge badge-pill badge-light">
-			<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-			
-
-			<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#unveil` + schedule + `" aria-expanded="false" aria-controls="unveil` + schedule + `">
-			</button>
+			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			</span>
-
-			<div class="collapse" id="unveil` + schedule + `" style="color:white; font-size:30px;">
+			</button>	
+			
+			<div class="container" id="unveil` + schedule + `">
 			
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
