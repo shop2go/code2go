@@ -26,46 +26,46 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		store := make([]pb.ReqPost, 0)
+		//store := make([]pb.ReqPost, 0)
 
-/*		query := strings.TrimPrefix(r.URL.Path, "/entry#")
+		/*		query := strings.TrimPrefix(r.URL.Path, "/entry#")
 
-		qu := strings.SplitN(query, "-", -1)
+				qu := strings.SplitN(query, "-", -1)
 
-		cue, err := strconv.Atoi(qu[2])
+				cue, err := strconv.Atoi(qu[2])
 
-		if err != nil {
+				if err != nil {
 
-			log.Println(err)
-			cue = 0
+					log.Println(err)
+					cue = 0
 
-		}
+				}
 
-		//persistence layer
+				//persistence layer
 
-		conn, err := net.Dial("tcp", "localhost:80")
+				conn, err := net.Dial("tcp", "localhost:80")
 
-		if err != nil {
+				if err != nil {
 
-			log.Println(err)
+					log.Println(err)
 
-		}
+				}
 
-		// Create a stream
-		stream := packet.NewStream(1024)
+				// Create a stream
+				stream := packet.NewStream(1024)
 
-		stream.SetConnection(conn)
+				stream.SetConnection(conn)
 
-		// Send a message
-		stream.Outgoing <- packet.New(byte(cue), []byte(query))
+				// Send a message
+				stream.Outgoing <- packet.New(byte(cue), []byte(query))
 
-		//the response gob from conn
+				//the response gob from conn
 
-		dec := gob.NewDecoder(conn)
+				dec := gob.NewDecoder(conn)
 
-		dec.Decode(&store)
+				dec.Decode(&store)
 
-		numberOfEntries := len(store) */
+				numberOfEntries := len(store) */
 
 		str := `
 
@@ -269,7 +269,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//all following months without entries
 
-			store = nil
+			//store = nil
 
 			l = len(c.Days)
 
@@ -337,10 +337,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case "Entry":
 
-				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-				s := strings.Join(v, " ")
+				stringByte := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
 
-				req.Entry = []byte(s)
+				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+
+				req.Entry = []byte(stringBytes)
 
 			case "Schedule":
 
