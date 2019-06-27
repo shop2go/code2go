@@ -174,13 +174,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</button>
 
 			<div class="container" id="post` + schedule + `">
-			<form class="form-inline" role="form">
 
 			<button type="submit" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			</span>
-			</button>	
+			</button>
+			<form class="form-inline" role="form">
+
+				
 			
 			
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
