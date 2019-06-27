@@ -338,11 +338,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case "Entry":
 
-				stringByte := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
+				sb := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
 
 				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
-				req.Entry = []byte(stringByte)
+				req.Entry = []byte(sb)
 
 			case "Schedule":
 
