@@ -341,7 +341,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
 
-				req.Entry = []byte(stringBytes)
+				req.Entry = []byte(stringByte)
 
 			case "Schedule":
 
