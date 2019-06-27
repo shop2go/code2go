@@ -181,8 +181,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			</button>	
 			
-			
-			
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
@@ -190,7 +188,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
 			<textarea class="form-control  mr-sm-2" id="Entry" rows="3" placeholder="data"></textarea>
 			</form>
-			
+
 			</div>
 			`
 
