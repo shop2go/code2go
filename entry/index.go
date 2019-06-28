@@ -184,7 +184,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
 			<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
 			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
-			<textarea class="form-control  mr-sm-2" id="Entry" rows="3" placeholder="data"></textarea>
+			<textarea class="form-control  mr-sm-2" id="Entry" rows="1" placeholder="data"></textarea>
 			<button type="submit" class="btn btn-light">submit</button>
 			</form>
 			</div>
@@ -295,7 +295,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
 				<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
 				<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
-				<textarea class="form-control  mr-sm-2" id="Entry" rows="3" placeholder="data"></textarea>
+				<textarea class="form-control  mr-sm-2" id="Entry" rows="1" placeholder="data"></textarea>
 				<button type="submit" class="btn btn-light">submit</button>
 				</form>
 				</div>
