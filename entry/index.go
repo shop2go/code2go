@@ -2,15 +2,15 @@ package main
 
 import (
 
-	//"encoding/gob"
-	//"log"
-	//"net"
+	"encoding/gob"
+	"log"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
-	//"github.com/aerogo/packet"
+	"github.com/aerogo/packet"
 	"github.com/mmaedel/code2go/pb"
 )
 
@@ -26,46 +26,48 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		//store := make([]pb.ReqPost, 0)
+		store := make([]pb.ReqPost, 0)
 
-		/*		query := strings.TrimPrefix(r.URL.Path, "/entry#")
+		query := strings.TrimPrefix(r.URL.Path, "/entry#")
 
-				qu := strings.SplitN(query, "-", -1)
+		qu := strings.SplitN(query, "-", -1)
 
-				cue, err := strconv.Atoi(qu[2])
+		cue, err := strconv.Atoi(qu[2])
 
-				if err != nil {
+		if err != nil {
 
-					log.Println(err)
-					cue = 0
+			log.Println(err)
+			cue = 0
 
-				}
+		}
 
-				//persistence layer
+		//persistence layer
 
-				conn, err := net.Dial("tcp", "localhost:80")
+		conn, err := net.Dial("tcp", "172.20.3.120:80")
 
-				if err != nil {
+		if err != nil {
 
-					log.Println(err)
+			log.Println(err)
 
-				}
+		}
 
-				// Create a stream
-				stream := packet.NewStream(1024)
+		// Create a stream
 
-				stream.SetConnection(conn)
+		stream := packet.NewStream(1024)
 
-				// Send a message
-				stream.Outgoing <- packet.New(byte(cue), []byte(query))
+		stream.SetConnection(conn)
 
-				//the response gob from conn
+		// Send a message
 
-				dec := gob.NewDecoder(conn)
+		stream.Outgoing <- packet.New(byte(cue), []byte(query))
 
-				dec.Decode(&store)
+		//the response gob from conn
 
-				numberOfEntries := len(store) */
+		dec := gob.NewDecoder(conn)
+
+		dec.Decode(&store)
+
+		numberOfEntries := len(store)
 
 		str := `
 
@@ -190,7 +192,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</div>
 			`
 
-			/* if numberOfEntries > 0 {
+			if numberOfEntries > 0 {
 
 				for n := 0; n < numberOfEntries; n++ {
 
@@ -206,7 +208,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-			} */
+			}
 
 		}
 
@@ -267,7 +269,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//all following months without entries
 
-			//store = nil
+			store = nil
 
 			l = len(c.Days)
 
@@ -366,23 +368,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if req.Topic != nil {
 
-			/*
+			//Post data
 
-				//Post data
+			// Create a stream
+			
+			stream = packet.NewStream(1024)
 
-				// Create a stream
-				stream = packet.NewStream(1024)
+			stream.SetConnection(conn)
 
-				stream.SetConnection(conn)
-
-				// Send data
-				stream.Outgoing <- packet.New('T', req.Topic)
-				stream.Outgoing <- packet.New('E', req.Entry)
-				stream.Outgoing <- packet.New('S', req.Schedule)
-				stream.Outgoing <- packet.New('#', req.Tags)
-
-
-			*/
+			// Send data
+			
+			stream.Outgoing <- packet.New('T', req.Topic)
+			
+			stream.Outgoing <- packet.New('E', req.Entry)
+			
+			stream.Outgoing <- packet.New('S', req.Schedule)
+			
+			stream.Outgoing <- packet.New('#', req.Tags)
 
 			w.Write(req.Schedule)
 
