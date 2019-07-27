@@ -1,7 +1,6 @@
 package main
 
 import (
-
 	"encoding/gob"
 	"log"
 	"net"
@@ -371,19 +370,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			//Post data
 
 			// Create a stream
-			
+
 			stream = packet.NewStream(1024)
 
 			stream.SetConnection(conn)
 
 			// Send data
-			
+
 			stream.Outgoing <- packet.New('T', req.Topic)
-			
+
 			stream.Outgoing <- packet.New('E', req.Entry)
-			
+
 			stream.Outgoing <- packet.New('S', req.Schedule)
-			
+
 			stream.Outgoing <- packet.New('#', req.Tags)
 
 			w.Write(req.Schedule)
