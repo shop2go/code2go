@@ -36,7 +36,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 
-			log.Println(err)
+			//log.Println(err)
 			cue = 0
 
 		}
@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 
-			log.Println(err)
+			log.Fatal(err)
 
 		}
 
