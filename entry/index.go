@@ -43,7 +43,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//persistence layer
 
-		conn, err := net.Dial("tcp", "51.255.211.147:80")
+		conn, err := net.Dial("tcp", "51.255.211.147:8080")
 
 		if err != nil {
 
