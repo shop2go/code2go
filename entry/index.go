@@ -19,11 +19,16 @@ type Cal struct {
 	Days  map[int]string
 }
 
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	switch r.Method {
+	ip := net.ParseIP("51.255.211.147")
 
-	case "GET":
+	addr := &net.TCPAddr{ip, 8080, "UTC"}
+
+	//switch r.Method {
+
+	//case "GET":
 
 		store := make([]pb.ReqPost, 0)
 
@@ -42,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//persistence layer
 
-		conn, err := net.Dial("tcp", "51.255.211.147:8080")
+		conn, err := net.DialTCP("tcp", nil, addr)
 
 		if err != nil {
 
@@ -58,13 +63,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		// Send a message
 
-		stream.Outgoing <- packet.New(byte(cue), []byte(query))
+		stream.Outgoing <- packet.New(byte(cue), []byte(query))		
+
+		conn.CloseWrite()
 
 		//the response gob from conn
 
 		dec := gob.NewDecoder(conn)
 
 		dec.Decode(&store)
+
+		conn.CloseRead()
 
 		numberOfEntries := len(store)
 
@@ -319,7 +328,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		`
 
 		//var s string
-		var req pb.ReqPost
+		/* var req pb.ReqPost
 
 		r.ParseForm()
 
@@ -386,14 +395,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			stream.Outgoing <- packet.New('#', req.Tags)
 
 			w.Write(req.Schedule)
-
-		} else {
+ */
+		//} else {
 
 			w.Header().Set("Content-Type", "text/html")
 			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 			w.Write([]byte(str))
 
-		}
+		//}
 
 		/* client := &http.Client{}
 
@@ -413,6 +422,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(body)))
 		w.Write(body) */
 
-	}
+	//}
 
 }
