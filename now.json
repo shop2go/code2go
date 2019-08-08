@@ -21,5 +21,10 @@
           "dest": "https://start.medienwerk.now.sh"
         }
       ],
-    "alias": "code2go.dev"
+    "alias": "code2go.dev",
+    "build": {
+      "env": {
+        "GIT_CREDENTIALS": "@git"
+      }
+    }
     }
