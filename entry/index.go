@@ -65,7 +65,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		stream.Outgoing <- packet.New(byte(cue), []byte(query))		
 
-		conn.CloseWrite()
+		//conn.CloseWrite()
 
 		//the response gob from conn
 
@@ -73,7 +73,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		dec.Decode(&store)
 
-		conn.CloseRead()
+		//conn.CloseRead()
 
 		numberOfEntries := len(store)
 
