@@ -5,10 +5,12 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/mschneider82/problem"
 	"github.com/aerogo/packet"
 	"github.com/mmaedel/code2go/pb"
 )
@@ -22,9 +24,16 @@ type Cal struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	ip := net.ParseIP("51.255.211.147")
+	a := os.Getenv("IP_ADDRESS")
 
-	addr := &net.TCPAddr{ip, 8080, "UTC"}
+	if a == "" {
+
+		problem.New(problem.Type("https://"+a+"/404"), problem.Status(404)).WriteTo(w)
+		os.Exit(2)
+	
+	}
+
+	/* addr := &net.TCPAddr{net.ParseIP(a), 8080, "UTC"}
 
 	//switch r.Method {
 
@@ -74,7 +83,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		dec.Decode(&store)
 
 		//conn.CloseRead()
-
+ */
 		numberOfEntries := len(store)
 
 		str := `

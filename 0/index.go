@@ -3,9 +3,12 @@ package main
 import (
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
+	
+	"github.com/mschneider82/problem""
 )
 
 type Cal struct {
@@ -15,6 +18,8 @@ type Cal struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+
+	ip := os.Getenv("IP_ADDRESS")
 
 	switch r.Method {
 
@@ -329,11 +334,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 		}
 
-		//make cert client
-		resp, _ := http.Get("http://example.org/" + url)
+		//TODO:make cert client
+
+
+		resp, err := http.Get("https://"+ip+"/" + url)
+
+		if err != nil {
+			problem.New(problem.Type("https://"+ip+"/404"), problem.Status(404)).WriteTo(w)
+			os.Exit(2)
+		}
 
 		b, _ := ioutil.ReadAll(resp.Body)
-
 		resp.Body.Close()
 
 		for k := q; k < 32; k++ {

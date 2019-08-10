@@ -24,7 +24,9 @@
     "alias": "code2go.dev",
     "build": {
       "env": {
-        "GIT_CREDENTIALS": "@git"
+        "GIT_CREDENTIALS": "@git",
+        "IP_ADDRESS": "@ip"
       }
     }
+    
     }
