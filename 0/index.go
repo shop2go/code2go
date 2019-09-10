@@ -19,7 +19,7 @@ type Cal struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	ip := os.Getenv("IP_ADDRESS")
+	//ip := os.Getenv("IP_ADDRESS")
 
 	switch r.Method {
 
@@ -337,7 +337,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//TODO:make cert client
 
 
-		resp, err := http.Get("https://"+ip+"/" + url)
+/* 		resp, err := http.Get("https://"+ip+"/" + url)
 
 		if err != nil {
 			problem.New(problem.Type("https://"+ip+"/404"), problem.Status(404)).WriteTo(w)
@@ -345,7 +345,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		b, _ := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
+		resp.Body.Close() */
 
 		for k := q; k < 32; k++ {
 
@@ -364,9 +364,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
+				</button>
 				`
 
-				if string(b[k-q]) != "0" {
+				/* if string(b[k-q]) != "0" {
 
 					str = str + `
 					<span class="badge badge-dark">
@@ -383,7 +384,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					`
 
-				}
+				} */
 
 			case "Tuesday":
 
@@ -397,9 +398,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
+				</button>
 				`
 
-				if string(b[k-q]) != "0" {
+				/* if string(b[k-q]) != "0" {
 
 					str = str + `
 					<span class="badge badge-dark">
@@ -416,7 +418,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					`
 
-				}
+				} */
 
 			case "Wednesday":
 
@@ -430,9 +432,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
+				</button>
 				`
 
-				if string(b[k-q]) != "0" {
+				/* if string(b[k-q]) != "0" {
 
 					str = str + `
 					<span class="badge badge-dark">
@@ -449,7 +452,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					`
 
-				}
+				} */
 
 			case "Thursday":
 
@@ -463,9 +466,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
+				</button>
 				`
 
-				if string(b[k-q]) != "0" {
+				/* if string(b[k-q]) != "0" {
 
 					str = str + `
 					<span class="badge badge-dark">
@@ -482,7 +486,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					`
 
-				}
+				} */
 
 			case "Friday":
 
@@ -496,9 +500,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
+				</button>
 				`
 
-				if string(b[k-q]) != "0" {
+				/* if string(b[k-q]) != "0" {
 
 					str = str + `
 					<span class="badge badge-dark">
@@ -515,7 +520,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					`
 
-				}
+				} */
 
 			case "Saturday":
 
@@ -529,9 +534,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
+				</button>
 				`
 
-				if string(b[k-q]) != "0" {
+				/* if string(b[k-q]) != "0" {
 
 					str = str + `
 					<span class="badge badge-dark">
@@ -548,7 +554,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					`
 
-				}
+				} */
 
 			case "Sunday":
 
@@ -562,9 +568,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
+				</button>
 				`
 
-				if string(b[k-q]) != "0" {
+				/* if string(b[k-q]) != "0" {
 
 					str = str + `
 					<span class="badge badge-dark">
@@ -581,7 +588,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 					`
 
-				}
+				} */
 
 			}
 
