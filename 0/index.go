@@ -336,12 +336,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//TODO:make cert client
 
-<<<<<<< HEAD
-		resp, err := http.Get("https://"+ip+"/" + url)
-=======
 
 /* 		resp, err := http.Get("https://"+ip+"/" + url)
->>>>>>> 2dbfba9aa69f98b5625c2bfff48e00f92d62786a
 
 		if err != nil {
 			problem.New(problem.Type("https://"+ip+"/404"), problem.Status(404)).WriteTo(w)
