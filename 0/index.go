@@ -336,7 +336,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//TODO:make cert client
 
-
 		resp, err := http.Get("https://"+ip+"/" + url)
 
 		if err != nil {
