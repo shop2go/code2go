@@ -9,16 +9,16 @@ import (
 
 )
 
-type Booking struct (
+type Booking struct {
 
 	Device string
 	ID uint
 	Room string
 	Log int64
 
-)
+}
 
-func Book((w http.ResponseWriter, r *http.Request) {
+func Book(w http.ResponseWriter, r *http.Request) {
 
 str := `
 		<!DOCTYPE html>
