@@ -1,26 +1,54 @@
 package src
 
-
 import (
+	"fmt"
+	//"log"
+	//"log"
+	"net/http"
+	"os"
+	//"strconv"
+	"time"
 
-"net/http"
-"strconv"
-"time"
-
+	f "github.com/fauna/faunadb-go/faunadb"
 )
 
 type Booking struct {
-
 	Device string
-	ID uint
-	Room string
-	Log int64
+	ID     uint
+	Room   string
+	Log    int64
+}
 
+type Access struct {
+	Reference *f.RefV `fauna:"ref"`
+	Timestamp int     `fauna:"ts"`
+	Secret    string  `fauna:"secret"`
+	Role      string  `fauna:"role"`
 }
 
 func Book(w http.ResponseWriter, r *http.Request) {
 
-str := `
+	//var id f.RefV
+
+	c := f.NewFaunaClient(os.Getenv("FAUNA"))
+
+	s, err := c.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
+
+	if err != nil {
+
+		fmt.Fprintf(w, err.Error())
+
+	}
+
+	var access *Access
+
+	s.Get(&access)
+
+	t := time.Unix(int64(access.Timestamp)/1e6, 0)
+
+	//log.Printf("%v %v\n", access.Reference.ID, access.Role)
+
+	str := `
 		<!DOCTYPE html>
 		<html lang="en">
 		<head>
@@ -41,15 +69,15 @@ str := `
 		</div>
 		<br>
 		<div class="container" id="nav" style="color:white;">
-		` + strconv.Itoa(time.Now().Year()) + `
-		<br>
-		`
+		` + t.Format("Mon Jan 2 15:04:05 -0700 MST 2006") + `
+		<br>`
+		+ access.Reference.ID +		`
 
-switch r.Method {
+	switch r.Method {
 
-case "GET":
+	case "GET":
 
-	str = str + `
+		str = str + `
 	</div>
 	
 	<script src="https://assets.medienwerk.now.sh/material.min.js">
@@ -58,13 +86,12 @@ case "GET":
 	</html>
 	`
 
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str))
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
 
-case "POST":
+	case "POST":
 
-
-}
+	}
 
 }
