@@ -1,13 +1,13 @@
 package src
 
 import (
-	"errors"
+	//"errors"
 	"fmt"
 	//"log"
 	//"log"
 	"net/http"
 	"os"
-	//"strconv"
+	"strconv"
 	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
@@ -71,8 +71,9 @@ func Book(w http.ResponseWriter, r *http.Request) {
 		<br>
 		<div class="container" id="nav" style="color:white;">
 		` + t.Format("Mon Jan 2 15:04:05 -0700 MST 2006") + `
+		<br>
+		` + access.Reference.ID + `
 		<br>`
-		+ access.Reference.ID +		`
 
 	switch r.Method {
 
@@ -86,7 +87,6 @@ func Book(w http.ResponseWriter, r *http.Request) {
 	</body>
 	</html>
 	`
-
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
