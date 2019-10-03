@@ -9,6 +9,8 @@ import (
 	"time"
 	
 	//"github.com/mschneider82/problem"
+
+	//f "github.com/fauna/faunadb-go/faunadb"
 )
 
 type Cal struct {
@@ -21,9 +23,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//ip := os.Getenv("IP_ADDRESS")
 
-	switch r.Method {
+	//switch r.Method {
 
-	case "GET":
+	//case "GET":
 
 		url := strings.TrimPrefix(r.URL.Path, "/")
 
@@ -748,7 +750,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	case "POST":
+	//case "POST":
 
 		/* client := &http.Client{}
 		req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
@@ -760,6 +762,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 		} */
 
-	}
+	//}
 
 }

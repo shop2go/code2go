@@ -10,7 +10,9 @@
 
       {"src": "./2/index.go", "use": "@now/go"},
 
-      {"src": "./Monday/index.go", "use": "@now/go"}
+      {"src": "./Monday/index.go", "use": "@now/go"},
+
+      {"src": "./book/index.go", "use": "@now/go"}
 
     ],
     "routes": [
