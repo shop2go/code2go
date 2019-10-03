@@ -18,7 +18,7 @@ type Booking struct (
 
 )
 
-func Book((w http.ResponseWriter, r *http.Request)
+func Book((w http.ResponseWriter, r *http.Request) {
 
 str := `
 		<!DOCTYPE html>
