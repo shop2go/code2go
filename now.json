@@ -24,7 +24,6 @@
     "alias": "code2go.dev",
     "build": {
       "env": {
-        "GIT_CREDENTIALS": "@git",
         "FAUNA": "@fdb"
       }
     }

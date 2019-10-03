@@ -30,8 +30,7 @@ type Access struct {
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//var id f.RefV
-	os.Setenv()
-
+	
 	c := f.NewFaunaClient(os.Getenv("FAUNA"))
 
 	s, err := c.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server-readonly"}))
