@@ -84,7 +84,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// HTTPS will do a PreFlight CORS using the OPTIONS method.
 	// To complete that a special response should be sent
 	if r.Method == http.MethodOptions {
-		response(w, true, "test", r.Method)
+		response(w, true, "", r.Method)
 		return
 	}
 

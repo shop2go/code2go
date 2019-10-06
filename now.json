@@ -22,10 +22,9 @@
         }
       ],
     "alias": "code2go.dev",
-    "build": {
-      "env": {
-        "FAUNA_ACCESS": "@fdb"
-      }
-    }
     
+    "env": {
+      "FAUNA_ACCESS": "@fdb"
+      }
+        
     }
