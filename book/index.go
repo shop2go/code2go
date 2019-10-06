@@ -6,24 +6,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+
 	//"log"
 	"net/http"
 	//"net/smtp"
 	//"net/url"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 )
 
-type Access struct {
+/* type Access struct {
 	Reference *f.RefV `fauna:"ref"`
 	Timestamp int     `fauna:"ts"`
 	Secret    string  `fauna:"secret"`
 	Role      string  `fauna:"role"`
-}
+} */
 
 /*
 // Constants
@@ -49,42 +49,42 @@ var (
 // Handler is the main entry point into tjhe function code as mandated by ZEIT
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	str := `
-	
-	<!DOCTYPE html>
-		<html lang="en">
-		<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>CODE2GO</title>
-		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		</head>
-		<body style="background-color: #bcbcbc;">
-   		<div class="container" id="search" style="color:white; font-size:30px;">
-		<form class="form-inline" role="form" method="POST">
-	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="search" name ="search">
-	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-		</form>
-		</div>
+	/* str := `
+
+		<!DOCTYPE html>
+			<html lang="en">
+			<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<title>CODE2GO</title>
+			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	   		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+			</head>
+			<body style="background-color: #bcbcbc;">
+	   		<div class="container" id="search" style="color:white; font-size:30px;">
+			<form class="form-inline" role="form" method="POST">
+		   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="search" name ="search">
+		   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
+			</form>
+			</div>
+			<br>
+			<div class="container" id="nav" style="color:white; font-size:30px;">
+			` + time.Now().Format("Monday, Jan 2 2006 15:04:05") + `
+			<br>
+			</div>
+
+		<script src="https://assets.medienwerk.now.sh/material.min.js">
+		</script>
 		<br>
-		<div class="container" id="nav" style="color:white; font-size:30px;">
-		` + time.Now().Format("Monday, Jan 2 2006 15:04:05") + `
-		<br>
-		</div>
-	
-	<script src="https://assets.medienwerk.now.sh/material.min.js">
-	</script>
-	<br>	
-	</body>
-	</html>
-	`
-	
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str))
+		</body>
+		</html>
+		`
+
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str)) */
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -94,19 +94,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		response(w, true, "", r.Method)
 		return
 	}
+	/*
+		set, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
 
-	set, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
+		if err != nil {
+			response(w, false, fmt.Sprintf(time.Now().Format("Monday, Jan 2 2006 15:04:05")+": %s", err.Error()), r.Method)
+			return
+		}
 
-	if err != nil {
-		response(w, false, fmt.Sprintf("There was an error: %s", err.Error()), r.Method)
-		return
-	}
+		var access *Access
 
-	var access *Access
+		set.Get(&access)
 
-	set.Get(&access)
-
-	t := time.Unix(int64(access.Timestamp)/1e6, 0)
+		t := time.Unix(int64(access.Timestamp)/1e6, 0)
+	*/
 	/*
 		// Parse the request body to a map
 		buf := new(bytes.Buffer)
@@ -163,10 +164,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	*/
-		// Return okay response
-		response(w, true, t.Format("Monday, Jan 2 2006 15:04:05") + ":" + access.Reference.ID, r.Method)
-		return
-	
+	// Return okay response
+	response(w, true, time.Now().Format("Monday, Jan 2 2006 15:04:05"), r.Method)
+	return
+
 }
 
 func response(w http.ResponseWriter, success bool, message string, method string) {
@@ -175,9 +176,9 @@ func response(w http.ResponseWriter, success bool, message string, method string
 
 	// Prepare the return data
 	if success {
-		body["type"] = "success"
+		body["type"] = "logged in"
 	} else {
-		body["type"] = "failed"
+		body["type"] = "failure"
 	}
 	body["message"] = message
 	bodyString, _ := json.Marshal(body)
