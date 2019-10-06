@@ -11,9 +11,9 @@ import (
 	//"net/smtp"
 	//"net/url"
 	"os"
-	"strconv"
+	//"strconv"
 	"strings"
-	"time"
+	//"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 )
@@ -41,7 +41,7 @@ var (
 */
 // Handler is the main entry point into tjhe function code as mandated by ZEIT
 func Handler(w http.ResponseWriter, r *http.Request) {
-
+/* 
 	str := `
 	
 	<!DOCTYPE html>
@@ -78,7 +78,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
-
+ */
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 	// HTTPS will do a PreFlight CORS using the OPTIONS method.
