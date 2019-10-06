@@ -2,13 +2,13 @@ package main
 
 // The imports
 import (
-	"bytes"
+	//"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/smtp"
-	"net/url"
+	//"net/smtp"
+	//"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -65,7 +65,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 		<br>
 		<div class="container" id="nav" style="color:white;">
-		` + t.Format("Mon Jan 2 15:04:05 -0700 MST 2006") + `
+		` + time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006") + `
 		<br>
 		</div>
 	
