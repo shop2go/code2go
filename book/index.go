@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	//"log"
 	"net/http"
-
 	//"net/smtp"
 	//"net/url"
 	"os"
@@ -71,14 +70,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	<script src="https://assets.medienwerk.now.sh/material.min.js">
 	</script>
+	<br>	
+	`
+	v := os.Getenv("FAUNA_ACCESS")
+
+	if v != "" {
+
+		str = str + v
+
+	}
+
+	str = str + `
 	</body>
 	</html>
 	`
+	
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
 
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+	f.NewFaunaClient(v)
 
 	// HTTPS will do a PreFlight CORS using the OPTIONS method.
 	// To complete that a special response should be sent
@@ -87,12 +98,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
+	/* _, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
 
 	if err != nil {
 		response(w, false, fmt.Sprintf("There was an error: %s", err.Error()), r.Method)
 		return
-	}
+	} */
 	/*
 		// Parse the request body to a map
 		buf := new(bytes.Buffer)
