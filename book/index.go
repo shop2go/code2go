@@ -58,14 +58,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</head>
 		<body style="background-color: #bcbcbc;">
    		<div class="container" id="search" style="color:white; font-size:30px;">
-		<form class="form-inline" role="form">
-	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
+		<form class="form-inline" role="form" method="POST">
+	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="search" name ="search">
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</form>
 		</div>
 		<br>
 		<div class="container" id="nav" style="color:white; font-size:30px;">
-		` + time.Now().UTC().Format("Monday, Jan 2 2006 \n 15:04:05 -0700") + `
+		` + time.Now().Format("Monday, Jan 2 2006 15:04:05") + `
 		<br>
 		</div>
 	
@@ -154,7 +154,7 @@ func response(w http.ResponseWriter, success bool, message string, method string
 	if success {
 		body["type"] = "success"
 	} else {
-		body["type"] = "danger"
+		body["type"] = "failed"
 	}
 	body["message"] = message
 	bodyString, _ := json.Marshal(body)
