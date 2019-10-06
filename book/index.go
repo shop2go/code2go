@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+
 	//"net/smtp"
 	//"net/url"
 	"os"
@@ -15,9 +17,9 @@ import (
 	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
-
 )
-/* 
+
+/*
 // Constants
 const (
 	// The URL to validate reCAPTCHA
@@ -37,12 +39,10 @@ var (
 	// The SMTP server port
 	smtpPort = os.Getenv("SMTP_PORT")
 )
- */
+*/
 // Handler is the main entry point into tjhe function code as mandated by ZEIT
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// HTTPS will do a PreFlight CORS using the OPTIONS method.
-	// To complete that a special response should be sent
-	
+
 	str := `
 	
 	<!DOCTYPE html>
@@ -74,76 +74,85 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</body>
 	</html>
 	`
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
-	
-	f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))	
-	
+	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	w.Write([]byte(str))
+
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	// HTTPS will do a PreFlight CORS using the OPTIONS method.
+	// To complete that a special response should be sent
 	if r.Method == http.MethodOptions {
 		response(w, true, "test", r.Method)
 		return
 	}
-/* 	
-	// Parse the request body to a map
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(r.Body)
-	u, err := url.ParseQuery(buf.String())
+
+	_, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
+
 	if err != nil {
-		response(w, false, fmt.Sprintf("There was an error sending your form data: %s", err.Error()), r.Method)
+		response(w, false, fmt.Sprintf("There was an error: %s", err.Error()), r.Method)
 		return
 	}
+	/*
+		// Parse the request body to a map
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(r.Body)
+		u, err := url.ParseQuery(buf.String())
+		if err != nil {
+			response(w, false, fmt.Sprintf("There was an error sending your form data: %s", err.Error()), r.Method)
+			return
+		}
 
-	// Prepare the POST parameters
-	urlData := url.Values{}
-	urlData.Set("secret", recaptchaSecret)
-	urlData.Set("response", u["g-recaptcha-response"][0])
+		// Prepare the POST parameters
+		urlData := url.Values{}
+		urlData.Set("secret", recaptchaSecret)
+		urlData.Set("response", u["g-recaptcha-response"][0])
 
-	// Validate the reCAPTCHA
-	resp, err := httpcall(recaptchaURL, "POST", "application/x-www-form-urlencoded", urlData.Encode(), nil)
-	if err != nil {
-		response(w, false, fmt.Sprintf("There was an error sending your form data: %s", err.Error()), r.Method)
+		// Validate the reCAPTCHA
+		resp, err := httpcall(recaptchaURL, "POST", "application/x-www-form-urlencoded", urlData.Encode(), nil)
+		if err != nil {
+			response(w, false, fmt.Sprintf("There was an error sending your form data: %s", err.Error()), r.Method)
+			return
+		}
+
+		// Validate if the reCAPTCHA was successful
+		if !resp.Body["success"].(bool) {
+			response(w, false, fmt.Sprintf("There was an error sending your form data: %s", fmt.Sprintf("%v", resp.Body["error-codes"])), r.Method)
+			return
+		}
+
+		// Set up email authentication information.
+		auth := smtp.PlainAuth(
+			"",
+			emailAddress,
+			emailPassword,
+			smtpServer,
+		)
+
+		// Prepare the email
+		mime := "MIME-version: 1.0;\nContent-Type: text/plain; charset=\"UTF-8\";\n\n"
+		subject := fmt.Sprintf("Subject: [BLOG] Message from %s %s!\n", u["name"][0], u["surname"][0])
+		msg := []byte(fmt.Sprintf("%s%s\n%s\n\n%s", subject, mime, u["message"][0], u["email"][0]))
+
+		// Connect to the server, authenticate, set the sender and recipient,
+		// and send the email all in one step.
+		err = smtp.SendMail(
+			fmt.Sprintf("%s:%s", smtpServer, smtpPort),
+			auth,
+			emailAddress,
+			[]string{emailAddress},
+			msg,
+		)
+		if err != nil {
+			fmt.Printf("[BLOG] Message from %s %s\n%s\n%s\nThe message was not sent: %s", u["name"][0], u["surname"][0], u["message"][0], u["email"][0], err.Error())
+			response(w, false, "There was an error sending your email, but we've logged the data...", r.Method)
+			return
+		}
+
+		// Return okay response
+		response(w, true, "Thank you for your email! I'll contact you soon.", r.Method)
 		return
-	}
-
-	// Validate if the reCAPTCHA was successful
-	if !resp.Body["success"].(bool) {
-		response(w, false, fmt.Sprintf("There was an error sending your form data: %s", fmt.Sprintf("%v", resp.Body["error-codes"])), r.Method)
-		return
-	}
-
-	// Set up email authentication information.
-	auth := smtp.PlainAuth(
-		"",
-		emailAddress,
-		emailPassword,
-		smtpServer,
-	)
-
-	// Prepare the email
-	mime := "MIME-version: 1.0;\nContent-Type: text/plain; charset=\"UTF-8\";\n\n"
-	subject := fmt.Sprintf("Subject: [BLOG] Message from %s %s!\n", u["name"][0], u["surname"][0])
-	msg := []byte(fmt.Sprintf("%s%s\n%s\n\n%s", subject, mime, u["message"][0], u["email"][0]))
-
-	// Connect to the server, authenticate, set the sender and recipient,
-	// and send the email all in one step.
-	err = smtp.SendMail(
-		fmt.Sprintf("%s:%s", smtpServer, smtpPort),
-		auth,
-		emailAddress,
-		[]string{emailAddress},
-		msg,
-	)
-	if err != nil {
-		fmt.Printf("[BLOG] Message from %s %s\n%s\n%s\nThe message was not sent: %s", u["name"][0], u["surname"][0], u["message"][0], u["email"][0], err.Error())
-		response(w, false, "There was an error sending your email, but we've logged the data...", r.Method)
-		return
-	}
-
-	// Return okay response
-	response(w, true, "Thank you for your email! I'll contact you soon.", r.Method)
-	return
- */
+	*/
 }
 
 func response(w http.ResponseWriter, success bool, message string, method string) {
