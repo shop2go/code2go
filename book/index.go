@@ -64,8 +64,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</form>
 		</div>
 		<br>
-		<div class="container" id="nav" style="color:white;">
-		` + time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006") + `
+		<div class="container" id="nav" style="color:white; font-size:30px;">
+		` + time.Now().UTC().Format("Monday, Jan 2 2006 \n 15:04:05 -0700") + `
 		<br>
 		</div>
 	
@@ -81,7 +81,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))	
 	
 	if r.Method == http.MethodOptions {
-		response(w, true, "", r.Method)
+		response(w, true, "test", r.Method)
 		return
 	}
 /* 	
