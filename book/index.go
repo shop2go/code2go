@@ -11,12 +11,19 @@ import (
 	//"net/smtp"
 	//"net/url"
 	"os"
-	//"strconv"
+	"strconv"
 	"strings"
-	//"time"
+	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 )
+
+type Access struct {
+	Reference *f.RefV `fauna:"ref"`
+	Timestamp int     `fauna:"ts"`
+	Secret    string  `fauna:"secret"`
+	Role      string  `fauna:"role"`
+}
 
 /*
 // Constants
@@ -41,7 +48,7 @@ var (
 */
 // Handler is the main entry point into tjhe function code as mandated by ZEIT
 func Handler(w http.ResponseWriter, r *http.Request) {
-/* 
+
 	str := `
 	
 	<!DOCTYPE html>
@@ -78,7 +85,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
- */
+
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 	// HTTPS will do a PreFlight CORS using the OPTIONS method.
@@ -88,12 +95,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
+	set, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("code2go"), "role": "server"}))
 
 	if err != nil {
 		response(w, false, fmt.Sprintf("There was an error: %s", err.Error()), r.Method)
 		return
 	}
+
+	var access *Access
+
+	set.Get(&access)
+
+	t := time.Unix(int64(access.Timestamp)/1e6, 0)
 	/*
 		// Parse the request body to a map
 		buf := new(bytes.Buffer)
@@ -149,11 +162,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			response(w, false, "There was an error sending your email, but we've logged the data...", r.Method)
 			return
 		}
-
-		// Return okay response
-		response(w, true, "Thank you for your email! I'll contact you soon.", r.Method)
-		return
 	*/
+		// Return okay response
+		response(w, true, t.Format("Monday, Jan 2 2006 15:04:05") + ":" + access.Reference.ID, r.Method)
+		return
+	
 }
 
 func response(w http.ResponseWriter, success bool, message string, method string) {
