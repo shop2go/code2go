@@ -78,8 +78,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 	
-	
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))	
+	f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))	
 	
 	if r.Method == http.MethodOptions {
 		response(w, true, "", r.Method)
