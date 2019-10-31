@@ -187,7 +187,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	for t := 0; t < n; t++ {
+	for t := 0; t <= n; t++ {
 
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
