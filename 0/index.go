@@ -56,7 +56,9 @@ func response(w http.ResponseWriter, success bool, message string, method string
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	//var id f.RefV
+	//var id f.RefV	
+
+	now := time.Now().AddDate(0, n, 0)
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -85,8 +87,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
 	n, _ := strconv.Atoi(url)
-
-	now := time.Now().AddDate(0, n, 0)
 
 	/* 	var start time.Time
 	var end time.Time */
