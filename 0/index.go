@@ -166,14 +166,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var p int
-	var q int
+	var p, q int
 
 	l := len(c.Days)
 
 	if time.Now().Month() == now.Month() {
 
-		p, _ = strconv.Atoi(time.Now().Format("02"))
+		//p, _ = strconv.Atoi(time.Now().Format("02"))
+		p = time.Now().Day()
 
 	} else {
 
@@ -187,7 +187,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	for t := 0; t < n; t++ {
+	for t := 0; t < 13; t++ {
 
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
@@ -212,10 +212,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-/* 	str = str + `
+	str = str + `
 		<button type="button" class="btn btn-light">` + now.Format("Jan") + `
 		 </button>
-		 ` */
+		 `
 
 	for t := n + 1; t < 21; t++ {
 
