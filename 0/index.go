@@ -242,6 +242,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		time.Sleep(2e7)
+
 		t++
 
 	}
