@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	//"io/ioutil"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -22,26 +22,25 @@ type Cal struct {
 
 type Access struct {
 	//Reference *f.RefV `fauna:"ref"`
-	Timestamp int     `fauna:"ts"`
-	Secret    string  `fauna:"secret"`
-	Role string `fauna:"role"`
+	Timestamp int    `fauna:"ts"`
+	Secret    string `fauna:"secret"`
+	Role      string `fauna:"role"`
 }
 
 func query(a, d, v string) ([]map[string]interface{}, int) {
 
-	str = `{"query":"query{`+d+`(appended:\"`+v+`\"){data{_id}}}"}`
+	str = `{"query":"query{` + d + `(appended:\"` + v + `\"){data{_id}}}"}`
 	body := strings.NewReader(str)
 	req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-
-	req.Header.Set("Authorization", "Bearer "+ a)
+	req.Header.Set("Authorization", "Bearer "+a)
 	//req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-	
+
 	resp, err := http.DefaultClient.Do(req)
-	
+
 	if err != nil {
 
 		fmt.Fprint(w, "An error occured. Please refresh Browser window...")
@@ -53,7 +52,7 @@ func query(a, d, v string) ([]map[string]interface{}, int) {
 	defer resp.Body.Close()
 
 	bdy, _ := ioutil.ReadAll(resp.Body)
-	
+
 	var i interface{}
 
 	json.Unmarshal(bdy, &i)
@@ -71,10 +70,10 @@ func query(a, d, v string) ([]map[string]interface{}, int) {
 	for j := 0; j < len(g); j++ {
 
 		h[j] = g[j].(map[string]interface{})
-		
+
 	}
 
- return h, len(g)
+	return h, len(g)
 
 }
 
@@ -453,17 +452,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   		b, _ := ioutil.ReadAll(resp.Body)
 			   resp.Body.Close() */
 
-/* 	col := strconv.Itoa(c.Year) + "-" + strconv.Itoa(c.Month)
+	/* 	col := strconv.Itoa(c.Year) + "-" + strconv.Itoa(c.Month)
 
-	count := make([]string, l-q)
+	   	count := make([]string, l-q)
 
-	v, _ := fc.Query(f.Get(f.Collection(col)))
+	   	v, _ := fc.Query(f.Get(f.Collection(col)))
 
-	v.At(f.ObjKey("ref")).Get(&id) */
+	   	v.At(f.ObjKey("ref")).Get(&id) */
 
 	dir := "messagesByAppendedDate"
 	value := now.Format("2006-01-02")
-	
+
 	for k := q; k < 32; k++ {
 
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
@@ -486,7 +485,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-
 			h, i := query(access.Secret, dir, value)
 
 			k := make(map[int]string, 0)
@@ -494,7 +492,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for j := 0; j < i; j++ {
 
 				k[j] = h[j]["_id"].(string)
-		
+
 			}
 
 			if len(k) > 0 {
@@ -551,7 +549,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-
 			h, i := query(access.Secret, dir, value)
 
 			k := make(map[int]string, 0)
@@ -559,7 +556,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for j := 0; j < i; j++ {
 
 				k[j] = h[j]["_id"].(string)
-		
+
 			}
 
 			if len(k) > 0 {
@@ -616,7 +613,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-
 			h, i := query(access.Secret, dir, value)
 
 			k := make(map[int]string, 0)
@@ -624,7 +620,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for j := 0; j < i; j++ {
 
 				k[j] = h[j]["_id"].(string)
-		
+
 			}
 
 			if len(k) > 0 {
@@ -681,7 +677,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-
 			h, i := query(access.Secret, dir, value)
 
 			k := make(map[int]string, 0)
@@ -689,7 +684,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for j := 0; j < i; j++ {
 
 				k[j] = h[j]["_id"].(string)
-		
+
 			}
 
 			if len(k) > 0 {
@@ -746,7 +741,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-
 			h, i := query(access.Secret, dir, value)
 
 			k := make(map[int]string, 0)
@@ -754,7 +748,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for j := 0; j < i; j++ {
 
 				k[j] = h[j]["_id"].(string)
-		
+
 			}
 
 			if len(k) > 0 {
@@ -811,7 +805,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-
 			h, i := query(access.Secret, dir, value)
 
 			k := make(map[int]string, 0)
@@ -819,7 +812,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for j := 0; j < i; j++ {
 
 				k[j] = h[j]["_id"].(string)
-		
+
 			}
 
 			if len(k) > 0 {
@@ -876,7 +869,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-
 			h, i := query(access.Secret, dir, value)
 
 			k := make(map[int]string, 0)
@@ -884,7 +876,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for j := 0; j < i; j++ {
 
 				k[j] = h[j]["_id"].(string)
-		
+
 			}
 
 			if len(k) > 0 {
