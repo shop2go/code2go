@@ -27,56 +27,6 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-func query(a, d, v string) ([]map[string]interface{}, int) {
-
-	str = `{"query":"query{` + d + `(appended:\"` + v + `\"){data{_id}}}"}`
-	body := strings.NewReader(str)
-	req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-	req.Header.Set("Authorization", "Bearer "+a)
-	//req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-	resp, err := http.DefaultClient.Do(req)
-
-	if err != nil {
-
-		fmt.Fprint(w, "An error occured. Please refresh Browser window...")
-
-		return
-
-	}
-
-	defer resp.Body.Close()
-
-	bdy, _ := ioutil.ReadAll(resp.Body)
-
-	var i interface{}
-
-	json.Unmarshal(bdy, &i)
-
-	a := i.(map[string]interface{})
-	b := a["data"]
-	c := b.(map[string]interface{})
-	d := c[dir]
-	e := d.(map[string]interface{})
-	f := e["data"]
-	g := f.([]interface{})
-
-	h := make([]map[string]interface{}, len(g))
-
-	for j := 0; j < len(g); j++ {
-
-		h[j] = g[j].(map[string]interface{})
-
-	}
-
-	return h, len(g)
-
-}
-
 func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
 	body := make(map[string]interface{})
@@ -485,11 +435,52 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			h, i := query(access.Secret, dir, value)
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+	body := strings.NewReader(s)
+	req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+	req.Header.Set("Authorization", "Bearer "+a)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+
+		fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+
+		return
+
+	}
+
+	defer resp.Body.Close()
+
+	bdy, _ := ioutil.ReadAll(resp.Body)
+
+	var i interface{}
+
+	json.Unmarshal(bdy, &i)
+
+	a := i.(map[string]interface{})
+	b := a["data"]
+	c := b.(map[string]interface{})
+	d := c[dir]
+	e := d.(map[string]interface{})
+	f := e["data"]
+	g := f.([]interface{})
+
+	h := make([]map[string]interface{}, len(g))
+
+	for j := 0; j < len(g); j++ {
+
+		h[j] = g[j].(map[string]interface{})
+
+	}
 
 			k := make(map[int]string, 0)
 
-			for j := 0; j < i; j++ {
+			for j := 0; j < len(g); j++ {
 
 				k[j] = h[j]["_id"].(string)
 
@@ -549,34 +540,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			h, i := query(access.Secret, dir, value)
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < i; j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
-
-				str = str + `
-				<span class="badge badge-dark">
-				` + strconv.Itoa(len(k)) + `
-				</span>
-				</button>
-
-				`
-
-			} else {
-
-				str = str + `
-				</button>
-
-				`
-
-			}
+				s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+				body := strings.NewReader(s)
+				req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			
+				req.Header.Set("Authorization", "Bearer "+a)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+			
+				resp, err := http.DefaultClient.Do(req)
+			
+				if err != nil {
+			
+					fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+			
+					return
+			
+				}
+			
+				defer resp.Body.Close()
+			
+				bdy, _ := ioutil.ReadAll(resp.Body)
+			
+				var i interface{}
+			
+				json.Unmarshal(bdy, &i)
+			
+				a := i.(map[string]interface{})
+				b := a["data"]
+				c := b.(map[string]interface{})
+				d := c[dir]
+				e := d.(map[string]interface{})
+				f := e["data"]
+				g := f.([]interface{})
+			
+				h := make([]map[string]interface{}, len(g))
+			
+				for j := 0; j < len(g); j++ {
+			
+					h[j] = g[j].(map[string]interface{})
+			
+				}
+			
+						k := make(map[int]string, 0)
+			
+						for j := 0; j < len(g); j++ {
+			
+							k[j] = h[j]["_id"].(string)
+			
+						}
+			
+						if len(k) > 0 {
+			
+							str = str + `
+							<span class="badge badge-dark">
+							` + strconv.Itoa(len(k)) + `
+							</span>
+							</button>
+			
+							`
+			
+						} else {
+			
+							str = str + `
+							</button>
+			
+							`
+			
+						}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -613,34 +645,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			h, i := query(access.Secret, dir, value)
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < i; j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
-
-				str = str + `
-				<span class="badge badge-dark">
-				` + strconv.Itoa(len(k)) + `
-				</span>
-				</button>
-
-				`
-
-			} else {
-
-				str = str + `
-				</button>
-
-				`
-
-			}
+				s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+				body := strings.NewReader(s)
+				req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			
+				req.Header.Set("Authorization", "Bearer "+a)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+			
+				resp, err := http.DefaultClient.Do(req)
+			
+				if err != nil {
+			
+					fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+			
+					return
+			
+				}
+			
+				defer resp.Body.Close()
+			
+				bdy, _ := ioutil.ReadAll(resp.Body)
+			
+				var i interface{}
+			
+				json.Unmarshal(bdy, &i)
+			
+				a := i.(map[string]interface{})
+				b := a["data"]
+				c := b.(map[string]interface{})
+				d := c[dir]
+				e := d.(map[string]interface{})
+				f := e["data"]
+				g := f.([]interface{})
+			
+				h := make([]map[string]interface{}, len(g))
+			
+				for j := 0; j < len(g); j++ {
+			
+					h[j] = g[j].(map[string]interface{})
+			
+				}
+			
+						k := make(map[int]string, 0)
+			
+						for j := 0; j < len(g); j++ {
+			
+							k[j] = h[j]["_id"].(string)
+			
+						}
+			
+						if len(k) > 0 {
+			
+							str = str + `
+							<span class="badge badge-dark">
+							` + strconv.Itoa(len(k)) + `
+							</span>
+							</button>
+			
+							`
+			
+						} else {
+			
+							str = str + `
+							</button>
+			
+							`
+			
+						}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -677,34 +750,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			h, i := query(access.Secret, dir, value)
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < i; j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
-
-				str = str + `
-				<span class="badge badge-dark">
-				` + strconv.Itoa(len(k)) + `
-				</span>
-				</button>
-
-				`
-
-			} else {
-
-				str = str + `
-				</button>
-
-				`
-
-			}
+				s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+				body := strings.NewReader(s)
+				req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			
+				req.Header.Set("Authorization", "Bearer "+a)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+			
+				resp, err := http.DefaultClient.Do(req)
+			
+				if err != nil {
+			
+					fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+			
+					return
+			
+				}
+			
+				defer resp.Body.Close()
+			
+				bdy, _ := ioutil.ReadAll(resp.Body)
+			
+				var i interface{}
+			
+				json.Unmarshal(bdy, &i)
+			
+				a := i.(map[string]interface{})
+				b := a["data"]
+				c := b.(map[string]interface{})
+				d := c[dir]
+				e := d.(map[string]interface{})
+				f := e["data"]
+				g := f.([]interface{})
+			
+				h := make([]map[string]interface{}, len(g))
+			
+				for j := 0; j < len(g); j++ {
+			
+					h[j] = g[j].(map[string]interface{})
+			
+				}
+			
+						k := make(map[int]string, 0)
+			
+						for j := 0; j < len(g); j++ {
+			
+							k[j] = h[j]["_id"].(string)
+			
+						}
+			
+						if len(k) > 0 {
+			
+							str = str + `
+							<span class="badge badge-dark">
+							` + strconv.Itoa(len(k)) + `
+							</span>
+							</button>
+			
+							`
+			
+						} else {
+			
+							str = str + `
+							</button>
+			
+							`
+			
+						}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -741,34 +855,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			h, i := query(access.Secret, dir, value)
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < i; j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
-
-				str = str + `
-				<span class="badge badge-dark">
-				` + strconv.Itoa(len(k)) + `
-				</span>
-				</button>
-
-				`
-
-			} else {
-
-				str = str + `
-				</button>
-
-				`
-
-			}
+				s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+				body := strings.NewReader(s)
+				req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			
+				req.Header.Set("Authorization", "Bearer "+a)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+			
+				resp, err := http.DefaultClient.Do(req)
+			
+				if err != nil {
+			
+					fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+			
+					return
+			
+				}
+			
+				defer resp.Body.Close()
+			
+				bdy, _ := ioutil.ReadAll(resp.Body)
+			
+				var i interface{}
+			
+				json.Unmarshal(bdy, &i)
+			
+				a := i.(map[string]interface{})
+				b := a["data"]
+				c := b.(map[string]interface{})
+				d := c[dir]
+				e := d.(map[string]interface{})
+				f := e["data"]
+				g := f.([]interface{})
+			
+				h := make([]map[string]interface{}, len(g))
+			
+				for j := 0; j < len(g); j++ {
+			
+					h[j] = g[j].(map[string]interface{})
+			
+				}
+			
+						k := make(map[int]string, 0)
+			
+						for j := 0; j < len(g); j++ {
+			
+							k[j] = h[j]["_id"].(string)
+			
+						}
+			
+						if len(k) > 0 {
+			
+							str = str + `
+							<span class="badge badge-dark">
+							` + strconv.Itoa(len(k)) + `
+							</span>
+							</button>
+			
+							`
+			
+						} else {
+			
+							str = str + `
+							</button>
+			
+							`
+			
+						}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -805,34 +960,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			h, i := query(access.Secret, dir, value)
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < i; j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
-
-				str = str + `
-				<span class="badge badge-dark">
-				` + strconv.Itoa(len(k)) + `
-				</span>
-				</button>
-
-				`
-
-			} else {
-
-				str = str + `
-				</button>
-
-				`
-
-			}
+				s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+				body := strings.NewReader(s)
+				req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			
+				req.Header.Set("Authorization", "Bearer "+a)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+			
+				resp, err := http.DefaultClient.Do(req)
+			
+				if err != nil {
+			
+					fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+			
+					return
+			
+				}
+			
+				defer resp.Body.Close()
+			
+				bdy, _ := ioutil.ReadAll(resp.Body)
+			
+				var i interface{}
+			
+				json.Unmarshal(bdy, &i)
+			
+				a := i.(map[string]interface{})
+				b := a["data"]
+				c := b.(map[string]interface{})
+				d := c[dir]
+				e := d.(map[string]interface{})
+				f := e["data"]
+				g := f.([]interface{})
+			
+				h := make([]map[string]interface{}, len(g))
+			
+				for j := 0; j < len(g); j++ {
+			
+					h[j] = g[j].(map[string]interface{})
+			
+				}
+			
+						k := make(map[int]string, 0)
+			
+						for j := 0; j < len(g); j++ {
+			
+							k[j] = h[j]["_id"].(string)
+			
+						}
+			
+						if len(k) > 0 {
+			
+							str = str + `
+							<span class="badge badge-dark">
+							` + strconv.Itoa(len(k)) + `
+							</span>
+							</button>
+			
+							`
+			
+						} else {
+			
+							str = str + `
+							</button>
+			
+							`
+			
+						}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -869,34 +1065,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			h, i := query(access.Secret, dir, value)
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < i; j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
-
-				str = str + `
-				<span class="badge badge-dark">
-				` + strconv.Itoa(len(k)) + `
-				</span>
-				</button>
-
-				`
-
-			} else {
-
-				str = str + `
-				</button>
-
-				`
-
-			}
+				s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+				body := strings.NewReader(s)
+				req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			
+				req.Header.Set("Authorization", "Bearer "+a)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+			
+				resp, err := http.DefaultClient.Do(req)
+			
+				if err != nil {
+			
+					fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+			
+					return
+			
+				}
+			
+				defer resp.Body.Close()
+			
+				bdy, _ := ioutil.ReadAll(resp.Body)
+			
+				var i interface{}
+			
+				json.Unmarshal(bdy, &i)
+			
+				a := i.(map[string]interface{})
+				b := a["data"]
+				c := b.(map[string]interface{})
+				d := c[dir]
+				e := d.(map[string]interface{})
+				f := e["data"]
+				g := f.([]interface{})
+			
+				h := make([]map[string]interface{}, len(g))
+			
+				for j := 0; j < len(g); j++ {
+			
+					h[j] = g[j].(map[string]interface{})
+			
+				}
+			
+						k := make(map[int]string, 0)
+			
+						for j := 0; j < len(g); j++ {
+			
+							k[j] = h[j]["_id"].(string)
+			
+						}
+			
+						if len(k) > 0 {
+			
+							str = str + `
+							<span class="badge badge-dark">
+							` + strconv.Itoa(len(k)) + `
+							</span>
+							</button>
+			
+							`
+			
+						} else {
+			
+							str = str + `
+							</button>
+			
+							`
+			
+						}
 
 			/* if string(b[k-q]) != "0" {
 
