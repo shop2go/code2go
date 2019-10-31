@@ -112,7 +112,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 		<br>
 		<div class="container" id="nav" style="color:white;">
-		` + time.Now().Year().Format("2006") + `
+		` + time.Now().Format("2006") + `
 		<br>
 		`
 
@@ -223,7 +223,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			str = str + `
 				<br>
-				` + time.Now().AddDate(0, t, 0).Year().Format("2006") + `
+				` + time.Now().AddDate(0, t, 0).Format("2006") + `
 				<br>
 				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
@@ -239,7 +239,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 		}
-		
+
 	}
 
 	str = str + `
