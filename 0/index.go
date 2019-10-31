@@ -79,13 +79,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	x.Get(&access)
 
-	if r.Method == http.MethodOptions {
+/* 	if r.Method == http.MethodOptions {
 
 		response(w, true, "", r.Method)
 
 		return
 
-	}
+	} */
 
 	var c Cal
 
@@ -187,7 +187,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	for t := 0; t < 13; t++ {
+	/* for t := 0; t < n; t++ {
 
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
@@ -210,7 +210,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-	}
+	} */
 
 	str = str + `
 		<button type="button" class="btn btn-light">` + now.Format("Jan") + `
