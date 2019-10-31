@@ -56,7 +56,7 @@ func response(w http.ResponseWriter, success bool, message string, method string
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	//var id f.RefV	
+	//var id f.RefV
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
 	n, _ := strconv.Atoi(url)
@@ -195,7 +195,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br> 
 				` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `
 				<br>
-				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0)..Format("Jan") + `
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
 
@@ -437,7 +437,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-			req.Header.Set("Authorization", "Bearer "+ access.Secret)
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
@@ -542,7 +542,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-			req.Header.Set("Authorization", "Bearer "+ access.Secret)
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
@@ -647,7 +647,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-			req.Header.Set("Authorization", "Bearer "+ access.Secret)
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
@@ -752,7 +752,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-			req.Header.Set("Authorization", "Bearer "+ access.Secret)
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
@@ -857,7 +857,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-			req.Header.Set("Authorization", "Bearer "+ access.Secret)
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
@@ -962,7 +962,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-			req.Header.Set("Authorization", "Bearer "+ access.Secret)
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
@@ -1067,7 +1067,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-			req.Header.Set("Authorization", "Bearer "+ access.Secret)
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Accept", "application/json")
 			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
