@@ -4,17 +4,10 @@
       
       { "src": "./main/index.go", "use": "@now/go" },
       
-      {"src": "./0/index.go", "use": "@now/go"},
-      
-      {"src": "./1/index.go", "use": "@now/go"},
-
-      {"src": "./2/index.go", "use": "@now/go"},
-
-      {"src": "./Monday/index.go", "use": "@now/go"},
-
-      {"src": "./book/index.go", "use": "@now/go"}
+      {"src": "./0/index.go", "use": "@now/go"}
 
     ],
+    
     "routes": [
         {
           "src": "/",
