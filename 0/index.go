@@ -114,7 +114,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 
-		fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
 
 		return
 
