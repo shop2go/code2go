@@ -79,7 +79,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	x.Get(&access)
 
-/* 	if r.Method == http.MethodOptions {
+	/* 	if r.Method == http.MethodOptions {
 
 		response(w, true, "", r.Method)
 
@@ -193,7 +193,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	t := 0
 
-	for t < 21;  {
+	for t < 21 {
 
 		t++
 
