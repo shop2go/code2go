@@ -172,8 +172,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if time.Now().Month() == now.Month() {
 
-		//p, _ = strconv.Atoi(time.Now().Format("02"))
-		p = time.Now().Day()
+		p, _ = strconv.Atoi(time.Now().Format("02"))
 
 	} else {
 
@@ -187,31 +186,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	/* for t := 0; t < n; t++ {
-
-		if time.Now().AddDate(0, t, 0).Year() != c.Year {
-
-			str = str + `
-				<br> 
-				` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `
-				<br>
-				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Format("Jan") + `
-				</button>
-				`
-
-			c.Year = time.Now().AddDate(0, t, 0).Year()
-
-		} else {
-
-			str = str + ` 
-				 <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Format("Jan") + `
-				 </button>
-				 `
-
-		}
-
-	} */
-
 	str = str + `
 		<button type="button" class="btn btn-light">` + time.Now().Month().String() + `
 		 </button>
@@ -219,7 +193,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	t := 1
 
-	for t < 22 {
+	for t < 21 {
 
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
@@ -241,8 +215,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 		}
-
-		time.Sleep(2e7)
 
 		t++
 
@@ -494,7 +466,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if len(k) > 0 {
 
 				str = str + `
-				<span class="badge badge-dark">
+				<span class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -599,7 +571,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if len(k) > 0 {
 
 				str = str + `
-							<span class="badge badge-dark">
+							<span class="badge badge-pill badge-dark">
 							` + strconv.Itoa(len(k)) + `
 							</span>
 							</button>
@@ -704,7 +676,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if len(k) > 0 {
 
 				str = str + `
-							<span class="badge badge-dark">
+							<span class="badge badge-pill badge-dark">
 							` + strconv.Itoa(len(k)) + `
 							</span>
 							</button>
@@ -809,7 +781,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if len(k) > 0 {
 
 				str = str + `
-							<span class="badge badge-dark">
+							<span class="badge badge-pill badge-dark">
 							` + strconv.Itoa(len(k)) + `
 							</span>
 							</button>
@@ -914,7 +886,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if len(k) > 0 {
 
 				str = str + `
-							<span class="badge badge-dark">
+							<span class="badge badge-pill badge-dark">
 							` + strconv.Itoa(len(k)) + `
 							</span>
 							</button>
@@ -1019,7 +991,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if len(k) > 0 {
 
 				str = str + `
-							<span class="badge badge-dark">
+							<span class="badge badge-pill badge-dark">
 							` + strconv.Itoa(len(k)) + `
 							</span>
 							</button>
@@ -1124,7 +1096,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if len(k) > 0 {
 
 				str = str + `
-							<span class="badge badge-dark">
+							<span class="badge badge-pill badge-dark">
 							` + strconv.Itoa(len(k)) + `
 							</span>
 							</button>
