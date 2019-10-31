@@ -7,13 +7,14 @@
       {"src": "./0/index.go", "use": "@now/go"}
 
     ],
-    
+
     "routes": [
         {
           "src": "/",
           "dest": "https://start.medienwerk.now.sh"
         }
       ],
+      
     "alias": "code2go.dev",
     
     "env": {
