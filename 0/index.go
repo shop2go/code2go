@@ -448,9 +448,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			b := a["data"]
 
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
 			c := b.(map[string]interface{})
 
 			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
 
 			e := d.(map[string]interface{})
 
@@ -594,9 +616,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			b := a["data"]
 
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
 			c := b.(map[string]interface{})
 
 			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
 
 			e := d.(map[string]interface{})
 
@@ -740,9 +784,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			b := a["data"]
 
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
 			c := b.(map[string]interface{})
 
 			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
 
 			e := d.(map[string]interface{})
 
@@ -886,9 +952,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			b := a["data"]
 
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
 			c := b.(map[string]interface{})
 
 			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
 
 			e := d.(map[string]interface{})
 
@@ -1032,9 +1120,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			b := a["data"]
 
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
 			c := b.(map[string]interface{})
 
 			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
 
 			e := d.(map[string]interface{})
 
@@ -1178,9 +1288,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			b := a["data"]
 
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
 			c := b.(map[string]interface{})
 
 			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
 
 			e := d.(map[string]interface{})
 
@@ -1193,6 +1325,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
 				break
 
 			}
@@ -1324,9 +1468,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			b := a["data"]
 
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
 			c := b.(map[string]interface{})
 
 			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
 
 			e := d.(map[string]interface{})
 
