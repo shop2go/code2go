@@ -419,7 +419,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
 
 				return
 
@@ -432,6 +432,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				fmt.Fprint(w, "... an error occured... please check back later ...")
+				return
+
+			}
 
 			a := i.(map[string]interface{})
 			b := a["data"]
@@ -524,7 +531,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
 
 				return
 
@@ -537,6 +544,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				fmt.Fprint(w, "... an error occured... please check back later ...")
+				return
+
+			}
 
 			a := i.(map[string]interface{})
 			b := a["data"]
@@ -629,7 +643,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
 
 				return
 
@@ -642,6 +656,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				fmt.Fprint(w, "... an error occured... please check back later ...")
+				return
+
+			}
 
 			a := i.(map[string]interface{})
 			b := a["data"]
@@ -734,7 +755,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
 
 				return
 
@@ -747,6 +768,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				fmt.Fprint(w, "... an error occured... please check back later ...")
+				return
+
+			}
 
 			a := i.(map[string]interface{})
 			b := a["data"]
@@ -839,7 +867,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
 
 				return
 
@@ -852,6 +880,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				fmt.Fprint(w, "... an error occured... please check back later ...")
+				return
+
+			}
 
 			a := i.(map[string]interface{})
 			b := a["data"]
@@ -944,7 +979,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
 
 				return
 
@@ -957,6 +992,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				fmt.Fprint(w, "... an error occured... please check back later ...")
+				return
+
+			}
 
 			a := i.(map[string]interface{})
 			b := a["data"]
@@ -1049,7 +1091,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "An error occured. Please refresh Browser window...")
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
 
 				return
 
@@ -1062,6 +1104,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				fmt.Fprint(w, "... an error occured... please check back later ...")
+				return
+
+			}
 
 			a := i.(map[string]interface{})
 			b := a["data"]
