@@ -1339,18 +1339,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-			}
-
-			g := f.([]interface{})
-
-			if g == nil {
-
-				str = str + `
-				</button>
-
-				`
-				break
-
 			} else {
 
 				h := make([]map[string]interface{}, len(g))
