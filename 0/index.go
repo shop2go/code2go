@@ -433,7 +433,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i = nil {
+			if i == nil {
 
 				fmt.Fprint(w, "... an error occured... please check back later ...")
 				return
