@@ -386,7 +386,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for k := q; k < 32; k++ {
 
-		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
+		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` fmt.Sprintf("%02d", utc)
 
 		switch c.Days[k] {
 
