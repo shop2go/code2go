@@ -384,8 +384,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	dir := "messagesByAppendedDate"
 	value := now.Format("2006-01-02")
 
-	blank := make(map[string]interface{})
-
 	for k := q; k < 32; k++ {
 
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
@@ -435,34 +433,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+			if i == nil {
 
-			if a == nil {
+				str = str + `
+				</button>
 
-				a = blank
+				`
+
+				break
 
 			}
+
+			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			c := b.(map[string]interface{})
 
-			if b == nil {
-
-				b = blank
-
-			}
-
 			d := c[dir]
+
 			e := d.(map[string]interface{})
 
-			if e == nil {
+			f := e["data"]
 
-				e = blank
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
 
 			}
 
-			f := e["data"]
 			g := f.([]interface{})
 
 			if g == nil {
@@ -575,34 +579,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+			if i == nil {
 
-			if a == nil {
+				str = str + `
+				</button>
 
-				a = blank
+				`
+
+				break
 
 			}
+
+			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			c := b.(map[string]interface{})
 
-			if b == nil {
-
-				b = blank
-
-			}
-
 			d := c[dir]
+
 			e := d.(map[string]interface{})
 
-			if e == nil {
+			f := e["data"]
 
-				e = blank
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
 
 			}
 
-			f := e["data"]
 			g := f.([]interface{})
 
 			if g == nil {
@@ -715,34 +725,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+			if i == nil {
 
-			if a == nil {
+				str = str + `
+				</button>
 
-				a = blank
+				`
+
+				break
 
 			}
+
+			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			c := b.(map[string]interface{})
 
-			if b == nil {
-
-				b = blank
-
-			}
-
 			d := c[dir]
+
 			e := d.(map[string]interface{})
 
-			if e == nil {
+			f := e["data"]
 
-				e = blank
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
 
 			}
 
-			f := e["data"]
 			g := f.([]interface{})
 
 			if g == nil {
@@ -855,34 +871,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+			if i == nil {
 
-			if a == nil {
+				str = str + `
+				</button>
 
-				a = blank
+				`
+
+				break
 
 			}
+
+			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			c := b.(map[string]interface{})
 
-			if b == nil {
-
-				b = blank
-
-			}
-
 			d := c[dir]
+
 			e := d.(map[string]interface{})
 
-			if e == nil {
+			f := e["data"]
 
-				e = blank
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
 
 			}
 
-			f := e["data"]
 			g := f.([]interface{})
 
 			if g == nil {
@@ -995,34 +1017,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+			if i == nil {
 
-			if a == nil {
+				str = str + `
+				</button>
 
-				a = blank
+				`
+
+				break
 
 			}
+
+			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			c := b.(map[string]interface{})
 
-			if b == nil {
-
-				b = blank
-
-			}
-
 			d := c[dir]
+
 			e := d.(map[string]interface{})
 
-			if e == nil {
+			f := e["data"]
 
-				e = blank
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
 
 			}
 
-			f := e["data"]
 			g := f.([]interface{})
 
 			if g == nil {
@@ -1135,34 +1163,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+			if i == nil {
 
-			if a == nil {
+				str = str + `
+				</button>
 
-				a = blank
+				`
+
+				break
 
 			}
+
+			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			c := b.(map[string]interface{})
 
-			if b == nil {
-
-				b = blank
-
-			}
-
 			d := c[dir]
+
 			e := d.(map[string]interface{})
 
-			if e == nil {
+			f := e["data"]
 
-				e = blank
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
 
 			}
 
-			f := e["data"]
 			g := f.([]interface{})
 
 			if g == nil {
@@ -1275,34 +1309,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+			if i == nil {
 
-			if a == nil {
+				str = str + `
+				</button>
 
-				a = blank
+				`
+
+				break
 
 			}
+
+			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			c := b.(map[string]interface{})
 
-			if b == nil {
-
-				b = blank
-
-			}
-
 			d := c[dir]
+
 			e := d.(map[string]interface{})
 
-			if e == nil {
+			f := e["data"]
 
-				e = blank
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
 
 			}
 
-			f := e["data"]
 			g := f.([]interface{})
 
 			if g == nil {
