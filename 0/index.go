@@ -383,7 +383,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	dir := "messagesByAppendedDate"
 	value := now.Format("2006-01-02")
-	
+
 	blank := make(map[string]interface{})
 
 	for k := q; k < 32; k++ {
@@ -442,9 +442,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				a = blank
 
 			}
-			
-			b := a["data"]
 
+			b := a["data"]
 
 			c := b.(map[string]interface{})
 
@@ -474,9 +473,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-				} else {
+			} else {
 
-				
 				h := make([]map[string]interface{}, len(g))
 
 				for j := 0; j < len(g); j++ {
@@ -503,14 +501,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
-				}
+				} else {
 
-			} else {
-
-				str = str + `
+					str = str + `
 				</button>
 
 				`
+					break
+
+				}
 
 			}
 
@@ -583,9 +582,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				a = blank
 
 			}
-			
-			b := a["data"]
 
+			b := a["data"]
 
 			c := b.(map[string]interface{})
 
@@ -615,9 +613,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-				} else {
+			} else {
 
-				
 				h := make([]map[string]interface{}, len(g))
 
 				for j := 0; j < len(g); j++ {
@@ -644,14 +641,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
-				}
+				} else {
 
-			} else {
-
-				str = str + `
+					str = str + `
 				</button>
 
 				`
+					break
+
+				}
 
 			}
 
@@ -716,17 +714,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
-			
+
 			a := i.(map[string]interface{})
-			
+
 			if a == nil {
 
 				a = blank
 
 			}
-			
-			b := a["data"]
 
+			b := a["data"]
 
 			c := b.(map[string]interface{})
 
@@ -756,9 +753,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-				} else {
+			} else {
 
-				
 				h := make([]map[string]interface{}, len(g))
 
 				for j := 0; j < len(g); j++ {
@@ -785,14 +781,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
-				}
+				} else {
 
-			} else {
-
-				str = str + `
+					str = str + `
 				</button>
 
 				`
+					break
+
+				}
 
 			}
 
@@ -859,15 +856,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			json.Unmarshal(bdy, &i)
 
 			a := i.(map[string]interface{})
-			
+
 			if a == nil {
 
 				a = blank
 
 			}
-			
-			b := a["data"]
 
+			b := a["data"]
 
 			c := b.(map[string]interface{})
 
@@ -897,9 +893,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-				} else {
+			} else {
 
-				
 				h := make([]map[string]interface{}, len(g))
 
 				for j := 0; j < len(g); j++ {
@@ -926,14 +921,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
-				}
+				} else {
 
-			} else {
-
-				str = str + `
+					str = str + `
 				</button>
 
 				`
+					break
+
+				}
 
 			}
 
@@ -1000,15 +996,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			json.Unmarshal(bdy, &i)
 
 			a := i.(map[string]interface{})
-			
+
 			if a == nil {
 
 				a = blank
 
 			}
-			
-			b := a["data"]
 
+			b := a["data"]
 
 			c := b.(map[string]interface{})
 
@@ -1038,9 +1033,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-				} else {
+			} else {
 
-				
 				h := make([]map[string]interface{}, len(g))
 
 				for j := 0; j < len(g); j++ {
@@ -1067,14 +1061,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
-				}
+				} else {
 
-			} else {
-
-				str = str + `
+					str = str + `
 				</button>
 
 				`
+					break
+
+				}
 
 			}
 
@@ -1141,15 +1136,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			json.Unmarshal(bdy, &i)
 
 			a := i.(map[string]interface{})
-			
+
 			if a == nil {
 
 				a = blank
 
 			}
-			
-			b := a["data"]
 
+			b := a["data"]
 
 			c := b.(map[string]interface{})
 
@@ -1179,9 +1173,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-				} else {
+			} else {
 
-				
 				h := make([]map[string]interface{}, len(g))
 
 				for j := 0; j < len(g); j++ {
@@ -1208,14 +1201,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
-				}
+				} else {
 
-			} else {
-
-				str = str + `
+					str = str + `
 				</button>
 
 				`
+					break
+
+				}
 
 			}
 
@@ -1282,15 +1276,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			json.Unmarshal(bdy, &i)
 
 			a := i.(map[string]interface{})
-			
+
 			if a == nil {
 
 				a = blank
 
 			}
-			
-			b := a["data"]
 
+			b := a["data"]
 
 			c := b.(map[string]interface{})
 
@@ -1320,9 +1313,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 				break
 
-				} else {
+			} else {
 
-				
 				h := make([]map[string]interface{}, len(g))
 
 				for j := 0; j < len(g); j++ {
@@ -1349,14 +1341,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 
-				}
+				} else {
 
-			} else {
-
-				str = str + `
+					str = str + `
 				</button>
 
 				`
+					break
+
+				}
 
 			}
 
