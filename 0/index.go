@@ -204,7 +204,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + time.Now().AddDate(0, t, 0).Format("2006") + `
 				<br>
 				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
-				`+ time.Now().AddDate(0, t, 0).Format("Jan") + `
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
 
@@ -383,6 +383,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	dir := "messagesByAppendedDate"
 	value := now.Format("2006-01-02")
+	
+	blank := make(map[string]interface{})
 
 	for k := q; k < 32; k++ {
 
@@ -433,48 +435,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i == nil {
+			a := i.(map[string]interface{})
 
-				fmt.Fprint(w, "... an error occured... please check back later ...")
-				return
+			if a == nil {
+
+				a = blank
+
+			}
+			
+			b := a["data"]
+
+
+			c := b.(map[string]interface{})
+
+			if b == nil {
+
+				b = blank
 
 			}
 
-			a := i.(map[string]interface{})
-			b := a["data"]
-			c := b.(map[string]interface{})
 			d := c[dir]
 			e := d.(map[string]interface{})
+
+			if e == nil {
+
+				e = blank
+
+			}
+
 			f := e["data"]
 			g := f.([]interface{})
 
-			if len(g) != 0 {
-
-			h := make([]map[string]interface{}, len(g))
-
-			for j := 0; j < len(g); j++ {
-
-				h[j] = g[j].(map[string]interface{})
-
-			}
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < len(g); j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
+			if g == nil {
 
 				str = str + `
+				</button>
+
+				`
+				break
+
+				} else {
+
+				
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
 				<span style="text-align: center" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
 
 				`
+
+				}
 
 			} else {
 
@@ -484,15 +513,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-		} else {
-
-			str = str + `
-				</button>
-
-				`
-
-		}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -556,48 +576,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i == nil {
+			a := i.(map[string]interface{})
 
-				fmt.Fprint(w, "... an error occured... please check back later ...")
-				return
+			if a == nil {
+
+				a = blank
+
+			}
+			
+			b := a["data"]
+
+
+			c := b.(map[string]interface{})
+
+			if b == nil {
+
+				b = blank
 
 			}
 
-			a := i.(map[string]interface{})
-			b := a["data"]
-			c := b.(map[string]interface{})
 			d := c[dir]
 			e := d.(map[string]interface{})
+
+			if e == nil {
+
+				e = blank
+
+			}
+
 			f := e["data"]
 			g := f.([]interface{})
 
-			if len(g) != 0 {
-
-			h := make([]map[string]interface{}, len(g))
-
-			for j := 0; j < len(g); j++ {
-
-				h[j] = g[j].(map[string]interface{})
-
-			}
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < len(g); j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
+			if g == nil {
 
 				str = str + `
+				</button>
+
+				`
+				break
+
+				} else {
+
+				
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
 				<span style="text-align: center" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
 
 				`
+
+				}
 
 			} else {
 
@@ -607,15 +654,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-		} else {
-
-			str = str + `
-				</button>
-
-				`
-
-		}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -678,49 +716,76 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var i interface{}
 
 			json.Unmarshal(bdy, &i)
+			
+			a := i.(map[string]interface{})
+			
+			if a == nil {
 
-			if i == nil {
+				a = blank
 
-				fmt.Fprint(w, "... an error occured... please check back later ...")
-				return
+			}
+			
+			b := a["data"]
+
+
+			c := b.(map[string]interface{})
+
+			if b == nil {
+
+				b = blank
 
 			}
 
-			a := i.(map[string]interface{})
-			b := a["data"]
-			c := b.(map[string]interface{})
 			d := c[dir]
 			e := d.(map[string]interface{})
+
+			if e == nil {
+
+				e = blank
+
+			}
+
 			f := e["data"]
 			g := f.([]interface{})
-			
-			if len(g) != 0 {
 
-			h := make([]map[string]interface{}, len(g))
-
-			for j := 0; j < len(g); j++ {
-
-				h[j] = g[j].(map[string]interface{})
-
-			}
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < len(g); j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
+			if g == nil {
 
 				str = str + `
+				</button>
+
+				`
+				break
+
+				} else {
+
+				
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
 				<span style="text-align: center" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
 
 				`
+
+				}
 
 			} else {
 
@@ -730,15 +795,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-		} else {
-
-			str = str + `
-				</button>
-
-				`
-
-		}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -802,48 +858,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i == nil {
+			a := i.(map[string]interface{})
+			
+			if a == nil {
 
-				fmt.Fprint(w, "... an error occured... please check back later ...")
-				return
+				a = blank
+
+			}
+			
+			b := a["data"]
+
+
+			c := b.(map[string]interface{})
+
+			if b == nil {
+
+				b = blank
 
 			}
 
-			a := i.(map[string]interface{})
-			b := a["data"]
-			c := b.(map[string]interface{})
 			d := c[dir]
 			e := d.(map[string]interface{})
+
+			if e == nil {
+
+				e = blank
+
+			}
+
 			f := e["data"]
 			g := f.([]interface{})
-			
-			if len(g) != 0 {
 
-			h := make([]map[string]interface{}, len(g))
-
-			for j := 0; j < len(g); j++ {
-
-				h[j] = g[j].(map[string]interface{})
-
-			}
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < len(g); j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
+			if g == nil {
 
 				str = str + `
+				</button>
+
+				`
+				break
+
+				} else {
+
+				
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
 				<span style="text-align: center" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
 
 				`
+
+				}
 
 			} else {
 
@@ -853,15 +936,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-		} else {
-
-			str = str + `
-				</button>
-
-				`
-
-		}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -925,48 +999,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i == 0 {
+			a := i.(map[string]interface{})
+			
+			if a == nil {
 
-				fmt.Fprint(w, "... an error occured... please check back later ...")
-				return
+				a = blank
+
+			}
+			
+			b := a["data"]
+
+
+			c := b.(map[string]interface{})
+
+			if b == nil {
+
+				b = blank
 
 			}
 
-			a := i.(map[string]interface{})
-			b := a["data"]
-			c := b.(map[string]interface{})
 			d := c[dir]
 			e := d.(map[string]interface{})
+
+			if e == nil {
+
+				e = blank
+
+			}
+
 			f := e["data"]
 			g := f.([]interface{})
-			
-			if len(g) != 0 {
 
-			h := make([]map[string]interface{}, len(g))
-
-			for j := 0; j < len(g); j++ {
-
-				h[j] = g[j].(map[string]interface{})
-
-			}
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < len(g); j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
+			if g == nil {
 
 				str = str + `
+				</button>
+
+				`
+				break
+
+				} else {
+
+				
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
 				<span style="text-align: center" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
 
 				`
+
+				}
 
 			} else {
 
@@ -976,15 +1077,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-		} else {
-
-			str = str + `
-				</button>
-
-				`
-
-		}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -1048,48 +1140,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i == nil {
+			a := i.(map[string]interface{})
+			
+			if a == nil {
 
-				fmt.Fprint(w, "... an error occured... please check back later ...")
-				return
+				a = blank
+
+			}
+			
+			b := a["data"]
+
+
+			c := b.(map[string]interface{})
+
+			if b == nil {
+
+				b = blank
 
 			}
 
-			a := i.(map[string]interface{})
-			b := a["data"]
-			c := b.(map[string]interface{})
 			d := c[dir]
 			e := d.(map[string]interface{})
+
+			if e == nil {
+
+				e = blank
+
+			}
+
 			f := e["data"]
 			g := f.([]interface{})
-			
-			if len(g) != 0 {
 
-			h := make([]map[string]interface{}, len(g))
-
-			for j := 0; j < len(g); j++ {
-
-				h[j] = g[j].(map[string]interface{})
-
-			}
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < len(g); j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
+			if g == nil {
 
 				str = str + `
+				</button>
+
+				`
+				break
+
+				} else {
+
+				
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
 				<span style="text-align: center" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
 
 				`
+
+				}
 
 			} else {
 
@@ -1099,15 +1218,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-		} else {
-
-			str = str + `
-				</button>
-
-				`
-
-		}
 
 			/* if string(b[k-q]) != "0" {
 
@@ -1171,48 +1281,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i == nil {
+			a := i.(map[string]interface{})
+			
+			if a == nil {
 
-				fmt.Fprint(w, "... an error occured... please check back later ...")
-				return
+				a = blank
+
+			}
+			
+			b := a["data"]
+
+
+			c := b.(map[string]interface{})
+
+			if b == nil {
+
+				b = blank
 
 			}
 
-			a := i.(map[string]interface{})
-			b := a["data"]
-			c := b.(map[string]interface{})
 			d := c[dir]
 			e := d.(map[string]interface{})
+
+			if e == nil {
+
+				e = blank
+
+			}
+
 			f := e["data"]
 			g := f.([]interface{})
-			
-			if len(g) != 0 {
 
-			h := make([]map[string]interface{}, len(g))
-
-			for j := 0; j < len(g); j++ {
-
-				h[j] = g[j].(map[string]interface{})
-
-			}
-
-			k := make(map[int]string, 0)
-
-			for j := 0; j < len(g); j++ {
-
-				k[j] = h[j]["_id"].(string)
-
-			}
-
-			if len(k) > 0 {
+			if g == nil {
 
 				str = str + `
+				</button>
+
+				`
+				break
+
+				} else {
+
+				
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
 				<span style="text-align: center" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
 
 				`
+
+				}
 
 			} else {
 
@@ -1222,15 +1359,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-		} else {
-
-			str = str + `
-				</button>
-
-				`
-
-		}
 
 			/* if string(b[k-q]) != "0" {
 
