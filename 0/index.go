@@ -448,7 +448,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			f := e["data"]
 			g := f.([]interface{})
 
-			if len(g) != nil {
+			if len(g) != 0 {
 
 			h := make([]map[string]interface{}, len(g))
 
@@ -571,7 +571,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			f := e["data"]
 			g := f.([]interface{})
 
-			if len(g) != nil {
+			if len(g) != 0 {
 
 			h := make([]map[string]interface{}, len(g))
 
@@ -694,7 +694,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			f := e["data"]
 			g := f.([]interface{})
 			
-			if len(g) != nil {
+			if len(g) != 0 {
 
 			h := make([]map[string]interface{}, len(g))
 
@@ -817,7 +817,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			f := e["data"]
 			g := f.([]interface{})
 			
-			if len(g) != nil {
+			if len(g) != 0 {
 
 			h := make([]map[string]interface{}, len(g))
 
@@ -925,7 +925,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			json.Unmarshal(bdy, &i)
 
-			if i == nil {
+			if i == 0 {
 
 				fmt.Fprint(w, "... an error occured... please check back later ...")
 				return
@@ -1063,7 +1063,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			f := e["data"]
 			g := f.([]interface{})
 			
-			if len(g) != nil {
+			if len(g) != 0 {
 
 			h := make([]map[string]interface{}, len(g))
 
