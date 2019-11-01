@@ -1,12 +1,18 @@
 package main
 
 import (
-	"io"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	//"github.com/mschneider82/problem"
+
+	f "github.com/fauna/faunadb-go/faunadb"
 )
 
 type Cal struct {
@@ -15,596 +21,1723 @@ type Cal struct {
 	Days  map[int]string
 }
 
+type Access struct {
+	//Reference *f.RefV `fauna:"ref"`
+	Timestamp int    `fauna:"ts"`
+	Secret    string `fauna:"secret"`
+	Role      string `fauna:"role"`
+}
+
+func response(w http.ResponseWriter, success bool, message string, method string) {
+	// Create a map for the response body
+	body := make(map[string]interface{})
+
+	// Prepare the return data
+	if success {
+		body["type"] = "connected"
+	} else {
+		body["type"] = "failure"
+	}
+	body["message"] = message
+
+	bodyString, _ := json.Marshal(body)
+
+	// Return the response
+	if method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(bodyString)
+
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	switch r.Method {
+	//var id f.RefV
+	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	case "GET":
+	n, _ := strconv.Atoi(url)
 
-		url := strings.TrimPrefix(r.URL.Path, "/")
+	now := time.Now().AddDate(0, n, 0)
 
-		n, _ := strconv.Atoi(url)
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-		now := time.Now().AddDate(0, n, 0)
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
 
-		/* 	var start time.Time
-		var end time.Time */
-		var c Cal
+	if err != nil {
 
-		c.Year = now.Year()
+		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
 
-		str := `
+		return
 
-		   <!DOCTYPE html>
-		   <html lang="en">
-				<head>
-					   <meta charset="UTF-8">
-					   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-					   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-					   <title>CODE2GO</title>
-					   <!-- CSS -->
-					   <!-- Add Material font (Roboto) and Material icon as needed -->
-					   <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-					   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   
-					   <!-- Add Material CSS, replace Bootstrap CSS -->
-					   <link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-					   </head>
-					   <body style="background-color: #bcbcbc;">
-   
-   
-   
-					   <div class="container" id="search" style="color:white; font-size:30px;">
-					   <form class="form-inline" role="form" method="post">
-	   <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
-	   <button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-	 </div><br><div class="container" id="nav" style="color:white;">
-	 ` + strconv.Itoa(time.Now().Year()) + `<br>
-	 `
+	}
 
-		month, _ := strconv.Atoi(now.Format("01"))
-		c.Month = month
-		day := map[int]string{now.Day(): now.Weekday().String()}
+	var access *Access
 
-		c.Days = day
+	x.Get(&access)
 
-		i := 1
+	/* 	if r.Method == http.MethodOptions {
 
-		for i < 32 {
+		response(w, true, "", r.Method)
 
-			d := now.AddDate(0, 0, i)
+		return
 
-			m, _ := strconv.Atoi(d.Format("01"))
+	} */
 
-			if m != month {
+	var c Cal
 
-				break
+	c.Year = now.Year()
 
-			}
+	str := `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>CODE2GO</title>
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+		</head>
+		<body style="background-color: #bcbcbc;">
+   		<div class="container" id="search" style="color:white; font-size:30px;">
+		<form class="form-inline" role="form">
+	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
+	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
+		</form>
+		</div>
+		<br>
+		<div class="container" id="nav" style="color:white;">
+		` + time.Now().Format("2006") + `
+		<br>
+		`
 
-			e, _ := strconv.Atoi(d.Format("02"))
+	month, _ := strconv.Atoi(now.Format("01"))
+	c.Month = month
+	day := map[int]string{now.Day(): now.Weekday().String()}
 
-			c.Days[e] = d.Weekday().String()
+	c.Days = day
 
-			i++
+	i := 1
 
-		}
+	for i < 32 {
 
-		j := 1
+		d := now.AddDate(0, 0, i)
 
-		for j > 0 {
+		//m, _ := strconv.Atoi(d.Format("01"))
 
-			d := now.AddDate(0, 0, -j)
+		if d.Month() != now.Month() {
 
-			m, _ := strconv.Atoi(d.Format("01"))
-
-			if m != month {
-
-				break
-
-			}
-
-			e, _ := strconv.Atoi(d.Format("02"))
-
-			c.Days[e] = d.Weekday().String()
-
-			j++
+			break
 
 		}
 
-		var p int
-		var q int
+		e, _ := strconv.Atoi(d.Format("02"))
 
-		l := len(c.Days)
+		c.Days[e] = d.Weekday().String()
 
-		if time.Now().Month() == now.Month() {
+		i++
 
-			p, _ = strconv.Atoi(time.Now().Format("02"))
+	}
+
+	j := 1
+
+	for j > 0 {
+
+		d := now.AddDate(0, 0, -j)
+
+		//m, _ := strconv.Atoi(d.Format("01"))
+
+		if d.Month() != now.Month() {
+
+			break
+
+		}
+
+		e, _ := strconv.Atoi(d.Format("02"))
+
+		c.Days[e] = d.Weekday().String()
+
+		j++
+
+	}
+
+	var p, q int
+
+	l := len(c.Days)
+
+	if time.Now().Month() == now.Month() {
+
+		p, _ = strconv.Atoi(time.Now().Format("02"))
+
+	} else {
+
+		p = 1
+
+	}
+
+	for i := l; i >= p; i-- {
+
+		q = i
+
+	}
+
+	str = str + `
+		<button type="button" class="btn btn-light">` + time.Now().Format("Jan") + `
+		 </button>
+		 `
+
+	t := 0
+
+	for t < 21 {
+
+		t++
+
+		if time.Now().AddDate(0, t, 0).Year() != c.Year {
+
+			str = str + `
+				<br>
+				` + time.Now().AddDate(0, t, 0).Format("2006") + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+			c.Year = time.Now().AddDate(0, t, 0).Year()
 
 		} else {
 
-			p = 1
+			str = str + `
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
 
 		}
 
-		for i := l; i >= p; i-- {
+	}
 
-			q = i
+	c.Year = now.Year()
 
-		}
+	str = str + `
+		<br>
+		</div>
+		<br>
+		<div class="container" id="data" style="color:white;">
+		<form class="form-inline" role="form"  method="post">
+		<ul class="list-group">
+		`
 
-		//o := strconv.Itoa(n + 1)
+	switch c.Days[q] {
 
-		for t := 0; t < n; t++ {
+	case "Monday":
+		break
+	case "Tuesday":
+		str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
+			</span>
+			</button>
+			`
+	case "Wednesday":
+		str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
+			</span>
+			</button>
+			`
 
-			if time.Now().AddDate(0, t, 0).Year() != c.Year {
+	case "Thursday":
+		str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
+			</span>
+			</button>
+			`
+	case "Friday":
+		str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
+			</span>
+			</button>
+			`
+	case "Saturday":
+		str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
+			</span>
+			</button>
+			`
+	case "Sunday":
+		str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Monday'">
+			<span class="badge badge-pill badge-dark">
+			Monday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
+			</span>
+			</button>
+			`
+	}
 
-				str = str + `<br> ` +
+	//TODO:make cert client
 
-					strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `<br>
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+	/* 		resp, err := http.Get("https://"+ip+"/" + url)
 
- 
- `
-				c.Year = time.Now().AddDate(0, t, 0).Year()
+	   		if err != nil {
+	   			problem.New(problem.Type("https://"+ip+"/404"), problem.Status(404)).WriteTo(w)
+	   			os.Exit(2)
+	   		}
+
+	   		b, _ := ioutil.ReadAll(resp.Body)
+			   resp.Body.Close() */
+
+	dir := "messagesByAppendedDate"
+	value := now.Format("2006-01-02")
+
+	for k := q; k < 32; k++ {
+
+		s := fmt.Sprintf("%02d", k)
+		
+		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + s
+
+		switch c.Days[k] {
+
+		case "Monday":
+
+			str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+				</span>
+				</button>
+				`
+
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			body := strings.NewReader(s)
+			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+
+				return
+
+			}
+
+			defer resp.Body.Close()
+
+			bdy, _ := ioutil.ReadAll(resp.Body)
+
+			var i interface{}
+
+			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			c := b.(map[string]interface{})
+
+			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			e := d.(map[string]interface{})
+
+			f := e["data"]
+
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
+				break
+
+			} else {
+
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
+				<span style="text-align: center" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(len(k)) + `
+				</span>
+				</button>
+
+				`
+
+				} else {
+
+					str = str + `
+				</button>
+
+				`
+					break
+
+				}
+
+			}
+
+			/* if string(b[k-q]) != "0" {
+
+				str = str + `
+				<span class="badge badge-dark">
+				` + string(b[k-q]) + `
+				</span>
+				</button>
+
+				`
 
 			} else {
 
 				str = str + `
+				</button>
 
- 
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+				`
 
- 
- `
+			} */
+
+		case "Tuesday":
+
+			str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+				</span>
+				</button>
+				`
+
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			body := strings.NewReader(s)
+			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+
+				return
+
 			}
 
-		}
+			defer resp.Body.Close()
 
-		str = str + `
+			bdy, _ := ioutil.ReadAll(resp.Body)
 
- 
- <button type="button" class="btn btn-light">` + now.Month().String() + `
- </button>
+			var i interface{}
 
-`
+			json.Unmarshal(bdy, &i)
 
-		for t := n + 1; t < 21; t++ {
+			if i == nil {
 
-			if time.Now().AddDate(0, t, 0).Year() != c.Year {
+				str = str + `
+				</button>
 
-				str = str + `<br> ` + strconv.Itoa(time.Now().AddDate(0, t, 0).Year()) + `<br>
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+				`
 
- 
- `
+				break
 
-				c.Year = time.Now().AddDate(0, t, 0).Year()
+			}
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			c := b.(map[string]interface{})
+
+			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			e := d.(map[string]interface{})
+
+			f := e["data"]
+
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
+				break
+
+			} else {
+
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
+				<span style="text-align: center" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(len(k)) + `
+				</span>
+				</button>
+
+				`
+
+				} else {
+
+					str = str + `
+				</button>
+
+				`
+					break
+
+				}
+
+			}
+
+			/* if string(b[k-q]) != "0" {
+
+				str = str + `
+				<span class="badge badge-dark">
+				` + string(b[k-q]) + `
+				</span>
+				</button>
+
+				`
 
 			} else {
 
 				str = str + `
+				</button>
 
- 
- <button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">` + time.Now().AddDate(0, t, 0).Month().String() + `</button>
+				`
 
- 
- `
+			} */
+
+		case "Wednesday":
+
+			str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+				</span>
+				</button>
+				`
+
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			body := strings.NewReader(s)
+			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+
+				return
+
 			}
+
+			defer resp.Body.Close()
+
+			bdy, _ := ioutil.ReadAll(resp.Body)
+
+			var i interface{}
+
+			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			c := b.(map[string]interface{})
+
+			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			e := d.(map[string]interface{})
+
+			f := e["data"]
+
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
+				break
+
+			} else {
+
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
+				<span style="text-align: center" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(len(k)) + `
+				</span>
+				</button>
+
+				`
+
+				} else {
+
+					str = str + `
+				</button>
+
+				`
+					break
+
+				}
+
+			}
+
+			/* if string(b[k-q]) != "0" {
+
+				str = str + `
+				<span class="badge badge-dark">
+				` + string(b[k-q]) + `
+				</span>
+				</button>
+
+				`
+
+			} else {
+
+				str = str + `
+				</button>
+
+				`
+
+			} */
+
+		case "Thursday":
+
+			str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+				</span>
+				</button>
+				`
+
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			body := strings.NewReader(s)
+			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+
+				return
+
+			}
+
+			defer resp.Body.Close()
+
+			bdy, _ := ioutil.ReadAll(resp.Body)
+
+			var i interface{}
+
+			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			c := b.(map[string]interface{})
+
+			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			e := d.(map[string]interface{})
+
+			f := e["data"]
+
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
+				break
+
+			} else {
+
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
+				<span style="text-align: center" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(len(k)) + `
+				</span>
+				</button>
+
+				`
+
+				} else {
+
+					str = str + `
+				</button>
+
+				`
+					break
+
+				}
+
+			}
+
+			/* if string(b[k-q]) != "0" {
+
+				str = str + `
+				<span class="badge badge-dark">
+				` + string(b[k-q]) + `
+				</span>
+				</button>
+
+				`
+
+			} else {
+
+				str = str + `
+				</button>
+
+				`
+
+			} */
+
+		case "Friday":
+
+			str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+				</span>
+				</button>
+				`
+
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			body := strings.NewReader(s)
+			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+
+				return
+
+			}
+
+			defer resp.Body.Close()
+
+			bdy, _ := ioutil.ReadAll(resp.Body)
+
+			var i interface{}
+
+			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			c := b.(map[string]interface{})
+
+			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			e := d.(map[string]interface{})
+
+			f := e["data"]
+
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
+				break
+
+			} else {
+
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
+				<span style="text-align: center" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(len(k)) + `
+				</span>
+				</button>
+
+				`
+
+				} else {
+
+					str = str + `
+				</button>
+
+				`
+					break
+
+				}
+
+			}
+
+			/* if string(b[k-q]) != "0" {
+
+				str = str + `
+				<span class="badge badge-dark">
+				` + string(b[k-q]) + `
+				</span>
+				</button>
+
+				`
+
+			} else {
+
+				str = str + `
+				</button>
+
+				`
+
+			} */
+
+		case "Saturday":
+
+			str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+				</span>
+				</button>
+				`
+
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			body := strings.NewReader(s)
+			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+
+				return
+
+			}
+
+			defer resp.Body.Close()
+
+			bdy, _ := ioutil.ReadAll(resp.Body)
+
+			var i interface{}
+
+			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			c := b.(map[string]interface{})
+
+			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			e := d.(map[string]interface{})
+
+			f := e["data"]
+
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
+				break
+
+			} else {
+
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
+				<span style="text-align: center" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(len(k)) + `
+				</span>
+				</button>
+
+				`
+
+				} else {
+
+					str = str + `
+				</button>
+
+				`
+					break
+
+				}
+
+			}
+
+			/* if string(b[k-q]) != "0" {
+
+				str = str + `
+				<span class="badge badge-dark">
+				` + string(b[k-q]) + `
+				</span>
+				</button>
+
+				`
+
+			} else {
+
+				str = str + `
+				</button>
+
+				`
+
+			} */
+
+		case "Sunday":
+
+			str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+				</span>
+				</button>
+				`
+
+			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			body := strings.NewReader(s)
+			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+
+				return
+
+			}
+
+			defer resp.Body.Close()
+
+			bdy, _ := ioutil.ReadAll(resp.Body)
+
+			var i interface{}
+
+			json.Unmarshal(bdy, &i)
+
+			if i == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			c := b.(map[string]interface{})
+
+			d := c[dir]
+
+			if d == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			e := d.(map[string]interface{})
+
+			f := e["data"]
+
+			if f == nil {
+
+				str = str + `
+				</button>
+
+				`
+
+				break
+
+			}
+
+			g := f.([]interface{})
+
+			if g == nil {
+
+				str = str + `
+				</button>
+
+				`
+				break
+
+			} else {
+
+				h := make([]map[string]interface{}, len(g))
+
+				for j := 0; j < len(g); j++ {
+
+					h[j] = g[j].(map[string]interface{})
+
+				}
+
+				k := make(map[int]string, 0)
+
+				for j := 0; j < len(g); j++ {
+
+					k[j] = h[j]["_id"].(string)
+
+				}
+
+				if len(k) > 0 {
+
+					str = str + `
+				<span style="text-align: center" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(len(k)) + `
+				</span>
+				</button>
+
+				`
+
+				} else {
+
+					str = str + `
+				</button>
+
+				`
+					break
+
+				}
+
+			}
+
+			/* if string(b[k-q]) != "0" {
+
+				str = str + `
+				<span class="badge badge-dark">
+				` + string(b[k-q]) + `
+				</span>
+				</button>
+
+				`
+
+			} else {
+
+				str = str + `
+				</button>
+
+				`
+
+			} */
+
 		}
 
+	}
+
+	switch c.Days[len(c.Days)] {
+
+	case "Monday":
 		str = str + `
- 
- </form><br>
- </div>
- 
-					<div class="container" id="data" style="color:white;">
-	<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Tuesday'">
+			<span class="badge badge-pill badge-dark">
+			Tuesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
+			</span>
+			</button>
+			`
 
-		`
+	case "Tuesday":
+		str = str + `
+			<button type="button" class="btn btn-link" onclick="window.location.href='Wednesday'">
+			<span class="badge badge-pill badge-dark">
+			Wednesday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
+			</span>
+			</button>
+			`
 
-		c.Year = now.Year()
+	case "Wednesday":
+		str = str + `
+			<button type="button" class="btn btn-link" onclick="window.location.href='Thursday'">
+			<span class="badge badge-pill badge-dark">
+			Thursday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
+			</span>
+			</button>
+			`
 
-		switch c.Days[q] {
+	case "Thursday":
+		str = str + `
+			<button type="button" class="btn btn-link" onclick="window.location.href='Friday'">
+			<span class="badge badge-pill badge-dark">
+			Friday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
+			</span>
+			</button>
+			`
 
-		case "Monday":
-			break
-		case "Tuesday":
-			str = str + `
+	case "Friday":
+		str = str + `
+			<button type="button" class="btn btn-link" onclick="window.location.href='Saturday'">
+			<span class="badge badge-pill badge-dark">
+			Saturday
+			</span>
+			</button>
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
+			</span>
+			</button>
+			`
 
-		
-		
-		
-		<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-		`
-		case "Wednesday":
-			str = str + `
-					
+	case "Saturday":
+		str = str + `
+			<button type="button" class="btn btn-link" onclick="window.location.href='Sunday'">
+			<span class="badge badge-pill badge-dark">
+			Sunday
+			</span>
+			</button>
+			`
 
-					
-					
-					<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-					
-					
-					<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>`
-		case "Thursday":
-			str = str + `
-									
-
-									
-									
-									<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>`
-		case "Friday":
-			str = str + `
-									
-
-									
-									
-									<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-									
-									
-									<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>`
-		case "Saturday":
-			str = str + `
-																																	
-
-																																	
-																																	
-																																	<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-																																	
-																																	
-																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-																																	`
-		case "Sunday":
-			str = str + `
-																																																																	
-
-																																																																	
-																																																																	
-																																																																	<br><button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Monday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-																																																																	
-																																																																	
-																																																																	<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-																																																																	`
-		}
-
-		resp, _ := http.Get("http://example.com/" + url)
-
-		b, _ := ioutil.ReadAll(resp.Body)
-
-		resp.Body.Close()
-
-		for k := q; k < 32; k++ {
-
-			//resp, _ := http.Get(".../" + now.Format("2006") + "/" + now.Format("1") + "/" + strconv.Itoa(k))
-
-			switch c.Days[k] {
-
-			case "Monday":
-
-				str = str + `
+	case "Sunday":
+		str = str + `
+			</ul>
+			</form>	
+			</div>
 			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
+			`
 
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
+		break
 
-				`
-				} else {
+	}
 
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Tuesday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Wednesday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Thursday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Friday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Saturday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			case "Sunday":
-
-				str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='entry#` + strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k) + `'"><span class="badge badge-pill badge-light">` + c.Days[k] + `<br>` + strconv.Itoa(k)
-
-				if string(b[k-q]) != "0" {
-					str = str +
-						`<br><span class="badge badge-dark">` + string(b[k-q]) + `</span></span></button>
-				
-
-				`
-				} else {
-
-					str = str +
-						`</span></button>
-				`
-				}
-
-			}
-
-		}
-
-		switch c.Days[len(c.Days)] {
-
-		case "Monday":
-			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Tuesday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			   
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
-		case "Tuesday":
-			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Wednesday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
-		case "Wednesday":
-			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Thursday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
-		case "Thursday":
-			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Friday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-`
-		case "Friday":
-			str = str + `
-		
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Saturday</span></button>
-
-			
-			
-			<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
-		case "Saturday":
-			str = str + `
-		
-
-		
-		<button type="button" class="btn btn-link"><span class="badge badge-pill badge-light">Sunday</span></button>
-
-
-`
-
-		case "Sunday":
-			str = str + `
-
-		
-		</div><br>
-
-`
-			break
-
-		}
-
-		str = str + `<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-
-
-
+	str = str + `
+		<script src="https://assets.medienwerk.now.sh/material.min.js">
+		</script>
 		</body>
 		</html>
 		`
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	w.Write([]byte(str))
 
-	case "POST":
+	//case "POST":
 
-		r.ParseForm()
-
-		//s := strings.Join(r.Form["find"], " ")
-
-		/* client := &http.Client{}
-		req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
-		if err != nil {
-			fmt.Fprint(w, err)
-		}
-		_, err = client.Do(req)
-		if err != nil {
-			fmt.Fprint(w, err)
-		} */
-
+	/* client := &http.Client{}
+	req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
+	if err != nil {
+		fmt.Fprint(w, err)
 	}
+	_, err = client.Do(req)
+	if err != nil {
+		fmt.Fprint(w, err)
+	} */
 
-}
+	//}
 
-func Reader(s string) io.Reader {
-
-	return strings.NewReader(s)
 }
