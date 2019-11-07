@@ -194,15 +194,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	t := n
+	t := 0
 
 	for t < 21 {
 
+		t++
+
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
-			switch now.Month() {
-
-			case time.Now().AddDate(0, t, 0).Month():
+			if now.Year() == time.Now().AddDate(0, t, 0).Year() && now.Month() == time.Now().AddDate(0, t, 0).Month() {
 
 				str = str + `
 				<br>
@@ -215,7 +215,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				c.Year = time.Now().AddDate(0, t, 0).Year()
 
-			default:
+			} else {
 
 				str = str + `
 				<br>
@@ -230,9 +230,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			switch now.Month() {
-
-			case time.Now().AddDate(0, t, 0).Month():
+			if now.Year() == time.Now().AddDate(0, t, 0).Year() && now.Month() == time.Now().AddDate(0, t, 0).Month() {
 
 				str = str + `
 				<br>
@@ -241,7 +239,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			default:
+			} else {
 
 				str = str + `
 				<br>
@@ -274,8 +272,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 		} */
-
-		t++
 
 	}
 
