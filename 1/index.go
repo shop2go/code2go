@@ -198,8 +198,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for t < 21 {
 
-		t++
-
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
 			switch now.Month() {
@@ -243,8 +241,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-				c.Year = time.Now().AddDate(0, t, 0).Year()
-
 			default:
 
 				str = str + `
@@ -278,6 +274,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 		} */
+
+		t++
 
 	}
 
