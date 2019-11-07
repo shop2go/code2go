@@ -161,14 +161,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if now.Year() == time.Now().Year() && now.Month() == time.Now().Month() {
 
 		str = str + `
-		<button type="button" class="btn btn-light">` + now.Format("Jan") + `
+		<button type="button" class="btn btn-light">` + time.Now().Format("Jan") + `
 		 </button>
 		 `
 
 	} else {
 
 		str = str + `
-		<button type="button" class="btn btn-outline-dark">` + now.Format("Jan") + `
+		<button type="button" class="btn btn-outline-dark">` + time.Now().Format("Jan") + `
 		 </button>
 		 `
 
@@ -194,7 +194,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	t := 0
+	t := n
 
 	for t < 21 {
 
