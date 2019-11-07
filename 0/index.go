@@ -59,13 +59,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	//var id f.RefV
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	n, _ := strconv.Atoi(url)
-
-	now := time.Now().AddDate(0, n, 0)
-
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
+	n, err := strconv.Atoi(url)
 
 	if err != nil {
 
@@ -75,9 +69,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var access *Access
-
-	x.Get(&access)
+	now := time.Now().AddDate(0, n, 0)
 
 	/* 	if r.Method == http.MethodOptions {
 
@@ -166,6 +158,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	if now.Year() == time.Now().Year() && now.Month() == time.Now().Month() {
+
+		str = str + `
+		<button type="button" class="btn btn-light">` + now.Format("Jan") + `
+		 </button>
+		 `
+
+	} else {
+
+		str = str + `
+		<button type="button" class="btn btn-outline-dark">` + now.Format("Jan") + `
+		 </button>
+		 `
+
+	}
+
 	var p, q int
 
 	l := len(c.Days)
@@ -186,16 +194,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str = str + `
-		<button type="button" class="btn btn-light">` + time.Now().Format("Jan") + `
-		 </button>
-		 `
-
 	t := 0
 
 	for t < 21 {
 
 		t++
+
+		//2nd
+		/* if now.Year() == time.Now().AddDate(0, t, 0).Year() {
+
+
+		} else {
+
+		} */
 
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
@@ -369,6 +380,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 	}
 
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
+
+	if err != nil {
+
+		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
+
+		return
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
 	//TODO:make cert client
 
 	/* 		resp, err := http.Get("https://"+ip+"/" + url)
@@ -381,13 +407,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   		b, _ := ioutil.ReadAll(resp.Body)
 			   resp.Body.Close() */
 
-	dir := "messagesByAppendedDate"
+	dir := "messagesByDate"
 	value := now.Format("2006-01-02")
 
 	for k := q; k < 32; k++ {
 
 		s := fmt.Sprintf("%02d", k)
-		
+
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + s
 
 		switch c.Days[k] {
@@ -408,7 +434,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -576,7 +602,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -744,7 +770,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -912,7 +938,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1080,7 +1106,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1248,7 +1274,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1416,7 +1442,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
