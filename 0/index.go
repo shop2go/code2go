@@ -178,7 +178,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	l := len(c.Days)
 
-	if time.Now().Month() == now.Month() {
+	if now.Month() == time.Now().Month() {
 
 		p, _ = strconv.Atoi(time.Now().Format("02"))
 
@@ -200,17 +200,65 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		t++
 
-		//2nd
-		/* if now.Year() == time.Now().AddDate(0, t, 0).Year() {
+		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
+			switch now.Month() {
+
+			case time.Now().AddDate(0, t, 0).Month():
+
+				str = str + `
+				<br>
+				` + time.Now().AddDate(0, t, 0).Format("2006") + `
+				<br>
+				<button type="button" class="btn btn-light" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+				c.Year = time.Now().AddDate(0, t, 0).Year()
+
+			default:
+
+				str = str + `
+				<br>
+				` + time.Now().AddDate(0, t, 0).Format("2006") + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+			}
 
 		} else {
 
-		} */
+			switch now.Month() {
 
-		if time.Now().AddDate(0, t, 0).Year() != c.Year {
+			case time.Now().AddDate(0, t, 0).Month():
 
-			str = str + `
+				str = str + `
+				<br>
+				<button type="button" class="btn btn-light" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+				c.Year = time.Now().AddDate(0, t, 0).Year()
+
+			default:
+
+				str = str + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+			}
+
+		}
+
+		/* 			str = str + `
 				<br>
 				` + time.Now().AddDate(0, t, 0).Format("2006") + `
 				<br>
@@ -229,7 +277,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-		}
+		} */
 
 	}
 

@@ -59,13 +59,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	//var id f.RefV
 	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	n, _ := strconv.Atoi(url)
-
-	now := time.Now().AddDate(0, n, 0)
-
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
+	n, err := strconv.Atoi(url)
 
 	if err != nil {
 
@@ -75,9 +69,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var access *Access
-
-	x.Get(&access)
+	now := time.Now().AddDate(0, n, 0)
 
 	/* 	if r.Method == http.MethodOptions {
 
@@ -166,11 +158,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	if now.Year() == time.Now().Year() && now.Month() == time.Now().Month() {
+
+		str = str + `
+		<button type="button" class="btn btn-light">` + now.Format("Jan") + `
+		 </button>
+		 `
+
+	} else {
+
+		str = str + `
+		<button type="button" class="btn btn-outline-dark">` + now.Format("Jan") + `
+		 </button>
+		 `
+
+	}
+
 	var p, q int
 
 	l := len(c.Days)
 
-	if time.Now().Month() == now.Month() {
+	if now.Month() == time.Now().Month() {
 
 		p, _ = strconv.Atoi(time.Now().Format("02"))
 
@@ -186,11 +194,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str = str + `
-		<button type="button" class="btn btn-light">` + time.Now().Format("Jan") + `
-		 </button>
-		 `
-
 	t := 0
 
 	for t < 21 {
@@ -199,11 +202,67 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if time.Now().AddDate(0, t, 0).Year() != c.Year {
 
-			str = str + `
+			switch now.Month() {
+
+			case time.Now().AddDate(0, t, 0).Month():
+
+				str = str + `
 				<br>
 				` + time.Now().AddDate(0, t, 0).Format("2006") + `
 				<br>
-				<button style="color:white;" type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				<button type="button" class="btn btn-light" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+				c.Year = time.Now().AddDate(0, t, 0).Year()
+
+			default:
+
+				str = str + `
+				<br>
+				` + time.Now().AddDate(0, t, 0).Format("2006") + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+			}
+
+		} else {
+
+			switch now.Month() {
+
+			case time.Now().AddDate(0, t, 0).Month():
+
+				str = str + `
+				<br>
+				<button type="button" class="btn btn-light" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+				c.Year = time.Now().AddDate(0, t, 0).Year()
+
+			default:
+
+				str = str + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
+				</button>
+				`
+
+			}
+
+		}
+
+		/* 			str = str + `
+				<br>
+				` + time.Now().AddDate(0, t, 0).Format("2006") + `
+				<br>
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
@@ -213,12 +272,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		} else {
 
 			str = str + `
-				<button style="color:white;" type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
+				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
 
-		}
+		} */
 
 	}
 
@@ -369,6 +428,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 	}
 
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
+
+	if err != nil {
+
+		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
+
+		return
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
 	//TODO:make cert client
 
 	/* 		resp, err := http.Get("https://"+ip+"/" + url)
@@ -381,13 +455,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   		b, _ := ioutil.ReadAll(resp.Body)
 			   resp.Body.Close() */
 
-	dir := "messagesByAppendedDate"
+	dir := "messagesByDate"
 	value := now.Format("2006-01-02")
 
 	for k := q; k < 32; k++ {
 
 		s := fmt.Sprintf("%02d", k)
-		
+
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + s
 
 		switch c.Days[k] {
@@ -408,7 +482,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -576,7 +650,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -744,7 +818,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -912,7 +986,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1080,7 +1154,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1248,7 +1322,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1416,7 +1490,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(appended:\"` + value + `\"){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
