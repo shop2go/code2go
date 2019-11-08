@@ -158,17 +158,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	if now.Year() == time.Now().Year() && now.Month() == time.Now().Month() {
+	if n == 0 {
 
 		str = str + `
-		<button type="button" class="btn btn-light">` + now.Format("Jan") + `
+		<button type="button" class="btn btn-light">` + time.Now().Format("Jan") + `
 		 </button>
 		 `
 
 	} else {
 
 		str = str + `
-		<button type="button" class="btn btn-outline-dark">` + now.Format("Jan") + `
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='0'">` + time.Now().Format("Jan") + `
 		 </button>
 		 `
 
@@ -200,11 +200,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		t++
 
-		if time.Now().AddDate(0, t, 0).Year() != c.Year {
+		y := time.Now().AddDate(0, t, 0).Year()
 
-			switch now.Month() {
+		if y > c.Year {
 
-			case time.Now().AddDate(0, t, 0).Month():
+			if t == n {
 
 				str = str + `
 				<br>
@@ -217,7 +217,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				c.Year = time.Now().AddDate(0, t, 0).Year()
 
-			default:
+			} else {
 
 				str = str + `
 				<br>
@@ -232,9 +232,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			switch now.Month() {
-
-			case time.Now().AddDate(0, t, 0).Month():
+			if t == n {
 
 				str = str + `
 				<br>
@@ -243,9 +241,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-				c.Year = time.Now().AddDate(0, t, 0).Year()
-
-			default:
+			} else {
 
 				str = str + `
 				<br>
