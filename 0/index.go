@@ -237,7 +237,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if t == n {
 
 				str = str + `
-				<br>
+				
 				<button type="button" class="btn btn-light" onclick="window.location.href='` + strconv.Itoa(t) + `'">
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
@@ -246,7 +246,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} else {
 
 				str = str + `
-				<br>
+				
 				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
