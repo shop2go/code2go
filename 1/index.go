@@ -158,7 +158,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	if now.Year() == time.Now().Year() && now.Month() == time.Now().Month() {
+	if n == 0 {
 
 		str = str + `
 		<button type="button" class="btn btn-light">` + time.Now().Format("Jan") + `
@@ -168,7 +168,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 		str = str + `
-		<button type="button" class="btn btn-outline-dark">` + time.Now().Format("Jan") + `
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='0'">` + time.Now().Format("Jan") + `
 		 </button>
 		 `
 
@@ -200,9 +200,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		t++
 
-		if time.Now().AddDate(0, t, 0).Year() != c.Year {
+		y := time.Now().AddDate(0, t, 0).Year()
 
-			if now.Year() == time.Now().AddDate(0, t, 0).Year() && now.Month() == time.Now().AddDate(0, t, 0).Month() {
+		if y > c.Year {
+
+			if t == n {
 
 				str = str + `
 				<br>
@@ -230,8 +232,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			if now.Year() == time.Now().AddDate(0, t, 0).Year() && now.Month() == time.Now().AddDate(0, t, 0).Month() {
-
+			if t == n {
+				
 				str = str + `
 				<br>
 				<button type="button" class="btn btn-light" onclick="window.location.href='` + strconv.Itoa(t) + `'">
