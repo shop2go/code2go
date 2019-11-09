@@ -72,11 +72,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now().AddDate(0, n, 0)
 
 	/* 	if r.Method == http.MethodOptions {
-
 		response(w, true, "", r.Method)
-
 		return
-
 	} */
 
 	var c Cal
@@ -196,7 +193,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	t := 0
 
-	for t < 21 {
+	for t < 20 {
 
 		t++
 
@@ -215,8 +212,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-				c.Year = y
-
 			} else {
 
 				str = str + `
@@ -227,8 +222,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
-
-				c.Year = y
 
 			}
 
@@ -256,6 +249,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		c.Year = y
+
 		/* 			str = str + `
 				<br>
 				` + time.Now().AddDate(0, t, 0).Format("2006") + `
@@ -264,17 +259,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
-
 			c.Year = time.Now().AddDate(0, t, 0).Year()
-
 		} else {
-
 			str = str + `
 				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
-
 		} */
 
 	}
@@ -444,12 +435,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	//TODO:make cert client
 
 	/* 		resp, err := http.Get("https://"+ip+"/" + url)
-
 	   		if err != nil {
 	   			problem.New(problem.Type("https://"+ip+"/404"), problem.Status(404)).WriteTo(w)
 	   			os.Exit(2)
 	   		}
-
 	   		b, _ := ioutil.ReadAll(resp.Body)
 			   resp.Body.Close() */
 
@@ -511,7 +500,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -526,7 +514,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -541,7 +528,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -556,7 +542,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -569,7 +554,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 				break
 
@@ -598,14 +582,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
-
 				`
 
 				} else {
 
 					str = str + `
 				</button>
-
 				`
 					break
 
@@ -614,22 +596,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/* if string(b[k-q]) != "0" {
-
 				str = str + `
 				<span class="badge badge-dark">
 				` + string(b[k-q]) + `
 				</span>
 				</button>
-
 				`
-
 			} else {
-
 				str = str + `
 				</button>
-
 				`
-
 			} */
 
 		case "Tuesday":
@@ -679,7 +655,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -694,7 +669,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -709,7 +683,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -724,7 +697,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -737,7 +709,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 				break
 
@@ -766,14 +737,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
-
 				`
 
 				} else {
 
 					str = str + `
 				</button>
-
 				`
 					break
 
@@ -782,22 +751,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/* if string(b[k-q]) != "0" {
-
 				str = str + `
 				<span class="badge badge-dark">
 				` + string(b[k-q]) + `
 				</span>
 				</button>
-
 				`
-
 			} else {
-
 				str = str + `
 				</button>
-
 				`
-
 			} */
 
 		case "Wednesday":
@@ -847,7 +810,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -862,7 +824,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -877,7 +838,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -892,7 +852,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -905,7 +864,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 				break
 
@@ -934,14 +892,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
-
 				`
 
 				} else {
 
 					str = str + `
 				</button>
-
 				`
 					break
 
@@ -950,22 +906,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/* if string(b[k-q]) != "0" {
-
 				str = str + `
 				<span class="badge badge-dark">
 				` + string(b[k-q]) + `
 				</span>
 				</button>
-
 				`
-
 			} else {
-
 				str = str + `
 				</button>
-
 				`
-
 			} */
 
 		case "Thursday":
@@ -1015,7 +965,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1030,7 +979,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1045,7 +993,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1060,7 +1007,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1073,7 +1019,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 				break
 
@@ -1102,14 +1047,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
-
 				`
 
 				} else {
 
 					str = str + `
 				</button>
-
 				`
 					break
 
@@ -1118,22 +1061,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/* if string(b[k-q]) != "0" {
-
 				str = str + `
 				<span class="badge badge-dark">
 				` + string(b[k-q]) + `
 				</span>
 				</button>
-
 				`
-
 			} else {
-
 				str = str + `
 				</button>
-
 				`
-
 			} */
 
 		case "Friday":
@@ -1183,7 +1120,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1198,7 +1134,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1213,7 +1148,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1228,7 +1162,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1241,7 +1174,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 				break
 
@@ -1270,14 +1202,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
-
 				`
 
 				} else {
 
 					str = str + `
 				</button>
-
 				`
 					break
 
@@ -1286,22 +1216,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/* if string(b[k-q]) != "0" {
-
 				str = str + `
 				<span class="badge badge-dark">
 				` + string(b[k-q]) + `
 				</span>
 				</button>
-
 				`
-
 			} else {
-
 				str = str + `
 				</button>
-
 				`
-
 			} */
 
 		case "Saturday":
@@ -1351,7 +1275,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1366,7 +1289,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1381,7 +1303,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1396,7 +1317,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1409,7 +1329,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 				break
 
@@ -1438,14 +1357,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
-
 				`
 
 				} else {
 
 					str = str + `
 				</button>
-
 				`
 					break
 
@@ -1454,22 +1371,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/* if string(b[k-q]) != "0" {
-
 				str = str + `
 				<span class="badge badge-dark">
 				` + string(b[k-q]) + `
 				</span>
 				</button>
-
 				`
-
 			} else {
-
 				str = str + `
 				</button>
-
 				`
-
 			} */
 
 		case "Sunday":
@@ -1519,7 +1430,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1534,7 +1444,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1549,7 +1458,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1564,7 +1472,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 
 				break
@@ -1577,7 +1484,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 				</button>
-
 				`
 				break
 
@@ -1606,14 +1512,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
-
 				`
 
 				} else {
 
 					str = str + `
 				</button>
-
 				`
 					break
 
@@ -1622,22 +1526,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/* if string(b[k-q]) != "0" {
-
 				str = str + `
 				<span class="badge badge-dark">
 				` + string(b[k-q]) + `
 				</span>
 				</button>
-
 				`
-
 			} else {
-
 				str = str + `
 				</button>
-
 				`
-
 			} */
 
 		}
