@@ -215,8 +215,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-				c.Year = y
-
 			} else {
 
 				str = str + `
@@ -227,8 +225,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
 				`
-
-				c.Year = y
 
 			}
 
@@ -255,6 +251,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
+
+		c.Year = y
 
 		/* 			str = str + `
 				<br>
