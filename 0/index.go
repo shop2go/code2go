@@ -92,7 +92,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
    		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 		</head>
-		<body style="background-color: #bcbcbc;">
+		<body style="background-color: #adebad;">
    		<div class="container" id="search" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form">
 	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
@@ -578,7 +578,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -733,7 +733,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -888,7 +888,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1043,7 +1043,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1198,7 +1198,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1353,7 +1353,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1508,7 +1508,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
