@@ -444,7 +444,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   		b, _ := ioutil.ReadAll(resp.Body)
 			   resp.Body.Close() */
 
-	dir := "messagesByDate"
+	dir := "postsByDate"
 	value := now.Format("2006-01-02")
 
 	for k := q; k < 32; k++ {
