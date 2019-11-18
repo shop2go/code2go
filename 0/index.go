@@ -471,7 +471,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -632,7 +632,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -793,7 +793,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -954,7 +954,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1115,7 +1115,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1276,7 +1276,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1437,7 +1437,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1589,10 +1589,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if cache != nil {
 
 		dir = "updateCache"
-		value = now.Format("2006-01")
+		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
 		str := strings.Join(cache, " ")
 
-		s := `{"query":"mutation{` + dir + `(data:{date:\"` + value + `\" ids:\"` + str + `\"}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"` + str + `\"}) {_id}}"}`
 		body := strings.NewReader(s)
 		req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
