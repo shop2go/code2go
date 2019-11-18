@@ -28,6 +28,8 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
+var cache []string = make([]string, 0)
+
 func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
 	body := make(map[string]interface{})
@@ -419,11 +421,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
 
 	if err != nil {
 
-		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
+		fmt.Fprint(w, err)
 
 		return
 
@@ -447,9 +449,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for k := q; k < 32; k++ {
 
-		s := fmt.Sprintf("%02d", k)
+		n := fmt.Sprintf("%02d", k)
 
-		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + s
+		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
 
 		switch c.Days[k] {
 
@@ -482,7 +484,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -572,6 +574,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				for j := 0; j < len(g); j++ {
 
 					k[j] = h[j]["_id"].(string)
+
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
 
 				}
 
@@ -637,7 +645,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -727,6 +735,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				for j := 0; j < len(g); j++ {
 
 					k[j] = h[j]["_id"].(string)
+
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
 
 				}
 
@@ -792,7 +806,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -882,6 +896,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				for j := 0; j < len(g); j++ {
 
 					k[j] = h[j]["_id"].(string)
+
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
 
 				}
 
@@ -947,7 +967,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1037,6 +1057,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				for j := 0; j < len(g); j++ {
 
 					k[j] = h[j]["_id"].(string)
+
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
 
 				}
 
@@ -1102,7 +1128,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1192,6 +1218,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				for j := 0; j < len(g); j++ {
 
 					k[j] = h[j]["_id"].(string)
+
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
 
 				}
 
@@ -1257,7 +1289,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1347,6 +1379,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				for j := 0; j < len(g); j++ {
 
 					k[j] = h[j]["_id"].(string)
+
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
 
 				}
 
@@ -1412,7 +1450,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1503,6 +1541,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
@@ -1539,6 +1583,41 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} */
 
 		}
+
+	}
+
+	if cache != nil {
+
+		dir = "updateCache"
+		value = now.Format("2006-01")
+		str := strings.Join(cache, " ")
+
+		s := `{"query":"mutation{` + dir + `(data:{date:\"` + value + `\" ids:\"` + str + `\"}) {_id}}"}`
+		body := strings.NewReader(s)
+		req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+		req.Header.Set("Authorization", "Bearer "+access.Secret)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+		resp, err := http.DefaultClient.Do(req)
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		defer resp.Body.Close()
+
+		bdy, _ := ioutil.ReadAll(resp.Body)
+
+		var i interface{}
+
+		json.Unmarshal(bdy, &i)
 
 	}
 
