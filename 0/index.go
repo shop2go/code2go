@@ -1590,9 +1590,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		dir = "createCache"
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
-		str := strings.Join(cache, " ")
+		str := strings.Join(cache, "\" \"")
 
-		s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"` + str + `\"}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + str + `]\"}) {_id}}"}`
 		body := strings.NewReader(s)
 		req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
