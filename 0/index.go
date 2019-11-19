@@ -1588,13 +1588,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if cache != nil {
 
-		dir = "createCache"
+		dir = "cacheByDate"
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
-		str := strings.Join(cache, "\" \"")
 
-		s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + str + `]\"}) {_id}}"}`
+		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){_id ids}}"}`
 		body := strings.NewReader(s)
-		req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 		req.Header.Set("Authorization", "Bearer "+access.Secret)
 		req.Header.Set("Content-Type", "application/json")
@@ -1618,6 +1617,83 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var i interface{}
 
 		json.Unmarshal(bdy, &i)
+
+		if i != nil {
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b != nil {
+
+				c := b.(map[string]interface{})
+
+				d := c[dir]
+
+				e := d.(map[string]interface{})
+
+				f := e["ids"]
+
+				g := f.([]string)
+
+				if len(g) < len(cache) {
+
+					h := e["_id"].(string)
+
+					dir = "updateCache"
+
+					c := strings.Join(cache, "\" \"")
+
+					s := `{"query":"mutation{` + dir + `(id: \"` + h + `\" data:{month:\"` + value + `\" ids:\"[` + c + `]\"}) {_id}}"}`
+					body := strings.NewReader(s)
+					req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+					req.Header.Set("Authorization", "Bearer "+access.Secret)
+					req.Header.Set("Content-Type", "application/json")
+					req.Header.Set("Accept", "application/json")
+					req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+					_, err := http.DefaultClient.Do(req)
+
+					if err != nil {
+
+						fmt.Fprint(w, err)
+
+						return
+
+					}
+
+				}
+
+			} else {
+
+				dir = "createCache"
+
+				c := strings.Join(cache, "\" \"")
+
+				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + c + `]\"}) {_id}}"}`
+
+				body := strings.NewReader(s)
+				req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+				req.Header.Set("Authorization", "Bearer "+access.Secret)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+				_, err = http.DefaultClient.Do(req)
+
+				if err != nil {
+
+					fmt.Fprint(w, err)
+
+					return
+
+				}
+
+			}
+
+		}
 
 	}
 
