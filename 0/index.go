@@ -473,7 +473,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -634,7 +634,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -795,7 +795,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -956,7 +956,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -1117,7 +1117,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -1278,7 +1278,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -1439,7 +1439,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -1588,7 +1588,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if cache != nil {
 
-		dir = "updateCache"
+		dir = "createCache"
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
 		str := strings.Join(cache, " ")
 
