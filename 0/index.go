@@ -1658,9 +1658,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						dir = "updateCache"
 
-						m := strings.Join(cache, "\" \"")
+						m := strings.Join(cache, " ")
 
-						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids: \"` + m + `\"}) {_id}}"}`
+						fmt.Fprint(w, m)
+
+						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids: [` + m + `}) {_id}}"}`
 						body := strings.NewReader(s)
 						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
