@@ -1591,7 +1591,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		dir = "cacheByDate"
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
 
-		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){_id ids}}"}`
+		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){ids _id}}"}`
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1650,13 +1650,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					if len(o) != len(cache) {
 
-						l := e["_id"].(string)
+						l := e["_id"]
+
+						p := l.(string)
 
 						dir = "updateCache"
 
 						m := strings.Join(cache, "\" \"")
 
-						s := `{"query":"mutation{` + dir + `(id: \"` + l + `\" data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
+						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
 						body := strings.NewReader(s)
 						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
