@@ -1620,15 +1620,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if i != nil {
 
-			fmt.Fprint(w, "i!=nil")
-
 			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			if b != nil {
-
-				fmt.Fprint(w, "b!=nil")
 
 				o := make([]string, 0)
 
@@ -1644,8 +1640,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if g != nil {
 
-					fmt.Fprint(w, "g!=nil")
-
 					for k := range g {
 
 						n := g[k].(string)
@@ -1656,19 +1650,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					if len(o) != len(cache) {
 
-						fmt.Fprint(w, "o!=cache")
-
 						l := e["_id"]
 
 						p := l.(string)
 
-						fmt.Fprint(w, p)
+						//fmt.Fprint(w, p)
 
 						dir = "updateCache"
 
 						m := strings.Join(cache, "\" \"")
 
-						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
+						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids: \"` + m + `\"}) {_id}}"}`
 						body := strings.NewReader(s)
 						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
