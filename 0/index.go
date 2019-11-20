@@ -1662,7 +1662,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						fmt.Fprint(w, m)
 
-						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids: [` + m + `}) {_id}}"}`
+						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
 						body := strings.NewReader(s)
 						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
