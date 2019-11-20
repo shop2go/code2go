@@ -1626,6 +1626,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if b != nil {
 
+				o := make([]string, 0)
+
 				c := b.(map[string]interface{})
 
 				d := c[dir]
@@ -1636,30 +1638,42 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				g := f.([]interface{})
 
-				if len(g) < len(cache) {
+				if g != nil {
 
-					k := e["_id"].(string)
+					for k := range g {
 
-					dir = "updateCache"
+						n := g[k].(string)
 
-					c := strings.Join(cache, "\" \"")
+						o = append(o, n)
 
-					s := `{"query":"mutation{` + dir + `(id: \"` + k + `\" data:{month:\"` + value + `\" ids:\"[` + c + `]\"}) {_id}}"}`
-					body := strings.NewReader(s)
-					req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+					}
 
-					req.Header.Set("Authorization", "Bearer "+access.Secret)
-					req.Header.Set("Content-Type", "application/json")
-					req.Header.Set("Accept", "application/json")
-					req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+					if len(o) != len(cache) {
 
-					_, err := http.DefaultClient.Do(req)
+						l := e["_id"].(string)
 
-					if err != nil {
+						dir = "updateCache"
 
-						fmt.Fprint(w, err)
+						m := strings.Join(cache, "\" \"")
 
-						return
+						s := `{"query":"mutation{` + dir + `(id: \"` + l + `\" data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
+						body := strings.NewReader(s)
+						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+						req.Header.Set("Authorization", "Bearer "+access.Secret)
+						req.Header.Set("Content-Type", "application/json")
+						req.Header.Set("Accept", "application/json")
+						req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+						_, err := http.DefaultClient.Do(req)
+
+						if err != nil {
+
+							fmt.Fprint(w, err)
+
+							return
+
+						}
 
 					}
 
@@ -1669,9 +1683,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				dir = "createCache"
 
-				c := strings.Join(cache, "\" \"")
+				m := strings.Join(cache, "\" \"")
 
-				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + c + `]\"}) {_id}}"}`
+				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
 
 				body := strings.NewReader(s)
 				req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
