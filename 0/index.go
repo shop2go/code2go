@@ -1620,11 +1620,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if i != nil {
 
+			fmt.Fprint(w, "i!=nil")
+
 			a := i.(map[string]interface{})
 
 			b := a["data"]
 
 			if b != nil {
+
+				fmt.Fprint(w, "b!=nil")
 
 				o := make([]string, 0)
 
@@ -1640,6 +1644,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if g != nil {
 
+					fmt.Fprint(w, "g!=nil")
+
 					for k := range g {
 
 						n := g[k].(string)
@@ -1649,6 +1655,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					if len(o) != len(cache) {
+
+						fmt.Fprint(w, "o!=cache")
 
 						l := e["_id"]
 
