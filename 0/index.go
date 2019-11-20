@@ -1662,6 +1662,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						p := l.(string)
 
+						fmt.Fprint(w, p)
+
 						dir = "updateCache"
 
 						m := strings.Join(cache, "\" \"")
