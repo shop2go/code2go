@@ -1641,17 +1641,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if g != nil {
 
-					q := len(g)
+					q := len(g) -1
 
-					for k := range g {
+					for q > 0 {
 
-						n := g[k].(string)
+						n := g[q].(string)
 
-						if k < q-1 && n != g[k+1].(string) {
+						if  n != g[q-1].(string) {
 
 							o = append(o, n)
 
 						}
+
+						q--
 
 					}
 
