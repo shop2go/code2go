@@ -1660,7 +1660,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						m := strings.Join(cache, " ")
 
-						fmt.Fprint(w, m)
+						//fmt.Fprint(w, m)
 
 						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
 						body := strings.NewReader(s)
@@ -1710,6 +1710,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					return
 
 				}
+
+			}
+
+		}  else {
+
+			dir = "createCache"
+
+			m := strings.Join(cache, "\" \"")
+
+			s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
+
+			body := strings.NewReader(s)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			_, err = http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, err)
+
+				return
 
 			}
 
