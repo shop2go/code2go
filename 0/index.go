@@ -1713,7 +1713,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-		}  else {
+		} else {
 
 			dir = "createCache"
 
