@@ -1641,11 +1641,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if g != nil {
 
+					q := len(g)
+
 					for k := range g {
 
 						n := g[k].(string)
 
-						o = append(o, n)
+						if k < q-1 && n != g[k+1].(string) {
+
+							o = append(o, n)
+
+						}
 
 					}
 
@@ -1653,7 +1659,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					//sort.Slice(o, func(i, j int) bool { return o[i] < o[j] })
 
-					if o[len(o)-1] != cache[len(cache)-1] {
+					if len(o) != len(cache) {
 
 						l := e["_id"]
 
