@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -1648,7 +1649,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-					if len(o) != len(cache) {
+					sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
+
+					//sort.Slice(o, func(i, j int) bool { return o[i] < o[j] })
+
+					if o[len(o)-1] != cache[len(cache)-1] {
 
 						l := e["_id"]
 
@@ -1689,6 +1694,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				dir = "createCache"
 
+				sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
+
 				m := strings.Join(cache, " ")
 
 				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
@@ -1716,6 +1723,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		} else {
 
 			dir = "createCache"
+
+			sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
 
 			m := strings.Join(cache, " ")
 
