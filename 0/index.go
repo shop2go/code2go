@@ -1689,9 +1689,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				dir = "createCache"
 
-				m := strings.Join(cache, "\" \"")
+				m := strings.Join(cache, " ")
 
-				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
+				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
 
 				body := strings.NewReader(s)
 				req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -1717,9 +1717,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			dir = "createCache"
 
-			m := strings.Join(cache, "\" \"")
+			m := strings.Join(cache, " ")
 
-			s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids:\"[` + m + `]\"}) {_id}}"}`
+			s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
 
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
