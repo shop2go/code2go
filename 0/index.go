@@ -1627,8 +1627,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if b != nil {
 
-				o := make([]string, 0)
-
 				c := b.(map[string]interface{})
 
 				d := c[dir]
@@ -1641,15 +1639,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if g != nil {
 
-					q := len(g) -1
+					o := make([]string, len(g))
+
+					o[0] = g[0].(string)
+
+					q := len(g) - 1
 
 					for q > 0 {
 
 						n := g[q].(string)
 
-						if  n != g[q-1].(string) {
+						if n != g[q-1].(string) {
 
-							o = append(o, n)
+							o[q] = n
 
 						}
 
@@ -1657,7 +1659,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-					sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
+					//sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
 
 					//sort.Slice(o, func(i, j int) bool { return o[i] < o[j] })
 
