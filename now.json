@@ -58,7 +58,7 @@
     "alias": "code2go.dev",
     
     "env": {
-      "FAUNA_ACCESS": "@fdb"
+      "FAUNA_ACCESS": "@fdb"   
       }
         
     }
