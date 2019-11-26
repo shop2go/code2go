@@ -102,6 +102,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</form>
 		</div>
+		<div class="container">
+		<iframe src="https://code2go.dev/main" style="border:none;"></iframe> 
+		</div>
 		<br>
 		<div class="container" id="nav" style="color:white;">
 		` + time.Now().Format("2006") + `
@@ -1637,7 +1640,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				g := f.([]interface{})
 
-				if g != nil {
+				if len(g) > 0 {
 
 					o := make([]string, len(g))
 
