@@ -278,9 +278,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	str = str + `
 		<br>
 		</div>
-		<div class="container">
-		<iframe src="https://code2go.dev/main" style="border:none;"></iframe>
-		</div>
 		<br>
 		<div class="container" id="data" style="color:white;">
 		<form class="form-inline" role="form"  method="post">
