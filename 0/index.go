@@ -279,7 +279,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		</div>
 		<div class="container">
-		<iframe src="http://localhost:8000" style="border:none;"></iframe>
+		<iframe src="https://code2go/main" style="border:none;"></iframe>
 		</div>
 		<br>
 		<div class="container" id="data" style="color:white;">
