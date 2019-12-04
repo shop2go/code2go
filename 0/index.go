@@ -14,6 +14,7 @@ import (
 	//"github.com/mschneider82/problem"
 
 	f "github.com/fauna/faunadb-go/faunadb"
+	//ms "github.com/mitchellh/mapstructure"
 )
 
 type Cal struct {
@@ -96,14 +97,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 		</head>
 		<body style="background-color:#adebad">
+		<div class="container">
+		<iframe src="https://code2go.dev/main" style="border:none;"></iframe> 
+		</div>
    		<div class="container" id="search" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form">
 	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</form>
-		</div>
-		<div class="container">
-		<iframe src="https://code2go.dev/main" style="border:none;"></iframe> 
 		</div>
 		<br>
 		<div class="container" id="nav" style="color:white;">
@@ -475,7 +476,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -636,7 +637,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -797,7 +798,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -958,7 +959,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1119,7 +1120,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1280,7 +1281,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1441,7 +1442,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" commited: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1592,10 +1593,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if cache != nil {
 
-		dir = "cacheByDate"
+		dir = "cacheByMonth"
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
 
-		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){ids _id}}"}`
+		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){posts{_id}}}"}`
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -1636,68 +1637,47 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				e := d.(map[string]interface{})
 
-				f := e["ids"]
+				f := e["posts"]
 
 				g := f.([]interface{})
 
-				if len(g) > 0 {
+				if len(g) != 0 {
 
-					o := make([]string, len(g))
+					f = e["_id"]
 
-					o[0] = g[0].(string)
+					id := f.(string)
 
-					q := len(g) - 1
+					dir = "updateCache"
 
-					for q > 0 {
+					sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
 
-						n := g[q].(string)
+					m := ""
 
-						if n != g[q-1].(string) {
+					for i := 0; i < len(cache); i++ {
 
-							o[q] = n
-
-						}
-
-						q--
+						m = m + "Ref(Collection(\"Post\")," + cache[i] + "),"
 
 					}
 
-					//sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
+					strings.TrimSuffix(m, ",")
 
-					//sort.Slice(o, func(i, j int) bool { return o[i] < o[j] })
+					s := `{"query":"mutation{` + dir + `(id: \"`+id+`\" data:{posts: [` + m + `]})}"}`
 
-					if len(o) != len(cache) {
+					body := strings.NewReader(s)
+					req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-						l := e["_id"]
+					req.Header.Set("Authorization", "Bearer "+access.Secret)
+					req.Header.Set("Content-Type", "application/json")
+					req.Header.Set("Accept", "application/json")
+					req.Header.Set("X-Schema-Preview", "partial-update-mutation")
 
-						p := l.(string)
+					_, err = http.DefaultClient.Do(req)
 
-						//fmt.Fprint(w, p)
+					if err != nil {
 
-						dir = "updateCache"
+						fmt.Fprint(w, err)
 
-						m := strings.Join(cache, " ")
-
-						//fmt.Fprint(w, m)
-
-						s := `{"query":"mutation{` + dir + `(id: \"` + p + `\" data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
-						body := strings.NewReader(s)
-						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-						req.Header.Set("Authorization", "Bearer "+access.Secret)
-						req.Header.Set("Content-Type", "application/json")
-						req.Header.Set("Accept", "application/json")
-						req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-						_, err := http.DefaultClient.Do(req)
-
-						if err != nil {
-
-							fmt.Fprint(w, err)
-
-							return
-
-						}
+						return
 
 					}
 
@@ -1707,11 +1687,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				dir = "createCache"
 
-				sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
+				sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
 
-				m := strings.Join(cache, " ")
+				m := ""
 
-				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
+				for i := 0; i < len(cache); i++ {
+
+					m = m + "Ref(Collection(\"Post\")," + cache[i] + "),"
+
+				}
+
+				strings.TrimSuffix(m, ",")
+
+				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" posts: [` + m + `]}) {_id}}"}`
 
 				body := strings.NewReader(s)
 				req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -1730,34 +1718,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					return
 
 				}
-
-			}
-
-		} else {
-
-			dir = "createCache"
-
-			sort.Slice(cache, func(i, j int) bool { return cache[i] < cache[j] })
-
-			m := strings.Join(cache, " ")
-
-			s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" ids: [` + m + `]}) {_id}}"}`
-
-			body := strings.NewReader(s)
-			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-			req.Header.Set("Authorization", "Bearer "+access.Secret)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-			_, err = http.DefaultClient.Do(req)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
 
 			}
 
