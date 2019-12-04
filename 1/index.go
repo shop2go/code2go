@@ -1635,17 +1635,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				d := c[dir]
 
-				e := d.(map[string]interface{})
+				if d != nil {
 
-				f := e["posts"]
+					e := d.(map[string]interface{})
 
-				g := f.([]interface{})
-
-				if len(g) != 0 {
-
-					f = e["_id"]
-
-					id := f.(string)
+					f := e["_id"]
 
 					dir = "updateCache"
 
@@ -1661,7 +1655,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					strings.TrimSuffix(m, ",")
 
-					s := `{"query":"mutation{` + dir + `(id: \"`+id+`\" data:{posts: [` + m + `]})}"}`
+					s := `{"query":"mutation{` + dir + `(id: \"` + f.(string) + `\" data:{posts: [` + m + `]})}"}`
 
 					body := strings.NewReader(s)
 					req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
