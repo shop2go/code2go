@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +14,7 @@ import (
 	//"github.com/mschneider82/problem"
 
 	f "github.com/fauna/faunadb-go/faunadb"
+	//ms "github.com/mitchellh/mapstructure"
 )
 
 type Cal struct {
@@ -27,6 +29,8 @@ type Access struct {
 	Secret    string `fauna:"secret"`
 	Role      string `fauna:"role"`
 }
+
+var cache []string = make([]string, 0)
 
 func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
@@ -92,7 +96,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
    		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 		</head>
-		<body style="background-color: #bcbcbc;">
+		<body style="background-color:#adebad">
+		<div class="container">
+		<iframe src="https://code2go.dev/main" style="border:none;"></iframe> 
+		</div>
    		<div class="container" id="search" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form">
 	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
@@ -199,7 +206,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		y := time.Now().AddDate(0, t, 0).Year()
 
-		if y > c.Year {
+		if y > time.Now().Year() {
 
 			if t == n {
 
@@ -419,11 +426,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
 
 	if err != nil {
 
-		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
+		fmt.Fprint(w, err)
 
 		return
 
@@ -442,14 +449,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   		b, _ := ioutil.ReadAll(resp.Body)
 			   resp.Body.Close() */
 
-	dir := "messagesByDate"
+	dir := "postsByDate"
 	value := now.Format("2006-01-02")
 
 	for k := q; k < 32; k++ {
 
-		s := fmt.Sprintf("%02d", k)
+		n := fmt.Sprintf("%02d", k)
 
-		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + s
+		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
 
 		switch c.Days[k] {
 
@@ -469,9 +476,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -482,7 +489,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -573,12 +580,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -624,9 +637,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -637,7 +650,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -728,12 +741,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -779,9 +798,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -792,7 +811,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -883,12 +902,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -934,9 +959,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -947,7 +972,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1038,12 +1063,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1089,9 +1120,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -1102,7 +1133,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1193,12 +1224,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1244,9 +1281,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -1257,7 +1294,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1348,12 +1385,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1399,9 +1442,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" appended: true){data{_id}}}"}`
+			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
-			req, err := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
 			req.Header.Set("Authorization", "Bearer "+access.Secret)
 			req.Header.Set("Content-Type", "application/json")
@@ -1412,7 +1455,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 
-				fmt.Fprint(w, "... an error occured.... please refresh browser window...")
+				fmt.Fprint(w, err)
 
 				return
 
@@ -1503,12 +1546,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					k[j] = h[j]["_id"].(string)
 
+					if k[j] != "" {
+
+						cache = append(cache, k[j])
+
+					}
+
 				}
 
 				if len(k) > 0 {
 
 					str = str + `
-				<span style="text-align: center" class="badge badge-pill badge-dark">
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
 				` + strconv.Itoa(len(k)) + `
 				</span>
 				</button>
@@ -1537,6 +1586,134 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 			} */
+
+		}
+
+	}
+
+	if cache != nil {
+
+		dir = "cacheByMonth"
+		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
+
+		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){_id}}"}`
+		body := strings.NewReader(s)
+		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+		req.Header.Set("Authorization", "Bearer "+access.Secret)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+		resp, err := http.DefaultClient.Do(req)
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		defer resp.Body.Close()
+
+		bdy, _ := ioutil.ReadAll(resp.Body)
+
+		var i interface{}
+
+		json.Unmarshal(bdy, &i)
+
+		if i != nil {
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b != nil {
+
+				c := b.(map[string]interface{})
+
+				d := c[dir]
+
+				if d != nil {
+
+					e := d.(map[string]interface{})
+
+					f := e["_id"]
+
+					dir = "updateCache"
+
+					sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
+
+					m := ""
+
+					for i := 0; i < len(cache); i++ {
+
+						m = m + "Ref(Collection(\"Post\")," + cache[i] + "),"
+
+					}
+
+					strings.TrimSuffix(m, ",")
+
+					s := `{"query":"mutation{` + dir + `(id: \"` + f.(string) + `\" data:{posts: [` + m + `]})}"}`
+
+					body := strings.NewReader(s)
+					req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+					req.Header.Set("Authorization", "Bearer "+access.Secret)
+					req.Header.Set("Content-Type", "application/json")
+					req.Header.Set("Accept", "application/json")
+					req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+					_, err = http.DefaultClient.Do(req)
+
+					if err != nil {
+
+						fmt.Fprint(w, err)
+
+						return
+
+					}
+
+				}
+
+			} else {
+
+				dir = "createCache"
+
+				sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
+
+				m := ""
+
+				for i := 0; i < len(cache); i++ {
+
+					m = m + "Ref(Collection(\"Post\")," + cache[i] + "),"
+
+				}
+
+				strings.TrimSuffix(m, ",")
+
+				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" posts: [` + m + `]})}"}`
+
+				body := strings.NewReader(s)
+				req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+				req.Header.Set("Authorization", "Bearer "+access.Secret)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Accept", "application/json")
+				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+				_, err = http.DefaultClient.Do(req)
+
+				if err != nil {
+
+					fmt.Fprint(w, err)
+
+					return
+
+				}
+
+			}
 
 		}
 
