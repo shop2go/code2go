@@ -1699,7 +1699,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				strings.TrimSuffix(m, ",")
 
-				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" posts: [` + m + `]}) {_id}}"}`
+				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" posts: [` + m + `]})}"}`
 
 				body := strings.NewReader(s)
 				req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
