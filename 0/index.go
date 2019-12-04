@@ -1596,7 +1596,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		dir = "cacheByMonth"
 		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
 
-		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){posts{_id}}}"}`
+		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){_id}}"}`
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
