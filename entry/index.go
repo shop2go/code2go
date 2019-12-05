@@ -1,19 +1,21 @@
 package main
 
 import (
-	"encoding/gob"
-	"log"
-	"net"
+	"encoding/json"
+	"fmt"
+
+	//"log"
+	"io/ioutil"
 	"net/http"
 	"os"
-	"strconv"
+	//"strconv"
 	"strings"
 	"time"
 
-	"github.com/mschneider82/problem"
-	"github.com/aerogo/packet"
-	"github.com/mmaedel/code2go/pb"
-)
+	f "github.com/fauna/faunadb-go/faunadb"
+	/* 	"github.com/mschneider82/problem"
+	   	"github.com/aerogo/packet"
+	   	"github.com/mmaedel/code2go/pb" */)
 
 type Cal struct {
 	Year  int
@@ -21,17 +23,185 @@ type Cal struct {
 	Days  map[int]string
 }
 
+type Cache struct {
+	Month string
+	Posts []Post
+}
+
+type Post struct {
+	ID      string
+	Date    string
+	Title   string
+	Content string
+}
+
+type Access struct {
+	//Reference *f.RefV `fauna:"ref"`
+	Timestamp int    `fauna:"ts"`
+	Secret    string `fauna:"secret"`
+	Role      string `fauna:"role"`
+}
+
+var posts [][]interface{} = make([][]interface{}, 0)
+
+var resultP []Post
+
+var resultC []Cache = make([]Cache, 0)
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	a := os.Getenv("IP_ADDRESS")
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	if a == "" {
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(time.Now().Format("2006")), "role": "server"}))
 
-		problem.New(problem.Type("https://"+a+"/404"), problem.Status(404)).WriteTo(w)
-		os.Exit(2)
-	
+	if err != nil {
+
+		fmt.Fprint(w, err)
+
+		return
+
 	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	dir := "allCaches"
+
+	s := `{"query":"query{` + dir + `{data{month posts{_id date title content}}}}"}`
+	body := strings.NewReader(s)
+	req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+	req.Header.Set("Authorization", "Bearer "+access.Secret)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+
+		fmt.Fprint(w, err)
+
+		return
+
+	}
+
+	defer resp.Body.Close()
+
+	bdy, _ := ioutil.ReadAll(resp.Body)
+
+	var i interface{}
+
+	json.Unmarshal(bdy, &i)
+
+	if i != nil {
+
+		a := i.(map[string]interface{})
+
+		b := a["data"]
+
+		if b == nil {
+
+			fmt.Fprint(w, "sorry no data...")
+
+			return
+
+		}
+
+		c := b.(map[string]interface{})
+
+		d := c[dir]
+
+		if d == nil {
+
+			fmt.Fprint(w, "sorry no data...")
+
+			return
+
+		}
+
+		e := d.(map[string]interface{})
+
+		f := e["data"]
+
+		if f == nil {
+
+			fmt.Fprint(w, "sorry no data...")
+
+			return
+
+		}
+
+		g := f.([]interface{})
+
+		if g == nil {
+
+			fmt.Fprint(w, "sorry no data...")
+
+			return
+
+		} else {
+
+			l := len(g)
+
+			h := make([]map[string]interface{}, l)
+
+			for j := 0; j < l; j++ {
+
+				h[j] = g[j].(map[string]interface{})
+
+			}
+
+			if h[0] != nil {
+
+				cache := make([]Cache, l)
+				//posts = make([]interface{}, 0)
+
+				for j := 0; j < l; j++ {
+
+					cache[j].Month = h[j]["month"].(string)
+					posts[j] = append(posts[j], h[j]["posts"])
+
+				}
+
+				for i, v := range cache {
+
+					for j := 0; j < len(posts[i]); j++ {
+
+						o := posts[i][j].(map[string]interface{})
+
+						p := o["_id"].(string)
+
+						resultP[j].ID = p
+
+						p = o["date"].(string)
+
+						resultP[j].Date = p
+
+						p = o["title"].(string)
+
+						resultP[j].Title = p
+
+						p = o["content"].(string)
+
+						resultP[j].Content = p
+
+						v.Posts = append(v.Posts, resultP[j])
+
+					}
+
+					resultC = append(resultC, v)
+
+				}
+
+			}
+
+		}
+
+	}
+
+	fmt.Fprint(w, resultC)
 
 	/* addr := &net.TCPAddr{net.ParseIP(a), 8080, "UTC"}
 
@@ -72,7 +242,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		// Send a message
 
-		stream.Outgoing <- packet.New(byte(cue), []byte(query))		
+		stream.Outgoing <- packet.New(byte(cue), []byte(query))
 
 		//conn.CloseWrite()
 
@@ -83,10 +253,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		dec.Decode(&store)
 
 		//conn.CloseRead()
- */
-		numberOfEntries := len(store)
-
-		str := `
+	*/
+/* 
+	str := `
 
 		<!DOCTYPE html>
 		<html lang="en">
@@ -111,80 +280,80 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<ul class="list-group">
 		`
 
-		now := time.Now()
+	now := time.Now()
 
-		var c Cal
+	var c Cal
 
-		c.Year = now.Year()
-		month, _ := strconv.Atoi(now.Format("01"))
-		c.Month = month
-		day := map[int]string{now.Day(): now.Weekday().String()}
+	c.Year = now.Year()
+	month, _ := strconv.Atoi(now.Format("01"))
+	c.Month = month
+	day := map[int]string{now.Day(): now.Weekday().String()}
 
-		c.Days = day
+	c.Days = day
 
-		i := 1
+	i := 1
 
-		for i < 32 {
+	for i < 32 {
 
-			d := now.AddDate(0, 0, i)
+		d := now.AddDate(0, 0, i)
 
-			m, _ := strconv.Atoi(d.Format("01"))
+		m, _ := strconv.Atoi(d.Format("01"))
 
-			if m != month {
+		if m != c.Month {
 
-				break
-
-			}
-
-			e, _ := strconv.Atoi(d.Format("02"))
-
-			c.Days[e] = d.Weekday().String()
-
-			i++
+			break
 
 		}
 
-		j := 1
+		e, _ := strconv.Atoi(d.Format("02"))
 
-		for j > 0 {
+		c.Days[e] = d.Weekday().String()
 
-			d := now.AddDate(0, 0, -j)
+		i++
 
-			m, _ := strconv.Atoi(d.Format("01"))
+	}
 
-			if m != month {
+	j := 1
 
-				break
+	for j > 0 {
 
-			}
+		d := now.AddDate(0, 0, -j)
 
-			e, _ := strconv.Atoi(d.Format("02"))
+		m, _ := strconv.Atoi(d.Format("01"))
 
-			c.Days[e] = d.Weekday().String()
+		if m != c.Month {
 
-			j++
-
-		}
-
-		var p, q int
-
-		l := len(c.Days)
-
-		p, _ = strconv.Atoi(time.Now().Format("02"))
-
-		for i := l; i >= p; i-- {
-
-			q = i
+			break
 
 		}
 
-		//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
+		e, _ := strconv.Atoi(d.Format("02"))
 
-		for k := q; k <= l; k++ {
+		c.Days[e] = d.Weekday().String()
 
-			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
+		j++
 
-			str = str + `
+	}
+
+	var p, q int
+
+	l := len(c.Days)
+
+	p, _ = strconv.Atoi(time.Now().Format("02"))
+
+	for i := l; i >= p; i-- {
+
+		q = i
+
+	}
+
+	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
+
+	for k := q; k <= l; k++ {
+
+		//schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + fmt.Sprintf("%02d", k)
+
+		str = str + `
 			<br>
 			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 			<span class="badge badge-pill badge-dark">
@@ -209,19 +378,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</div>
 			`
 
-			if numberOfEntries > 0 {
+		if numberOfEntries > 0 {
 
-				for n := 0; n < numberOfEntries; n++ {
+			for n := 0; n < numberOfEntries; n++ {
 
-					switch string(store[n].Schedule) {
+				switch string(store[n].Schedule) {
 
-					case schedule:
+				case schedule:
 
-						str = str + `
+					str = str + `
 						<input readonly class="form-control-plaintext list-group-item-action" id="` + string(store[n].PostId) + `" value="` + string(store[n].PostId) + `" placeholder="` + string(store[n].Tags) + `">
 						`
-
-					}
 
 				}
 
@@ -229,72 +396,74 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		for o := 1; o < 21; o++ {
+	}
 
-			now = time.Now().AddDate(0, o, 0)
+	for o := 1; o < 21; o++ {
 
-			c.Year = now.Year()
-			month, _ = strconv.Atoi(now.Format("01"))
-			c.Month = month
-			day = map[int]string{now.Day(): now.Weekday().String()}
+		now = time.Now().AddDate(0, o, 0)
 
-			c.Days = day
+		c.Year = now.Year()
+		month, _ = strconv.Atoi(now.Format("01"))
+		c.Month = month
+		day = map[int]string{now.Day(): now.Weekday().String()}
 
-			i = 1
+		c.Days = day
 
-			for i < 32 {
+		i = 1
 
-				d := now.AddDate(0, 0, i)
+		for i < 32 {
 
-				m, _ := strconv.Atoi(d.Format("01"))
+			d := now.AddDate(0, 0, i)
 
-				if m != month {
+			m, _ := strconv.Atoi(d.Format("01"))
 
-					break
+			if m != month {
 
-				}
-
-				e, _ := strconv.Atoi(d.Format("02"))
-
-				c.Days[e] = d.Weekday().String()
-
-				i++
+				break
 
 			}
 
-			j = 1
+			e, _ := strconv.Atoi(d.Format("02"))
 
-			for j > 0 {
+			c.Days[e] = d.Weekday().String()
 
-				d := now.AddDate(0, 0, -j)
+			i++
 
-				m, _ := strconv.Atoi(d.Format("01"))
+		}
 
-				if m != month {
+		j = 1
 
-					break
+		for j > 0 {
 
-				}
+			d := now.AddDate(0, 0, -j)
 
-				e, _ := strconv.Atoi(d.Format("02"))
+			m, _ := strconv.Atoi(d.Format("01"))
 
-				c.Days[e] = d.Weekday().String()
+			if m != month {
 
-				j++
+				break
 
 			}
 
-			//all following months without entries
+			e, _ := strconv.Atoi(d.Format("02"))
 
-			store = nil
+			c.Days[e] = d.Weekday().String()
 
-			l = len(c.Days)
+			j++
 
-			for k := 1; k <= l; k++ {
+		}
 
-				schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
+		//all following months without entries
 
-				str = str + `
+		store = nil
+
+		l = len(c.Days)
+
+		for k := 1; k <= l; k++ {
+
+			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
+
+			str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -320,11 +489,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				`
 
-			}
-
 		}
 
-		str = str + `
+	}
+
+	str = str + `
  		</ul>
 		</form>
 		</div>
@@ -335,101 +504,101 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</body>
 		</html>
 		`
-
-		//var s string
-		/* var req pb.ReqPost
-
-		r.ParseForm()
-
-		for k, v := range r.Form {
-
-			switch k {
-
-			case "Topic":
-
-				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-
-				s := strings.Join(v, " ")
-
-				req.Topic = []byte(s)
-
-			case "Entry":
-
-				sb := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
-
-				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-
-				req.Entry = []byte(sb)
-
-			case "Schedule":
-
-				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-				s := strings.Join(v, " ")
-
-				req.Schedule = []byte(s)
-
-			case "Tags":
-
-				//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-				s := strings.Join(v, "#")
-
-				req.Tags = []byte(s)
-
-			default:
-
-				continue
-
-			}
-
-		}
-
-		if req.Topic != nil {
-
-			//Post data
-
-			// Create a stream
-
-			stream = packet.NewStream(1024)
-
-			stream.SetConnection(conn)
-
-			// Send data
-
-			stream.Outgoing <- packet.New('T', req.Topic)
-
-			stream.Outgoing <- packet.New('E', req.Entry)
-
-			stream.Outgoing <- packet.New('S', req.Schedule)
-
-			stream.Outgoing <- packet.New('#', req.Tags)
-
-			w.Write(req.Schedule)
  */
-		//} else {
+	//var s string
+	/* var req pb.ReqPost
 
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-			w.Write([]byte(str))
+	r.ParseForm()
 
-		//}
+	for k, v := range r.Form {
 
-		/* client := &http.Client{}
+		switch k {
 
-		req, err := http.NewRequest("POST", "http://localhost/"+url, bytes.NewBuffer([]byte(s)))
-		req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value") // This makes it work
-		if err != nil {
-			log.Println(err)
+		case "Topic":
+
+			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+
+			s := strings.Join(v, " ")
+
+			req.Topic = []byte(s)
+
+		case "Entry":
+
+			sb := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
+
+			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+
+			req.Entry = []byte(sb)
+
+		case "Schedule":
+
+			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+			s := strings.Join(v, " ")
+
+			req.Schedule = []byte(s)
+
+		case "Tags":
+
+			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+			s := strings.Join(v, "#")
+
+			req.Tags = []byte(s)
+
+		default:
+
+			continue
+
 		}
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Println(err)
-		}
 
-		defer resp.Body.Close()
+	}
 
-		body, _ := ioutil.ReadAll(resp.Body)
-		w.Header().Set("Content-Length", strconv.Itoa(len(body)))
-		w.Write(body) */
+	if req.Topic != nil {
+
+		//Post data
+
+		// Create a stream
+
+		stream = packet.NewStream(1024)
+
+		stream.SetConnection(conn)
+
+		// Send data
+
+		stream.Outgoing <- packet.New('T', req.Topic)
+
+		stream.Outgoing <- packet.New('E', req.Entry)
+
+		stream.Outgoing <- packet.New('S', req.Schedule)
+
+		stream.Outgoing <- packet.New('#', req.Tags)
+
+		w.Write(req.Schedule)
+	*/
+	//} else {
+
+/* 	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	w.Write([]byte(str)) */
+
+	//}
+
+	/* client := &http.Client{}
+
+	req, err := http.NewRequest("POST", "http://localhost/"+url, bytes.NewBuffer([]byte(s)))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value") // This makes it work
+	if err != nil {
+		log.Println(err)
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	w.Header().Set("Content-Length", strconv.Itoa(len(body)))
+	w.Write(body) */
 
 	//}
 
