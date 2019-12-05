@@ -98,7 +98,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</head>
 		<body style="background-color:#adebad">
 		<div class="container">
-		<iframe src="https://code2go.dev/main" style="border:none;"></iframe> 
+		<iframe src="https://code2go.dev" style="border:none;"></iframe> 
 		</div>
    		<div class="container" id="search" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form">
@@ -197,6 +197,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		q = i
 
 	}
+
+	c.Year = time.Now().Year()
 
 	t := 0
 
