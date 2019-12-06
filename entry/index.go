@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	//"strconv"
+	"strconv"
 	"strings"
 	"time"
 
@@ -42,7 +42,7 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-
+var posts []Post
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
@@ -162,13 +162,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for j := 0; j < l; j++ {
 
-					//cache[j].Month = h[j]["month"].(string)
-
-					//log.Println(cache[j].Month)
-
 					posts[j] = h[j]["posts"].([]interface{})
-
-					//log.Printf("%T:: %v",posts[j],posts[j])
 
 					o := posts[j].([]interface{})
 
@@ -178,8 +172,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						resultP := make([]Post, len(p))
 
-						//for _, v := range cache {
-
 						resultP[k].ID = p["_id"].(string)
 
 						resultP[k].Date = p["date"].(string)
@@ -188,12 +180,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						resultP[k].Content = p["content"]
 
-						//v.Posts = append(v.Posts, resultP[j])
-
-						//resultC = append(resultC, v)
-
-						//}
-
 						cache[j].Posts = append(cache[j].Posts, resultP[k])
 
 					}
@@ -201,36 +187,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					result = append(result, cache[j])
 
 				}
-				/*
 
-					//for j := 0; j < len(posts[i]); j++ {
-
-						o := posts[i].(interface{})
-
-						p := o.([]interface{})
-
-						q := p[j].(map[string]interface{})
-
-						resultP[j].ID = q["_id"].(string)
-
-						resultP[j].Date = q["date"].(string)
-
-						resultP[j].Title = q["title"].(string)
-
-						resultP[j].Content = q["content"].(string)
-
-						v.Posts = append(v.Posts, resultP[j])
-
-					//}
-
-					resultC = append(resultC, v) */
 			}
 
 		}
 
 	}
 
-	fmt.Fprint(w, result)
+	//fmt.Fprint(w, result)
 
 	/* addr := &net.TCPAddr{net.ParseIP(a), 8080, "UTC"}
 
@@ -283,7 +247,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//conn.CloseRead()
 	*/
-/* 
+
 	str := `
 
 		<!DOCTYPE html>
@@ -320,11 +284,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Days = day
 
-	i := 1
+	z := 1
 
-	for i < 32 {
+	for z < 32 {
 
-		d := now.AddDate(0, 0, i)
+		d := now.AddDate(0, 0, z)
 
 		m, _ := strconv.Atoi(d.Format("01"))
 
@@ -338,7 +302,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		c.Days[e] = d.Weekday().String()
 
-		i++
+		z++
 
 	}
 
@@ -380,7 +344,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for k := q; k <= l; k++ {
 
-		//schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + fmt.Sprintf("%02d", k)
+		n := fmt.Sprintf("%02d", k)
+
+		schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
 
 		str = str + `
 			<br>
@@ -407,16 +373,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</div>
 			`
 
-		if numberOfEntries > 0 {
+		for _, v := range result {
 
-			for n := 0; n < numberOfEntries; n++ {
+			if v.Month == strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) {
+		
+				posts = v.Posts
+		
+			}
+		
+		}
 
-				switch string(store[n].Schedule) {
+		m := len(posts)
+
+		if m > 0 {
+
+			for n := 0; n < m; n++ {
+
+				switch posts[n].Date {
 
 				case schedule:
 
 					str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + string(store[n].PostId) + `" value="` + string(store[n].PostId) + `" placeholder="` + string(store[n].Tags) + `">
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].ID + `" placeholder="` + posts[n].Title + `">
 						`
 
 				}
@@ -438,7 +416,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		c.Days = day
 
-		i = 1
+		i := 1
 
 		for i < 32 {
 
@@ -484,13 +462,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//all following months without entries
 
-		store = nil
+		//store = nil
 
 		l = len(c.Days)
 
 		for k := 1; k <= l; k++ {
+			
+			n := fmt.Sprintf("%02d", k)
 
-			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + strconv.Itoa(k)
+			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
 
 			str = str + `
 				<br>
@@ -533,7 +513,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</body>
 		</html>
 		`
- */
+
 	//var s string
 	/* var req pb.ReqPost
 
@@ -605,9 +585,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	*/
 	//} else {
 
-/* 	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str)) */
+	/* 	w.Header().Set("Content-Type", "text/html")
+	   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	   	w.Write([]byte(str)) */
 
 	//}
 
