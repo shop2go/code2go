@@ -32,7 +32,7 @@ type Post struct {
 	ID      string
 	Date    string
 	Title   string
-	Content string
+	Content interface{}
 }
 
 type Access struct {
@@ -42,11 +42,7 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-var posts [][]interface{} = make([][]interface{}, 0)
-
-var resultP []Post
-
-var resultC []Cache = make([]Cache, 0)
+var result []Cache = make([]Cache, 0)
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
@@ -103,7 +99,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if b == nil {
 
-			fmt.Fprint(w, "sorry no data...")
+			fmt.Fprint(w, "no data...")
 
 			return
 
@@ -115,7 +111,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if d == nil {
 
-			fmt.Fprint(w, "sorry no data...")
+			fmt.Fprint(w, "no data...")
 
 			return
 
@@ -127,7 +123,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if f == nil {
 
-			fmt.Fprint(w, "sorry no data...")
+			fmt.Fprint(w, "no data...")
 
 			return
 
@@ -137,7 +133,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if g == nil {
 
-			fmt.Fprint(w, "sorry no data...")
+			fmt.Fprint(w, "no data...")
 
 			return
 
@@ -147,61 +143,92 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			h := make([]map[string]interface{}, l)
 
+			cache := make([]Cache, l)
+
 			for j := 0; j < l; j++ {
 
+				//h == Caches
 				h[j] = g[j].(map[string]interface{})
+
+				cache[j].Month = h[j]["month"].(string)
 
 			}
 
 			if h[0] != nil {
 
-				cache := make([]Cache, l)
-				//posts = make([]interface{}, 0)
+				posts := make([]interface{}, l)
 
 				for j := 0; j < l; j++ {
 
-					cache[j].Month = h[j]["month"].(string)
-					posts[j] = append(posts[j], h[j]["posts"])
+					//cache[j].Month = h[j]["month"].(string)
 
-				}
+					//log.Println(cache[j].Month)
 
-				for i, v := range cache {
+					posts[j] = h[j]["posts"].([]interface{})
 
-					for j := 0; j < len(posts[i]); j++ {
+					//log.Printf("%T:: %v",posts[j],posts[j])
 
-						o := posts[i][j].(map[string]interface{})
+					o := posts[j].([]interface{})
 
-						p := o["_id"].(string)
+					for k := 0; k < len(o); k++ {
 
-						resultP[j].ID = p
+						p := o[k].(map[string]interface{})
 
-						p = o["date"].(string)
+						resultP := make([]Post, len(p))
 
-						resultP[j].Date = p
+						//for _, v := range cache {
 
-						p = o["title"].(string)
+						resultP[k].ID = p["_id"].(string)
 
-						resultP[j].Title = p
+						resultP[k].Date = p["date"].(string)
 
-						p = o["content"].(string)
+						resultP[k].Title = p["title"].(string)
 
-						resultP[j].Content = p
+						resultP[k].Content = p["content"]
 
-						v.Posts = append(v.Posts, resultP[j])
+						//v.Posts = append(v.Posts, resultP[j])
+
+						//resultC = append(resultC, v)
+
+						//}
+
+						cache[j].Posts = append(cache[j].Posts, resultP[k])
 
 					}
 
-					resultC = append(resultC, v)
+					result = append(result, cache[j])
 
 				}
+				/*
 
+					//for j := 0; j < len(posts[i]); j++ {
+
+						o := posts[i].(interface{})
+
+						p := o.([]interface{})
+
+						q := p[j].(map[string]interface{})
+
+						resultP[j].ID = q["_id"].(string)
+
+						resultP[j].Date = q["date"].(string)
+
+						resultP[j].Title = q["title"].(string)
+
+						resultP[j].Content = q["content"].(string)
+
+						v.Posts = append(v.Posts, resultP[j])
+
+					//}
+
+					resultC = append(resultC, v) */
 			}
 
 		}
 
 	}
 
-	fmt.Fprint(w, resultC)
+	fmt.Fprint(w, result)
 
 	/* addr := &net.TCPAddr{net.ParseIP(a), 8080, "UTC"}
 
