@@ -467,7 +467,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		l = len(c.Days)
 
 		for k := 1; k <= l; k++ {
-			
+
 			n := fmt.Sprintf("%02d", k)
 
 			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
@@ -585,9 +585,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	*/
 	//} else {
 
-	/* 	w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Type", "text/html")
 	   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	   	w.Write([]byte(str)) */
+	   	w.Write([]byte(str))
 
 	//}
 
