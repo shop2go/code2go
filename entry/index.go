@@ -507,12 +507,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</form>
 		</div>
 		
-		<!-- Then Material JavaScript on top of Bootstrap JavaScript -->
-		<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-
+		<script src="https://assets.medienwerk.now.sh/material.min.js">
+		</script>
 		</body>
 		</html>
 		`
+
+	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	w.Write([]byte(str))
 
 	//var s string
 	/* var req pb.ReqPost
@@ -584,11 +587,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write(req.Schedule)
 	*/
 	//} else {
-
+/* 
 		w.Header().Set("Content-Type", "text/html")
 	   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	   	w.Write([]byte(str))
-
+ */
 	//}
 
 	/* client := &http.Client{}
