@@ -42,9 +42,11 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-var result []Cache = make([]Cache, 0)
+
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+
+	var result []Cache = make([]Cache, 0)
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
