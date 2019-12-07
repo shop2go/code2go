@@ -266,9 +266,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 		</head>
 
-		<body style="background-color: #bcbcbc;">
+		<body style="background-color:#adebad">
 
-		<div class="container" id="data" style="color:white; font-size:30px;">
+		<div class="container" id="data" style="color:white;">
 		
 		<ul class="list-group">
 		`
@@ -364,10 +364,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<form class="form-inline" role="form">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
-			<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
+			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 			<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-			<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
-			<textarea class="form-control  mr-sm-2" id="Entry" rows="1" placeholder="data"></textarea>
+			<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
+			<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
+			<br>
 			<button type="submit" class="btn btn-light">submit</button>
 			</form>
 			</div>
@@ -394,7 +395,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				case schedule:
 
 					str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].ID + `" placeholder="` + posts[n].Title + `">
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `">
 						`
 
 				}
