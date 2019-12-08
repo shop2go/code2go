@@ -248,9 +248,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//conn.CloseRead()
 	*/
 
-	switch http.Method() {
+	switch r.Method {
 
-	case "GET":
+	case "POST":
+
+		fmt.Fprint(w, "posted")
+
+	default:
 
 		str := `
 
@@ -521,10 +525,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
-
-	case "POST":
-
-		fmt.Fprint(w, "posted")
 
 	}
 
