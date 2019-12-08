@@ -248,7 +248,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//conn.CloseRead()
 	*/
 
-	str := `
+	switch http.Method() {
+
+	case "GET":
+
+		str := `
 
 		<!DOCTYPE html>
 		<html lang="en">
@@ -273,159 +277,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<ul class="list-group">
 		`
 
-	now := time.Now()
+		now := time.Now()
 
-	var c Cal
-
-	c.Year = now.Year()
-	month, _ := strconv.Atoi(now.Format("01"))
-	c.Month = month
-	day := map[int]string{now.Day(): now.Weekday().String()}
-
-	c.Days = day
-
-	z := 1
-
-	for z < 32 {
-
-		d := now.AddDate(0, 0, z)
-
-		m, _ := strconv.Atoi(d.Format("01"))
-
-		if m != c.Month {
-
-			break
-
-		}
-
-		e, _ := strconv.Atoi(d.Format("02"))
-
-		c.Days[e] = d.Weekday().String()
-
-		z++
-
-	}
-
-	j := 1
-
-	for j > 0 {
-
-		d := now.AddDate(0, 0, -j)
-
-		m, _ := strconv.Atoi(d.Format("01"))
-
-		if m != c.Month {
-
-			break
-
-		}
-
-		e, _ := strconv.Atoi(d.Format("02"))
-
-		c.Days[e] = d.Weekday().String()
-
-		j++
-
-	}
-
-	var p, q int
-
-	l := len(c.Days)
-
-	p, _ = strconv.Atoi(time.Now().Format("02"))
-
-	for i := l; i >= p; i-- {
-
-		q = i
-
-	}
-
-	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
-
-	for k := q; k <= l; k++ {
-
-		n := fmt.Sprintf("%02d", k)
-
-		schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
-
-		str = str + `
-			<br>
-			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
-			<span class="badge badge-pill badge-dark">
-			` + c.Days[k] + `
-			</span>
-			</button>
-
-			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-			</span><br>
-
-			<div class="container" id="post` + schedule + `">
-			
-			<form class="form-inline" role="form">
-			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
-			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-			<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-			<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-			<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
-			<br>
-			<button type="submit" class="btn btn-light">submit</button>
-			</form>
-			</div>
-			`
-
-		for _, v := range result {
-
-			if v.Month == strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) {
-		
-				posts = v.Posts
-		
-			}
-		
-		}
-
-		m := len(posts)
-
-		if m > 0 {
-
-			for n := 0; n < m; n++ {
-
-				switch posts[n].Date {
-
-				case schedule:
-
-					str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `">
-						`
-
-				}
-
-			}
-
-		}
-
-	}
-
-	for o := 1; o < 21; o++ {
-
-		now = time.Now().AddDate(0, o, 0)
+		var c Cal
 
 		c.Year = now.Year()
-		month, _ = strconv.Atoi(now.Format("01"))
+		month, _ := strconv.Atoi(now.Format("01"))
 		c.Month = month
-		day = map[int]string{now.Day(): now.Weekday().String()}
+		day := map[int]string{now.Day(): now.Weekday().String()}
 
 		c.Days = day
 
-		i := 1
+		z := 1
 
-		for i < 32 {
+		for z < 32 {
 
-			d := now.AddDate(0, 0, i)
+			d := now.AddDate(0, 0, z)
 
 			m, _ := strconv.Atoi(d.Format("01"))
 
-			if m != month {
+			if m != c.Month {
 
 				break
 
@@ -435,11 +306,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			c.Days[e] = d.Weekday().String()
 
-			i++
+			z++
 
 		}
 
-		j = 1
+		j := 1
 
 		for j > 0 {
 
@@ -447,7 +318,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			m, _ := strconv.Atoi(d.Format("01"))
 
-			if m != month {
+			if m != c.Month {
 
 				break
 
@@ -461,19 +332,152 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//all following months without entries
+		var p, q int
 
-		//store = nil
+		l := len(c.Days)
 
-		l = len(c.Days)
+		p, _ = strconv.Atoi(time.Now().Format("02"))
 
-		for k := 1; k <= l; k++ {
+		for i := l; i >= p; i-- {
+
+			q = i
+
+		}
+
+		//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
+
+		for k := q; k <= l; k++ {
 
 			n := fmt.Sprintf("%02d", k)
 
 			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
 
 			str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
+			</span><br>
+
+			<div class="container" id="post` + schedule + `">
+			
+			<form class="form-inline" role="form" method="POST">
+			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
+			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
+			<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
+			<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
+			<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
+			<br>
+			<button type="submit" class="btn btn-light">submit</button>
+			</form>
+			</div>
+			`
+
+			for _, v := range result {
+
+				if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+
+					posts = v.Posts
+
+				}
+
+			}
+
+			m := len(posts)
+
+			if m > 0 {
+
+				for n := 0; n < m; n++ {
+
+					switch posts[n].Date {
+
+					case schedule:
+
+						str = str + `
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='` + posts[n].ID + `'">
+						`
+
+					}
+
+				}
+
+			}
+
+		}
+
+		for o := 1; o < 21; o++ {
+
+			now = time.Now().AddDate(0, o, 0)
+
+			c.Year = now.Year()
+			month, _ = strconv.Atoi(now.Format("01"))
+			c.Month = month
+			day = map[int]string{now.Day(): now.Weekday().String()}
+
+			c.Days = day
+
+			i := 1
+
+			for i < 32 {
+
+				d := now.AddDate(0, 0, i)
+
+				m, _ := strconv.Atoi(d.Format("01"))
+
+				if m != month {
+
+					break
+
+				}
+
+				e, _ := strconv.Atoi(d.Format("02"))
+
+				c.Days[e] = d.Weekday().String()
+
+				i++
+
+			}
+
+			j = 1
+
+			for j > 0 {
+
+				d := now.AddDate(0, 0, -j)
+
+				m, _ := strconv.Atoi(d.Format("01"))
+
+				if m != month {
+
+					break
+
+				}
+
+				e, _ := strconv.Atoi(d.Format("02"))
+
+				c.Days[e] = d.Weekday().String()
+
+				j++
+
+			}
+
+			//all following months without entries
+
+			//store = nil
+
+			l = len(c.Days)
+
+			for k := 1; k <= l; k++ {
+
+				n := fmt.Sprintf("%02d", k)
+
+				schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+
+				str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -499,11 +503,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				`
 
+			}
+
 		}
 
-	}
-
-	str = str + `
+		str = str + `
  		</ul>
 		</form>
 		</div>
@@ -514,9 +518,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str))
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
+
+	case "POST":
+
+		fmt.Fprint(w, "posted")
+
+	}
 
 	//var s string
 	/* var req pb.ReqPost
@@ -588,11 +598,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write(req.Schedule)
 	*/
 	//} else {
-/* 
-		w.Header().Set("Content-Type", "text/html")
-	   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	   	w.Write([]byte(str))
- */
+	/*
+			w.Header().Set("Content-Type", "text/html")
+		   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		   	w.Write([]byte(str))
+	*/
 	//}
 
 	/* client := &http.Client{}
