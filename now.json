@@ -54,7 +54,8 @@
         {
           "src": "/",
           "dest": "https://start.medienwerk.now.sh"
-        }
+        },
+        {   "src": "/post"}
       ],
       
     "alias": "code2go.dev",
