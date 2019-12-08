@@ -252,7 +252,72 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		fmt.Fprint(w, "posted")
+		var g string
+
+		post := &Post{Date: r.PostFormValue("Schedule"), Title: r.PostFormValue("Topic")}
+		
+		c := r.PostFormValue("Entry")
+		
+		
+		dir = "createPost"
+
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false date:\"` + post.Date + `\" title:\"` + post.Title + `\" content:\"` + c + `\"}) {_id}}"}`
+
+		body := strings.NewReader(s)
+		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+		req.Header.Set("Authorization", "Bearer "+access.Secret)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+		resp, err := http.DefaultClient.Do(req)
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		defer resp.Body.Close()
+
+		bdy, _ := ioutil.ReadAll(resp.Body)
+
+		var i interface{}
+
+		json.Unmarshal(bdy, &i)
+
+		if i != nil {
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b != nil {
+
+				c := b.(map[string]interface{})
+
+				d := c[dir]
+
+				if d != nil {
+
+					e := d.(map[string]interface{})
+
+					f := e["_id"]
+
+					g = f.(string)
+
+				}
+
+			}
+			
+		}
+
+		http.Redirect(w, r, "https://" + g + ".code2go.dev", http.StatusSeeOther)
+
+		fmt.Fprint(w, "posted" + g)
 
 	default:
 
