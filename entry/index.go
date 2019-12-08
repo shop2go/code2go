@@ -315,7 +315,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 		}
 
-		http.Redirect(w, r, "https://" + g + ".code2go.dev/", http.StatusSeeOther)
+		http.Redirect(w, r, "https://" + g + ".code2go.dev/post", http.StatusSeeOther)
 
 		fmt.Fprint(w, "posted" + g)
 
