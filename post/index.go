@@ -254,9 +254,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var g string
 
-		t := r.PostFormValue("Topic")}
-
 		d := r.PostFormValue("Schedule")
+
+		t := r.PostFormValue("Topic")
 		
 		c := r.PostFormValue("Entry")
 		
