@@ -248,21 +248,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//conn.CloseRead()
 	*/
 
+	var d, e, t string
+
 	switch r.Method {
 
 	case "POST":
 
 		var g string
-
-		d := r.PostFormValue("Schedule")
-
-		t := r.PostFormValue("Topic")
-		
-		c := r.PostFormValue("Entry")
 		
 		dir = "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false date:\"` + d + `\" title:\"` + t + `\" content:\"` + c + `\"}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false date:\"` + d + `\" title:\"` + t + `\" content:\"` + e + `\"}) {_id}}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -587,6 +583,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</body>
 		</html>
 		`
+
+		d = r.PostFormValue("Schedule")
+
+		t = r.PostFormValue("Topic")
+		
+		e = r.PostFormValue("Entry")
 
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
