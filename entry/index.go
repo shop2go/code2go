@@ -370,8 +370,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			</span><br>
 
-			<div class="container" id="` + schedule + `">
-			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='code2go.dev/public'">
+			<div class="container" id="threads` + schedule + `">
+			<form class="form-inline" role="form">
+			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='public'">
 						
 			`
 			
@@ -412,7 +413,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					if posts[n].Password  == nil {
 
 					str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
 						`
 					} else {
 
@@ -430,7 +431,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str = str + `</div>`
+	str = str + `</form></div>`
 
 	for o := 1; o < 21; o++ {
 
