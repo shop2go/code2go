@@ -48,9 +48,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []Cache = make([]Cache, 0)
 
+	url := strings.TrimPrefix(r.URL.Path, "/entry#")
+
+	sl := strings.SplitN(url, "-", -1)
+
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(time.Now().Format("2006")), "role": "server"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl[0], "role": "server-readonly"}))
 
 	if err != nil {
 
@@ -248,13 +252,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//conn.CloseRead()
 	*/
 
-	var d, e, t string
+	//var d, e, t string
 
-	switch r.Method {
+	//switch r.Method {
 
-	case "POST":
+	//case "POST":
 
-		var g string
+		/* var g string
 		
 		dir = "createPost"
 
@@ -314,9 +318,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		http.Redirect(w, r, "https://" + g + ".code2go.dev/post", http.StatusSeeOther)
 
-		fmt.Fprint(w, "posted" + g)
+		fmt.Fprint(w, "posted" + g) */
 
-	default:
+	//default:
 
 		str := `
 
@@ -465,7 +469,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					case schedule:
 
 						str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='` + posts[n].ID + `'">
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/posts#` + schedule + `'">
 						`
 
 					}
@@ -583,18 +587,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</body>
 		</html>
 		`
-
-		d = r.PostFormValue("Schedule")
-
-		t = r.PostFormValue("Topic")
-		
-		e = r.PostFormValue("Entry")
-
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	}
+	//}
 
 	//var s string
 	/* var req pb.ReqPost

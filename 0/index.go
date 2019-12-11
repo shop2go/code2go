@@ -1602,6 +1602,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
+		/* if c.Year != now.Year() {
+
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
+		
+			if err != nil {
+		
+				fmt.Fprint(w, err)
+		
+				return
+		
+			}
+		
+			var access *Access
+		
+			x.Get(&access)
+
+		} */
+
 		req.Header.Set("Authorization", "Bearer "+access.Secret)
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")
