@@ -42,9 +42,11 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-var posts []Post
+
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+
+	var posts []Post
 
 	var result []Cache = make([]Cache, 0)
 
