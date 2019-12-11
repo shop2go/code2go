@@ -140,35 +140,39 @@ func getCache(a *Access) ([]Cache, error) {
 
 		}
 
-		posts := make([]interface{}, l)
+		if h != nil {
 
-		for j := 0; j < l; j++ {
+			posts := make([]interface{}, l)
 
-			posts[j] = h[j]["posts"].([]interface{})
+			for j := 0; j < l; j++ {
 
-			o := posts[j].([]interface{})
+				posts[j] = h[j]["posts"].([]interface{})
 
-			for k := 0; k < len(o); k++ {
+				o := posts[j].([]interface{})
 
-				p := o[k].(map[string]interface{})
+				for k := 0; k < len(o); k++ {
 
-				resultP := make([]Post, len(p))
+					p := o[k].(map[string]interface{})
 
-				resultP[k].ID = p["_id"].(string)
+					resultP := make([]Post, len(p))
 
-				resultP[k].Date = p["date"].(string)
+					resultP[k].ID = p["_id"].(string)
 
-				resultP[k].Password = p["password"].(string)
+					resultP[k].Date = p["date"].(string)
 
-				resultP[k].Title = p["title"].(string)
+					resultP[k].Password = p["password"].(string)
 
-				resultP[k].Content = p["content"]
+					resultP[k].Title = p["title"].(string)
 
-				cache[j].Posts = append(cache[j].Posts, resultP[k])
+					resultP[k].Content = p["content"]
+
+					cache[j].Posts = append(cache[j].Posts, resultP[k])
+
+				}
+
+				result = append(result, cache[j])
 
 			}
-
-			result = append(result, cache[j])
 
 		}
 
@@ -398,37 +402,41 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 		` */
 
-		for _, v := range result {
+		if result != nil {
 
-			if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+			for _, v := range result {
 
-				posts = v.Posts
+				if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+
+					posts = v.Posts
+
+				}
 
 			}
 
-		}
+			m := len(posts)
 
-		m := len(posts)
+			if m > 0 {
 
-		if m > 0 {
+				for n := 0; n < m; n++ {
 
-			for n := 0; n < m; n++ {
+					switch posts[n].Date {
 
-				switch posts[n].Date {
+					case schedule:
 
-				case schedule:
+						if posts[n].Password == "" {
 
-					if posts[n].Password == "" {
-
-						str = str + `
+							str = str + `
 						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
 						`
 
-					} else {
+						} else {
 
-						str = str + `
+							str = str + `
 						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
 						`
+
+						}
 
 					}
 
@@ -545,37 +553,41 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				` */
 
-				for _, v := range result {
+				if result != nil {
 
-					if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+					for _, v := range result {
 
-						posts = v.Posts
+						if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+
+							posts = v.Posts
+
+						}
 
 					}
 
-				}
+					m := len(posts)
 
-				m := len(posts)
+					if m > 0 {
 
-				if m > 0 {
+						for n := 0; n < m; n++ {
 
-					for n := 0; n < m; n++ {
+							switch posts[n].Date {
 
-						switch posts[n].Date {
+							case schedule:
 
-						case schedule:
+								if posts[n].Password == "" {
 
-							if posts[n].Password == "" {
-
-								str = str + `
+									str = str + `
 							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
 							`
 
-							} else {
+								} else {
 
-								str = str + `
+									str = str + `
 							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
 							`
+
+								}
 
 							}
 
