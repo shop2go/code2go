@@ -471,7 +471,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry/` + value + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -632,7 +632,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry/` + value + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -793,7 +793,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry/` + value + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -954,7 +954,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry/` + value + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -1115,7 +1115,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry/` + value + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -1276,7 +1276,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry/` + value + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
@@ -1437,7 +1437,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				` + c.Days[k] + `
 				</span>
 				</button>
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry/` + value + `'">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
