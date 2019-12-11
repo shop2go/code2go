@@ -63,7 +63,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 
-		fmt.Fprint(w, err)
+		fmt.Fprint(w, sl[0], err)
 
 		return
 
