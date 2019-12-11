@@ -46,7 +46,7 @@ type Access struct {
 
 var errOnData = errors.New("error on data")
 
-func getPosts(a *Access) ([]Cache, error) {
+func getCache(a *Access) ([]Cache, error) {
 
 	var result []Cache = make([]Cache, 0)
 
@@ -232,7 +232,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	x.Get(&access)
 
-	result, err := getPosts(access)
+	result, err := getCache(access)
 
 	if err != nil {
 
@@ -370,9 +370,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			</span><br>
 
-			<div class="container" id="post` + schedule + `">
+			<div class="container" id="` + schedule + `">
+			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='code2go.dev/public'">
+						
+			`
 			
-			<form class="form-inline" role="form" method="POST">
+			/* <form class="form-inline" role="form" method="POST">
 			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
 			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 			<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
@@ -382,7 +385,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<button type="submit" class="btn btn-light">submit</button>
 			</form>
 			</div>
-			`
+			` */
 
 	
 
@@ -426,6 +429,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+
+	str = str + `</div>`
 
 	for o := 1; o < 21; o++ {
 
@@ -495,6 +500,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
 
 			str = str + `
+			
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
