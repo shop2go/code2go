@@ -32,7 +32,7 @@ type Cache struct {
 type Post struct {
 	ID      string
 	Date    string
-	Password interface{}
+	Password string
 	Title   string
 	Content interface{}
 }
@@ -410,7 +410,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case schedule:
 
-					if posts[n].Password != "" {
+					if posts[n].Password == "" {
 
 						str = str + `
 						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
