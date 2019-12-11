@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	//"log"
@@ -31,6 +32,7 @@ type Cache struct {
 type Post struct {
 	ID      string
 	Date    string
+	Password string
 	Title   string
 	Content interface{}
 }
@@ -42,27 +44,11 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+var errOnData = errors.New("error on data")
 
-	var posts []Post
+func getPosts(a *Access) ([]Cache, error) {
 
 	var result []Cache = make([]Cache, 0)
-
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("2019"), "role": "server-readonly"}))
-
-	if err != nil {
-
-		fmt.Fprint(w, err)
-
-		return
-
-	}
-
-	var access *Access
-
-	x.Get(&access)
 
 	dir := "allCaches"
 
@@ -70,7 +56,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	body := strings.NewReader(s)
 	req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-	req.Header.Set("Authorization", "Bearer "+access.Secret)
+	req.Header.Set("Authorization", "Bearer "+a.Secret)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("X-Schema-Preview", "partial-update-mutation")
@@ -79,9 +65,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 
-		fmt.Fprint(w, err)
-
-		return
+		return nil, err
 
 	}
 
@@ -101,9 +85,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if b == nil {
 
-			fmt.Fprint(w, "no data...")
-
-			return
+			return nil, errOnData
 
 		}
 
@@ -113,9 +95,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if d == nil {
 
-			fmt.Fprint(w, "no data...")
-
-			return
+			return nil, errOnData
 
 		}
 
@@ -125,9 +105,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if f == nil {
 
-			fmt.Fprint(w, "no data...")
-
-			return
+			return nil, errOnData
 
 		}
 
@@ -135,9 +113,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if g == nil {
 
-			fmt.Fprint(w, "no data...")
-
-			return
+			return nil, errOnData
 
 		} else {
 
@@ -176,6 +152,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						resultP[k].Date = p["date"].(string)
 
+						resultP[k].Password = p["password"].(string)
+
 						resultP[k].Title = p["title"].(string)
 
 						resultP[k].Content = p["content"]
@@ -191,6 +169,74 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
+
+	}
+
+	return result, nil
+
+}
+
+func Handler(w http.ResponseWriter, r *http.Request) {
+
+	var c Cal
+
+	var posts []Post
+
+	str := `
+
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>CODE2GO</title>
+	<!-- CSS -->
+	<!-- Add Material font (Roboto) and Material icon as needed -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<!-- Add Material CSS, replace Bootstrap CSS -->
+	<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+	</head>
+
+	<body style="background-color:#adebad">
+
+	<div class="container" id="data" style="color:white;">
+
+	<ul class="list-group">
+	`
+
+	now := time.Now()
+
+	c.Year = now.Year()
+	month, _ := strconv.Atoi(now.Format("01"))
+	c.Month = month
+	day := map[int]string{now.Day(): now.Weekday().String()}
+
+	c.Days = day
+
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
+
+	if err != nil {
+
+		fmt.Fprint(w, err)
+
+		return
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	result, err := getPosts(access)
+
+	if err != nil {
+
+		fmt.Fprint(w, err)
 
 	}
 
@@ -247,112 +293,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//conn.CloseRead()
 	*/
-
-	//var d, e, t string
-
-	//switch r.Method {
-
-	//case "POST":
-
-	/* var g string
-
-	dir = "createPost"
-
-	s := `{"query":"mutation{` + dir + `(data:{iscommited: false date:\"` + d + `\" title:\"` + t + `\" content:\"` + e + `\"}) {_id}}"}`
-
-	body := strings.NewReader(s)
-	req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-	req.Header.Set("Authorization", "Bearer "+access.Secret)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-	resp, err := http.DefaultClient.Do(req)
-
-	if err != nil {
-
-		fmt.Fprint(w, err)
-
-		return
-
-	}
-
-	defer resp.Body.Close()
-
-	bdy, _ := ioutil.ReadAll(resp.Body)
-
-	var i interface{}
-
-	json.Unmarshal(bdy, &i)
-
-	if i != nil {
-
-		a := i.(map[string]interface{})
-
-		b := a["data"]
-
-		if b != nil {
-
-			c := b.(map[string]interface{})
-
-			d := c[dir]
-
-			if d != nil {
-
-				e := d.(map[string]interface{})
-
-				f := e["_id"]
-
-				g = f.(string)
-
-			}
-
-		}
-
-	}
-
-	http.Redirect(w, r, "https://" + g + ".code2go.dev/post", http.StatusSeeOther)
-
-	fmt.Fprint(w, "posted" + g) */
-
-	//default:
-
-	str := `
-
-		<!DOCTYPE html>
-		<html lang="en">
-		<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>CODE2GO</title>
-		<!-- CSS -->
-		<!-- Add Material font (Roboto) and Material icon as needed -->
-		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-		<!-- Add Material CSS, replace Bootstrap CSS -->
-		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		</head>
-
-		<body style="background-color:#adebad">
-
-		<div class="container" id="data" style="color:white;">
-
-		<ul class="list-group">
-		`
-
-	now := time.Now()
-
-	var c Cal
-
-	c.Year = now.Year()
-	month, _ := strconv.Atoi(now.Format("01"))
-	c.Month = month
-	day := map[int]string{now.Day(): now.Weekday().String()}
-
-	c.Days = day
 
 	z := 1
 
@@ -444,6 +384,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</div>
 			`
 
+	
+
 		for _, v := range result {
 
 			if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
@@ -464,9 +406,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case schedule:
 
+					if posts[n].Password  == "" {
+
 					str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/posts#` + schedule + `'">
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
 						`
+					} else {
+
+						str = str + `
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
+						`
+
+					}
 
 				}
 
@@ -475,11 +426,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-
-	u := r.URL.Path
-	v := r.URL.Fragment
-
-	fmt.Fprint(w, u, v)
 
 	for o := 1; o < 21; o++ {
 
