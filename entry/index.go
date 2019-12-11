@@ -342,7 +342,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<ul class="list-group">
 		`
-	fmt.Fprint(w, strings.TrimPrefix(r.URL.Path, "/entry#"))
 
 	now := time.Now()
 
@@ -476,6 +475,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+
+	u := r.URL.Path
+
+	fmt.Fprint(w, u)
+
+	fmt.
 
 	for o := 1; o < 21; o++ {
 
