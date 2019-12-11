@@ -132,43 +132,43 @@ func getCache(a *Access) ([]Cache, error) {
 			//h == Caches
 			h[j] = g[j].(map[string]interface{})
 
-			cache[j].Month = h[j]["month"].(string)
+			if h[j] != nil {
+
+				cache[j].Month = h[j]["month"].(string)
+
+			}
 
 		}
 
-		if h[0] != nil {
+		posts := make([]interface{}, l)
 
-			posts := make([]interface{}, l)
+		for j := 0; j < l; j++ {
 
-			for j := 0; j < l; j++ {
+			posts[j] = h[j]["posts"].([]interface{})
 
-				posts[j] = h[j]["posts"].([]interface{})
+			o := posts[j].([]interface{})
 
-				o := posts[j].([]interface{})
+			for k := 0; k < len(o); k++ {
 
-				for k := 0; k < len(o); k++ {
+				p := o[k].(map[string]interface{})
 
-					p := o[k].(map[string]interface{})
+				resultP := make([]Post, len(p))
 
-					resultP := make([]Post, len(p))
+				resultP[k].ID = p["_id"].(string)
 
-					resultP[k].ID = p["_id"].(string)
+				resultP[k].Date = p["date"].(string)
 
-					resultP[k].Date = p["date"].(string)
+				resultP[k].Password = p["password"].(string)
 
-					resultP[k].Password = p["password"].(string)
+				resultP[k].Title = p["title"].(string)
 
-					resultP[k].Title = p["title"].(string)
+				resultP[k].Content = p["content"]
 
-					resultP[k].Content = p["content"]
-
-					cache[j].Posts = append(cache[j].Posts, resultP[k])
-
-				}
-
-				result = append(result, cache[j])
+				cache[j].Posts = append(cache[j].Posts, resultP[k])
 
 			}
+
+			result = append(result, cache[j])
 
 		}
 
