@@ -48,15 +48,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []Cache = make([]Cache, 0)
 
-	u := strings.TrimPrefix(r.URL.Path, "/")
-
-	u = strings.TrimPrefix(u, "entry#")
+	u := strings.TrimPrefix(r.URL.Path, "#")
 
 	sl := strings.SplitN(u, "-", -1)
 
-	fmt.Fprint(w, sl[0])
+/* 	fmt.Fprint(w, sl[0])
 
-	time.Sleep(5e9)
+	time.Sleep(5e9) */
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
