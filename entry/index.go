@@ -410,17 +410,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case schedule:
 
-					_, ok := posts[n].Password.(string) 
+					p, ok := posts[n].Password.(string) 
 					
-					if !ok {
+					if ok || p != "" {
 
-					str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
+						str = str + `
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
 						`
+
 					} else {
 
 						str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
+						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
 						`
 
 					}
