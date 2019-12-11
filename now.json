@@ -4,7 +4,7 @@
 
       { "src": "./main/index.go", "use": "@now/go"},
       
-      { "src": "./post/index.go", "use": "@now/go" },
+      { "src": "./posts/index.go", "use": "@now/go" },
 
       { "src": "./entry/index.go", "use": "@now/go"},
       
