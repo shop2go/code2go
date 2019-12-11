@@ -7,6 +7,7 @@ import (
 	//"log"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -48,11 +49,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []Cache = make([]Cache, 0)
 
-	u := r.URL
+	u := r.URL.RequestURI()
+
+	U, _ := url.Parse(u)
 
 	//url = strings.TrimPrefix(url,"entry#")
 
-	sl := strings.SplitN(u.Fragment, "-", -1)
+	sl := strings.SplitN(U.Fragment, "-", -1)
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
