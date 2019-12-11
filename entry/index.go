@@ -48,21 +48,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []Cache = make([]Cache, 0)
 
-	u := r.URL.Fragment
-
-	fmt.Fprint(w, u)
-
-	u = strings.TrimPrefix(u, "code2go.dev/entry#")
-
-	sl := strings.SplitN(u, "-", -1)
-
-/* 	fmt.Fprint(w, sl[0])
-
-	time.Sleep(5e9) */
-
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl[0]), "role": "server-readonly"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("2019"), "role": "server-readonly"}))
 
 	if err != nil {
 
@@ -351,9 +339,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<body style="background-color:#adebad">
 
 		<div class="container" id="data" style="color:white;">
-		
+
 		<ul class="list-group">
 		`
+	fmt.Fprint(w, r.URL.Path)
 
 	now := time.Now()
 
