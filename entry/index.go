@@ -365,10 +365,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			` + c.Days[k] + `
 			</span>
 			</button>
-
+			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-			</span><br>
+			</span><button><br>
 
 			<div class="container" id="threads` + schedule + `">
 			<form class="form-inline" role="form">
@@ -410,7 +410,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case schedule:
 
-					if posts[n].Password  == nil {
+					_, ok := posts[n].Password.(string) 
+					
+					if !ok {
 
 					str = str + `
 						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
@@ -514,7 +516,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</span>
 				</button>
 
-				<div class="container" id="post` + schedule + `">
+				<div class="container" id="thread` + schedule + `">
 			
 				<form class="form-inline" role="form">
 				<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
