@@ -178,6 +178,8 @@ func getCache(a *Access) ([]Cache, error) {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	var access *Access
+
 	var c Cal
 
 	var posts []Post
@@ -228,8 +230,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var access *Access
-
 	x.Get(&access)
 
 	result, err := getCache(access)
@@ -237,6 +237,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 
 		fmt.Fprint(w, err)
+
+		return
 
 	}
 
@@ -581,8 +583,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			y = c.Year
-
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
@@ -595,8 +595,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			var access *Access
-
 			x.Get(&access)
 
 			result, err = getCache(access)
@@ -605,7 +603,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				fmt.Fprint(w, err)
 
+				return
+
 			}
+
+			y = c.Year
 
 			goto LOOP
 
