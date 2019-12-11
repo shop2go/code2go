@@ -477,10 +477,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u := r.URL.Path
+	v := r.URL.Fragment
 
-	fmt.Fprint(w, u)
-
-	fmt.
+	fmt.Fprint(w, u, v)
 
 	for o := 1; o < 21; o++ {
 
