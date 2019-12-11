@@ -170,9 +170,11 @@ func getCache(a *Access) ([]Cache, error) {
 
 		}
 
+		return result, nil
+
 	}
 
-	return result, nil
+	return nil, errOnData
 
 }
 
