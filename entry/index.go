@@ -77,104 +77,104 @@ func getCache(a *Access) ([]Cache, error) {
 
 	json.Unmarshal(bdy, &i)
 
-	if i != nil {
+	if i == nil {
 
-		a := i.(map[string]interface{})
-
-		b := a["data"]
-
-		if b == nil {
-
-			return nil, errOnData
-
-		}
-
-		c := b.(map[string]interface{})
-
-		d := c[dir]
-
-		if d == nil {
-
-			return nil, errOnData
-
-		}
-
-		e := d.(map[string]interface{})
-
-		f := e["data"]
-
-		if f == nil {
-
-			return nil, errOnData
-
-		}
-
-		g := f.([]interface{})
-
-		if g == nil {
-
-			return nil, errOnData
-
-		} else {
-
-			l := len(g)
-
-			h := make([]map[string]interface{}, l)
-
-			cache := make([]Cache, l)
-
-			for j := 0; j < l; j++ {
-
-				//h == Caches
-				h[j] = g[j].(map[string]interface{})
-
-				cache[j].Month = h[j]["month"].(string)
-
-			}
-
-			if h[0] != nil {
-
-				posts := make([]interface{}, l)
-
-				for j := 0; j < l; j++ {
-
-					posts[j] = h[j]["posts"].([]interface{})
-
-					o := posts[j].([]interface{})
-
-					for k := 0; k < len(o); k++ {
-
-						p := o[k].(map[string]interface{})
-
-						resultP := make([]Post, len(p))
-
-						resultP[k].ID = p["_id"].(string)
-
-						resultP[k].Date = p["date"].(string)
-
-						resultP[k].Password = p["password"].(string)
-
-						resultP[k].Title = p["title"].(string)
-
-						resultP[k].Content = p["content"]
-
-						cache[j].Posts = append(cache[j].Posts, resultP[k])
-
-					}
-
-					result = append(result, cache[j])
-
-				}
-
-			}
-
-		}
-
-		return result, nil
+		return nil, errOnData
 
 	}
 
-	return nil, errOnData
+	x := i.(map[string]interface{})
+
+	b := x["data"]
+
+	if b == nil {
+
+		return nil, errOnData
+
+	}
+
+	c := b.(map[string]interface{})
+
+	d := c[dir]
+
+	if d == nil {
+
+		return nil, errOnData
+
+	}
+
+	e := d.(map[string]interface{})
+
+	f := e["data"]
+
+	if f == nil {
+
+		return nil, errOnData
+
+	}
+
+	g := f.([]interface{})
+
+	if g == nil {
+
+		return nil, errOnData
+
+	} else {
+
+		l := len(g)
+
+		h := make([]map[string]interface{}, l)
+
+		cache := make([]Cache, l)
+
+		for j := 0; j < l; j++ {
+
+			//h == Caches
+			h[j] = g[j].(map[string]interface{})
+
+			cache[j].Month = h[j]["month"].(string)
+
+		}
+
+		if h[0] != nil {
+
+			posts := make([]interface{}, l)
+
+			for j := 0; j < l; j++ {
+
+				posts[j] = h[j]["posts"].([]interface{})
+
+				o := posts[j].([]interface{})
+
+				for k := 0; k < len(o); k++ {
+
+					p := o[k].(map[string]interface{})
+
+					resultP := make([]Post, len(p))
+
+					resultP[k].ID = p["_id"].(string)
+
+					resultP[k].Date = p["date"].(string)
+
+					resultP[k].Password = p["password"].(string)
+
+					resultP[k].Title = p["title"].(string)
+
+					resultP[k].Content = p["content"]
+
+					cache[j].Posts = append(cache[j].Posts, resultP[k])
+
+				}
+
+				result = append(result, cache[j])
+
+			}
+
+		}
+
+	}
+
+	return result, nil
 
 }
 
@@ -232,7 +232,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	x.Get(&access)
+	if err := x.Get(&access); err != nil {
+
+		fmt.Fprint(w, err)
+
+		return
+
+	}
 
 	result, err := getCache(access)
 
@@ -597,7 +603,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			x.Get(&access)
+			if err := x.Get(&access); err != nil {
+
+				fmt.Fprint(w, err)
+
+				return
+
+			}
 
 			result, err = getCache(access)
 
