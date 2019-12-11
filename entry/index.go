@@ -52,7 +52,7 @@ func getCache(a *Access) ([]Cache, error) {
 
 	dir := "allCaches"
 
-	s := `{"query":"query{` + dir + `{data{month posts{_id date title content}}}}"}`
+	s := `{"query":"query{` + dir + `{data{month posts{_id date password title content}}}}"}`
 	body := strings.NewReader(s)
 	req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -152,7 +152,7 @@ func getCache(a *Access) ([]Cache, error) {
 
 						resultP[k].Date = p["date"].(string)
 
-						resultP[k].Password = p["password"]
+						resultP[k].Password = p["password"].(string)
 
 						resultP[k].Title = p["title"].(string)
 
@@ -410,9 +410,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case schedule:
 
-					p, ok := posts[n].Password.(string) 
-					
-					if ok || p != "" {
+					if posts[n].Password != "" {
 
 						str = str + `
 						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
