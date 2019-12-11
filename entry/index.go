@@ -55,7 +55,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 /* 	fmt.Fprint(w, sl[0])
 
 	time.Sleep(5e9) */
-	st := strings.TrimPrefix(s[0], "entry#")
+	st := strings.TrimPrefix(sl[0], "entry#")
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
