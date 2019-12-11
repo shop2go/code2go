@@ -643,7 +643,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	str = str + `
  		</ul>
-		</form>
 		</div>
 		
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
