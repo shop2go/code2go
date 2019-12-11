@@ -48,18 +48,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []Cache = make([]Cache, 0)
 
-	u := strings.TrimPrefix(r.URL.Path, "/")
+	u := r.URL.String()
+
+	u = strings.TrimPrefix(u, "https://code2go.dev/entry#")
 
 	sl := strings.SplitN(u, "-", -1)
 
 /* 	fmt.Fprint(w, sl[0])
 
 	time.Sleep(5e9) */
-	st := strings.TrimPrefix(sl[0], "entry#")
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(st), "role": "server-readonly"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl), "role": "server-readonly"}))
 
 	if err != nil {
 
