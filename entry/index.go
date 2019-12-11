@@ -48,7 +48,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []Cache = make([]Cache, 0)
 
-	u := r.URL.Path
+	u := r.URL.Fragment
 
 	fmt.Fprint(w, u)
 
