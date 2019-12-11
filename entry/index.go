@@ -57,13 +57,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	sl := strings.SplitN(U.Fragment, "-", -1)
 
+	fmt.Fprint(w, sl[0])
+
+	time.Sleep(4e7)
+
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl[0]), "role": "server-readonly"}))
 
 	if err != nil {
 
-		fmt.Fprint(w, sl[0], err)
+		fmt.Fprint(w, err)
 
 		return
 
@@ -263,71 +267,71 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//case "POST":
 
-		/* var g string
-		
-		dir = "createPost"
+	/* var g string
 
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false date:\"` + d + `\" title:\"` + t + `\" content:\"` + e + `\"}) {_id}}"}`
+	dir = "createPost"
 
-		body := strings.NewReader(s)
-		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+	s := `{"query":"mutation{` + dir + `(data:{iscommited: false date:\"` + d + `\" title:\"` + t + `\" content:\"` + e + `\"}) {_id}}"}`
 
-		req.Header.Set("Authorization", "Bearer "+access.Secret)
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+	body := strings.NewReader(s)
+	req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
-		resp, err := http.DefaultClient.Do(req)
+	req.Header.Set("Authorization", "Bearer "+access.Secret)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("X-Schema-Preview", "partial-update-mutation")
 
-		if err != nil {
+	resp, err := http.DefaultClient.Do(req)
 
-			fmt.Fprint(w, err)
+	if err != nil {
 
-			return
+		fmt.Fprint(w, err)
 
-		}
+		return
 
-		defer resp.Body.Close()
+	}
 
-		bdy, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 
-		var i interface{}
+	bdy, _ := ioutil.ReadAll(resp.Body)
 
-		json.Unmarshal(bdy, &i)
+	var i interface{}
 
-		if i != nil {
+	json.Unmarshal(bdy, &i)
 
-			a := i.(map[string]interface{})
+	if i != nil {
 
-			b := a["data"]
+		a := i.(map[string]interface{})
 
-			if b != nil {
+		b := a["data"]
 
-				c := b.(map[string]interface{})
+		if b != nil {
 
-				d := c[dir]
+			c := b.(map[string]interface{})
 
-				if d != nil {
+			d := c[dir]
 
-					e := d.(map[string]interface{})
+			if d != nil {
 
-					f := e["_id"]
+				e := d.(map[string]interface{})
 
-					g = f.(string)
+				f := e["_id"]
 
-				}
+				g = f.(string)
 
 			}
-			
+
 		}
 
-		http.Redirect(w, r, "https://" + g + ".code2go.dev/post", http.StatusSeeOther)
+	}
 
-		fmt.Fprint(w, "posted" + g) */
+	http.Redirect(w, r, "https://" + g + ".code2go.dev/post", http.StatusSeeOther)
+
+	fmt.Fprint(w, "posted" + g) */
 
 	//default:
 
-		str := `
+	str := `
 
 		<!DOCTYPE html>
 		<html lang="en">
@@ -352,82 +356,82 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<ul class="list-group">
 		`
 
-		now := time.Now()
+	now := time.Now()
 
-		var c Cal
+	var c Cal
 
-		c.Year = now.Year()
-		month, _ := strconv.Atoi(now.Format("01"))
-		c.Month = month
-		day := map[int]string{now.Day(): now.Weekday().String()}
+	c.Year = now.Year()
+	month, _ := strconv.Atoi(now.Format("01"))
+	c.Month = month
+	day := map[int]string{now.Day(): now.Weekday().String()}
 
-		c.Days = day
+	c.Days = day
 
-		z := 1
+	z := 1
 
-		for z < 32 {
+	for z < 32 {
 
-			d := now.AddDate(0, 0, z)
+		d := now.AddDate(0, 0, z)
 
-			m, _ := strconv.Atoi(d.Format("01"))
+		m, _ := strconv.Atoi(d.Format("01"))
 
-			if m != c.Month {
+		if m != c.Month {
 
-				break
-
-			}
-
-			e, _ := strconv.Atoi(d.Format("02"))
-
-			c.Days[e] = d.Weekday().String()
-
-			z++
+			break
 
 		}
 
-		j := 1
+		e, _ := strconv.Atoi(d.Format("02"))
 
-		for j > 0 {
+		c.Days[e] = d.Weekday().String()
 
-			d := now.AddDate(0, 0, -j)
+		z++
 
-			m, _ := strconv.Atoi(d.Format("01"))
+	}
 
-			if m != c.Month {
+	j := 1
 
-				break
+	for j > 0 {
 
-			}
+		d := now.AddDate(0, 0, -j)
 
-			e, _ := strconv.Atoi(d.Format("02"))
+		m, _ := strconv.Atoi(d.Format("01"))
 
-			c.Days[e] = d.Weekday().String()
+		if m != c.Month {
 
-			j++
-
-		}
-
-		var p, q int
-
-		l := len(c.Days)
-
-		p, _ = strconv.Atoi(time.Now().Format("02"))
-
-		for i := l; i >= p; i-- {
-
-			q = i
+			break
 
 		}
 
-		//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
+		e, _ := strconv.Atoi(d.Format("02"))
 
-		for k := q; k <= l; k++ {
+		c.Days[e] = d.Weekday().String()
 
-			n := fmt.Sprintf("%02d", k)
+		j++
 
-			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+	}
 
-			str = str + `
+	var p, q int
+
+	l := len(c.Days)
+
+	p, _ = strconv.Atoi(time.Now().Format("02"))
+
+	for i := l; i >= p; i-- {
+
+		q = i
+
+	}
+
+	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
+
+	for k := q; k <= l; k++ {
+
+		n := fmt.Sprintf("%02d", k)
+
+		schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+
+		str = str + `
 			<br>
 			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 			<span class="badge badge-pill badge-dark">
@@ -453,31 +457,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</div>
 			`
 
-			for _, v := range result {
+		for _, v := range result {
 
-				if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+			if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
 
-					posts = v.Posts
-
-				}
+				posts = v.Posts
 
 			}
 
-			m := len(posts)
+		}
 
-			if m > 0 {
+		m := len(posts)
 
-				for n := 0; n < m; n++ {
+		if m > 0 {
 
-					switch posts[n].Date {
+			for n := 0; n < m; n++ {
 
-					case schedule:
+				switch posts[n].Date {
 
-						str = str + `
+				case schedule:
+
+					str = str + `
 						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/posts#` + schedule + `'">
 						`
-
-					}
 
 				}
 
@@ -485,74 +487,76 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		for o := 1; o < 21; o++ {
+	}
 
-			now = time.Now().AddDate(0, o, 0)
+	for o := 1; o < 21; o++ {
 
-			c.Year = now.Year()
-			month, _ = strconv.Atoi(now.Format("01"))
-			c.Month = month
-			day = map[int]string{now.Day(): now.Weekday().String()}
+		now = time.Now().AddDate(0, o, 0)
 
-			c.Days = day
+		c.Year = now.Year()
+		month, _ = strconv.Atoi(now.Format("01"))
+		c.Month = month
+		day = map[int]string{now.Day(): now.Weekday().String()}
 
-			i := 1
+		c.Days = day
 
-			for i < 32 {
+		i := 1
 
-				d := now.AddDate(0, 0, i)
+		for i < 32 {
 
-				m, _ := strconv.Atoi(d.Format("01"))
+			d := now.AddDate(0, 0, i)
 
-				if m != month {
+			m, _ := strconv.Atoi(d.Format("01"))
 
-					break
+			if m != month {
 
-				}
-
-				e, _ := strconv.Atoi(d.Format("02"))
-
-				c.Days[e] = d.Weekday().String()
-
-				i++
+				break
 
 			}
 
-			j = 1
+			e, _ := strconv.Atoi(d.Format("02"))
 
-			for j > 0 {
+			c.Days[e] = d.Weekday().String()
 
-				d := now.AddDate(0, 0, -j)
+			i++
 
-				m, _ := strconv.Atoi(d.Format("01"))
+		}
 
-				if m != month {
+		j = 1
 
-					break
+		for j > 0 {
 
-				}
+			d := now.AddDate(0, 0, -j)
 
-				e, _ := strconv.Atoi(d.Format("02"))
+			m, _ := strconv.Atoi(d.Format("01"))
 
-				c.Days[e] = d.Weekday().String()
+			if m != month {
 
-				j++
+				break
 
 			}
 
-			//all following months without entries
+			e, _ := strconv.Atoi(d.Format("02"))
 
-			//store = nil
+			c.Days[e] = d.Weekday().String()
 
-			l = len(c.Days)
+			j++
 
-			for k := 1; k <= l; k++ {
+		}
 
-				n := fmt.Sprintf("%02d", k)
+		//all following months without entries
 
-				schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+		//store = nil
 
-				str = str + `
+		l = len(c.Days)
+
+		for k := 1; k <= l; k++ {
+
+			n := fmt.Sprintf("%02d", k)
+
+			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+
+			str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -578,11 +582,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				`
 
-			}
-
 		}
 
-		str = str + `
+	}
+
+	str = str + `
  		</ul>
 		</form>
 		</div>
@@ -592,9 +596,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</body>
 		</html>
 		`
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	w.Write([]byte(str))
 
 	//}
 
