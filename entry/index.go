@@ -30,11 +30,11 @@ type Cache struct {
 }
 
 type Post struct {
-	ID      string
-	Date    string
+	ID       string
+	Date     string
 	Password string
-	Title   string
-	Content interface{}
+	Title    string
+	Content  interface{}
 }
 
 type Access struct {
@@ -342,7 +342,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	l := len(c.Days)
 
-	p, _ = strconv.Atoi(time.Now().Format("02"))
+	p, _ = strconv.Atoi(now.Format("02"))
 
 	for i := l; i >= p; i-- {
 
@@ -375,20 +375,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='public'">
 						
 			`
-			
-			/* <form class="form-inline" role="form" method="POST">
-			<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
-			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-			<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-			<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-			<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
-			<br>
-			<button type="submit" class="btn btn-light">submit</button>
-			</form>
-			</div>
-			` */
 
-	
+		/* <form class="form-inline" role="form" method="POST">
+		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
+		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
+		<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
+		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
+		<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
+		<br>
+		<button type="submit" class="btn btn-light">submit</button>
+		</form>
+		</div>
+		` */
 
 		for _, v := range result {
 
@@ -434,6 +432,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	str = str + `</form></div>`
 
+	y := c.Year
+
 	for o := 1; o < 21; o++ {
 
 		now = time.Now().AddDate(0, o, 0)
@@ -445,64 +445,67 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		c.Days = day
 
-		i := 1
+	LOOP:
 
-		for i < 32 {
+		if c.Year == y {
 
-			d := now.AddDate(0, 0, i)
+			i := 1
 
-			m, _ := strconv.Atoi(d.Format("01"))
+			for i < 32 {
 
-			if m != month {
+				d := now.AddDate(0, 0, i)
 
-				break
+				m, _ := strconv.Atoi(d.Format("01"))
 
-			}
+				if m != month {
 
-			e, _ := strconv.Atoi(d.Format("02"))
+					break
 
-			c.Days[e] = d.Weekday().String()
+				}
 
-			i++
+				e, _ := strconv.Atoi(d.Format("02"))
 
-		}
+				c.Days[e] = d.Weekday().String()
 
-		j = 1
-
-		for j > 0 {
-
-			d := now.AddDate(0, 0, -j)
-
-			m, _ := strconv.Atoi(d.Format("01"))
-
-			if m != month {
-
-				break
+				i++
 
 			}
 
-			e, _ := strconv.Atoi(d.Format("02"))
+			j = 1
 
-			c.Days[e] = d.Weekday().String()
+			for j > 0 {
 
-			j++
+				d := now.AddDate(0, 0, -j)
 
-		}
+				m, _ := strconv.Atoi(d.Format("01"))
 
-		//all following months without entries
+				if m != month {
 
-		//store = nil
+					break
 
-		l = len(c.Days)
+				}
 
-		for k := 1; k <= l; k++ {
+				e, _ := strconv.Atoi(d.Format("02"))
 
-			n := fmt.Sprintf("%02d", k)
+				c.Days[e] = d.Weekday().String()
 
-			schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+				j++
 
-			str = str + `
-			
+			}
+
+			//all following months without entries
+
+			//store = nil
+
+			l = len(c.Days)
+
+			for k := q; k <= l; k++ {
+
+				n := fmt.Sprintf("%02d", k)
+
+				schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+
+				str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -512,21 +515,99 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<button type="button" class="btn btn-light">
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-				</span>
-				</button>
-
-				<div class="container" id="thread` + schedule + `">
-			
+				</span><button><br>
+	
+				<div class="container" id="threads` + schedule + `">
 				<form class="form-inline" role="form">
+				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='public'">
+							
+				`
+
+				/* <form class="form-inline" role="form" method="POST">
 				<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
-				<input class="form-control mr-sm-2" type="text" placeholder="topic" aria-label="Topic" id ="Topic" name ="Topic" required>
+				<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 				<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-				<input class="form-control mr-sm-2" type="text" placeholder="tags" aria-label="Tags" id ="Tags" name ="Tags">
-				<textarea class="form-control  mr-sm-2" id="Entry" rows="1" placeholder="data"></textarea>
+				<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
+				<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
+				<br>
 				<button type="submit" class="btn btn-light">submit</button>
 				</form>
 				</div>
-				`
+				` */
+
+				for _, v := range result {
+
+					if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+
+						posts = v.Posts
+
+					}
+
+				}
+
+				m := len(posts)
+
+				if m > 0 {
+
+					for n := 0; n < m; n++ {
+
+						switch posts[n].Date {
+
+						case schedule:
+
+							if posts[n].Password == "" {
+
+								str = str + `
+							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
+							`
+
+							} else {
+
+								str = str + `
+							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
+							`
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+			str = str + `</form></div>`
+
+		} else {
+
+			y = c.Year
+
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
+
+			if err != nil {
+
+				fmt.Fprint(w, err)
+
+				return
+
+			}
+
+			var access *Access
+
+			x.Get(&access)
+
+			result, err = getCache(access)
+
+			if err != nil {
+
+				fmt.Fprint(w, err)
+
+			}
+
+			goto LOOP
 
 		}
 
