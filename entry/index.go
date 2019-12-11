@@ -60,7 +60,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl), "role": "server-readonly"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl[0]), "role": "server-readonly"}))
 
 	if err != nil {
 
