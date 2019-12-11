@@ -50,6 +50,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	u := r.URL.String()
 
+	fmt.Fprint(w, u)
+
 	u = strings.TrimPrefix(u, "code2go.dev/entry#")
 
 	sl := strings.SplitN(u, "-", -1)
