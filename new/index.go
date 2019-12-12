@@ -57,7 +57,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		u := r.URL.Opaque
+		u := r.URL.String()
 
 		str := `
 
@@ -80,9 +80,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<body style="background-color:#adebad">
 
 	<div class="container" id="data" style="color:white;">
-	` + u +	`
 	<form class="form-inline" role="form" method="POST">
-	<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="">
+	<input readonly="true" class="form-control-plaintext" id="thread` + u + `" value="`+u+`" placeholder="`+ u + `">
+				
+	<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + u + `">
 	<input readonly="true" class="form-control-plaintext" id="Password" aria-label="Password" name ="Password" value="">
 	<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 	<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
@@ -104,7 +105,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		fmt.Fprint(w, "sent")
+		fmt.Fprint(w, "sent...")
 
 	}
 
