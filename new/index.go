@@ -102,8 +102,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		pw := r.Form.Get("Password")
 		date := r.Form.Get("Schedule")
 		title := r.Form.Get("Title")
-		content := r.Form.Get("content")
-		tags := r.Form.Get("tags")
+		content := r.Form.Get("Content")
+		tags := r.Form.Get("Tags")
 
 		s := `{"query":"mutation{` + dir + `(data{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + tags + `] iscommited: false}) {_id}"}`
 
@@ -161,7 +161,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fmt.Fprint(w, "an error occured...please re-submit the form...")
+		fmt.Fprint(w, "an error occured...please re-fill the form...")
 
 	}
 
