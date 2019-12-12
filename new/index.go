@@ -32,8 +32,6 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	u := url.URL.String()
-
 	var access *Access
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -60,6 +58,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
+		u := r.URL.Opaque
+
 		str := `
 
 	<!DOCTYPE html>
@@ -83,7 +83,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<div class="container" id="data" style="color:white;">
 	`
 
-		+u +
+		+ u +
 
 			`
 	<form class="form-inline" role="form" method="POST">
@@ -108,6 +108,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
+
+		fmt.Fprint(w, "sent")
 
 	}
 
