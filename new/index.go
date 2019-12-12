@@ -104,9 +104,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		title := r.Form.Get("Title")
 		content := r.Form.Get("Content")
 		tags := r.Form.Get("Tags")
-		
 
-		s := `{"query":"mutation{` + dir + `(data{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + tags + `] iscommited: false}) {_id}"}`
+		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags:[` + tags + `] iscommited: false}) {_id}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
