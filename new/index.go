@@ -103,9 +103,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		date := r.Form.Get("Schedule")
 		title := r.Form.Get("Title")
 		content := r.Form.Get("Content")
-		tags := r.Form.Get("Tags")
+		t := r.Form.Get("Tags")
+		u := strings.Fields(t)
+		y := ""
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags:[` + tags + `] iscommited: false}) {_id}"}`
+		for _, v := range u {
+
+			y = y + "#" + v + ", "
+
+		}
+
+		strings.TrimSuffix(y, ",")
+
+		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags:[` + y + `] iscommited: false}) {_id}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -154,6 +164,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					id := f.(string)
 
 					fmt.Fprint(w, "created post id: "+id)
+
+					return
 
 				}
 
