@@ -386,21 +386,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<div class="container" id="threads` + schedule + `">
 			<!--form class="form-inline" role="form"-->
-			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/public'">
+			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
 						
 			`
-
-		/* <form class="form-inline" role="form" method="POST">
-		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
-		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-		<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-		<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
-		<br>
-		<button type="submit" class="btn btn-light">submit</button>
-		</form>
-		</div>
-		` */
 
 		if result != nil {
 
@@ -540,7 +528,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 				<div class="container" id="threads` + schedule + `">
 				<!--form class="form-inline" role="form"-->
-				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href=''https://` + schedule + `.code2go.dev/public'">
+				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href=''https://` + schedule + `.code2go.dev/new'">
 							
 				`
 
