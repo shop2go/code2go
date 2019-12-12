@@ -31,6 +31,9 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	
+	u := r.URL
+
 	var access *Access
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -57,10 +60,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		u := r.URL
 
 		str := `
-		
+
 		<!DOCTYPE html>
 		<html lang="en">
 		<head>
