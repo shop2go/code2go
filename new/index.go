@@ -56,12 +56,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	str := ""
+
 	switch r.Method {
 
 	case "GET":
-
-
-		str := `
+		str = str + `
 
 		<!DOCTYPE html>
 		<html lang="en">
