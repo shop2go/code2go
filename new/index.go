@@ -1,28 +1,28 @@
 package main
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
-	"io/ioutil"
+	//"io/ioutil"
 
 	//"log"
 	"net/http"
-	"os"
+	//"os"
 	"strconv"
 	"strings"
-	"time"
+	//"time"
 
-	f "github.com/fauna/faunadb-go/faunadb"
+	//f "github.com/fauna/faunadb-go/faunadb"
 	/* 	"github.com/mschneider82/problem"
 	   	"github.com/aerogo/packet"
 	   	"github.com/mmaedel/code2go/pb" */)
 
-type Access struct {
+/* type Access struct {
 	//Reference *f.RefV `fauna:"ref"`
 	Timestamp int    `fauna:"ts"`
 	Secret    string `fauna:"secret"`
 	Role      string `fauna:"role"`
-}
+} */
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
@@ -77,7 +77,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-		var access *Access
+		/* var access *Access
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -97,16 +97,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			return
 
-		}
+		} */
 
-		dir := "createPost"
+		//dir := "createPost"
 
 		pw := r.Form.Get("Password")
 		date := r.Form.Get("Schedule")
 		title := r.Form.Get("Title")
 		content := r.Form.Get("Content")
-		t := r.Form.Get("Tags")
-		u := strings.Fields(t)
+		tags := r.Form.Get("Tags")
+
+		fmt.Fprint(pw, date, title, content, tags)
+		/* u := strings.Fields(t)
 		y := ""
 
 		for _, v := range u {
@@ -115,9 +117,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		strings.TrimSuffix(y, ",")
+		strings.TrimSuffix(y, ",") */
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `] iscommited: false}) {_id}"}`
+		/* s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `] iscommited: false}) {_id}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -183,7 +185,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fmt.Fprint(w, i)
+		fmt.Fprint(w, i) */
 
 	}
 
