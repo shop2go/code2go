@@ -81,7 +81,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<div class="container" id="data" style="color:white;">
 	<form class="form-inline" role="form" method="POST">
-	<input readonly="true" class="form-control-plaintext" id="thread` + u.Hostname() + `" value="`+u.Hostname(+`" placeholder="`+ u.Hostname() + `">
+	<input readonly="true" class="form-control-plaintext" id="thread` + u.Hostname() + `" value="`+u.Hostname()+`" placeholder="`+ u.Hostname() + `">
 				
 	<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + u + `">
 	<input readonly="true" class="form-control-plaintext" id="Password" aria-label="Password" name ="Password" value="">
@@ -99,7 +99,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</body>
 	</html>
 	`
-		w.Header().Set("Content-Type", "text/html")
+
+	w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
