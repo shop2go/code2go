@@ -1,17 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 
 	//"log"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
@@ -36,13 +32,13 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	u := url.Url.String()
+	u := url.URL.String()
 
 	var access *Access
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(time.Now().Format("2006")), "role": "server"}))
 
 	if err != nil {
 
@@ -60,7 +56,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str := `
+	switch r.Method {
+
+	case "GET":
+
+		str := `
 
 	<!DOCTYPE html>
 	<html lang="en">
@@ -83,11 +83,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<div class="container" id="data" style="color:white;">
 	`
 
-	+u +
+		+u +
 
-		`
+			`
 	<form class="form-inline" role="form" method="POST">
-	<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `">
+	<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="">
 	<input readonly="true" class="form-control-plaintext" id="Password" aria-label="Password" name ="Password" value="">
 	<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 	<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
@@ -103,8 +103,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</body>
 	</html>
 	`
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str))
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
+
+	case "POST":
+
+	}
 
 }
