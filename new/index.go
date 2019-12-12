@@ -10,7 +10,6 @@ import (
 	//"os"
 	"strconv"
 	"strings"
-	//"time"
 
 	//f "github.com/fauna/faunadb-go/faunadb"
 	/* 	"github.com/mschneider82/problem"
@@ -107,7 +106,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		content := r.Form.Get("Content")
 		tags := r.Form.Get("Tags")
 
-		fmt.Fprint(pw, date, title, content, tags)
+		fmt.Fprint(w, pw, date, title, content, tags)
 		/* u := strings.Fields(t)
 		y := ""
 
