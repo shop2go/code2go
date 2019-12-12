@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	//"log"
 	"net/http"
@@ -15,14 +17,6 @@ import (
 	   	"github.com/aerogo/packet"
 	   	"github.com/mmaedel/code2go/pb" */)
 
-type Post struct {
-	ID       string
-	Date     string
-	Password string
-	Title    string
-	Content  interface{}
-}
-
 type Access struct {
 	//Reference *f.RefV `fauna:"ref"`
 	Timestamp int    `fauna:"ts"`
@@ -31,28 +25,6 @@ type Access struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-
-	var access *Access
-
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(time.Now().Format("2006")), "role": "server"}))
-
-	if err != nil {
-
-		fmt.Fprint(w, err)
-
-		return
-
-	}
-
-	if err := x.Get(&access); err != nil {
-
-		fmt.Fprint(w, err)
-
-		return
-
-	}
 
 	switch r.Method {
 
@@ -103,7 +75,93 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		fmt.Fprint(w, "sent...")
+		var access *Access
+
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(time.Now().Format("2006")), "role": "server"}))
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		if err := x.Get(&access); err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		dir := "createPost"
+
+		pw := r.Form.Get("Password")
+		date := r.Form.Get("Schedule")
+		title := r.Form.Get("Title")
+		content := r.Form.Get("content")
+		tags := r.Form.Get("tags")
+
+		s := `{"query":"mutation{` + dir + `(data{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + tags + `] iscommited: false}) {_id}"}`
+
+		body := strings.NewReader(s)
+		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+		req.Header.Set("Authorization", "Bearer "+access.Secret)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+		resp, err := http.DefaultClient.Do(req)
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		defer resp.Body.Close()
+
+		bdy, _ := ioutil.ReadAll(resp.Body)
+
+		var i interface{}
+
+		json.Unmarshal(bdy, &i)
+
+		if i != nil {
+
+			a := i.(map[string]interface{})
+
+			b := a["data"]
+
+			if b != nil {
+
+				c := b.(map[string]interface{})
+
+				d := c[dir]
+
+				if d != nil {
+
+					e := d.(map[string]interface{})
+
+					f := e["_id"]
+
+					id := f.(string)
+
+					fmt.Fprint(w, "created post id: "+id)
+
+				}
+
+			}
+
+		}
+
+		fmt.Fprint(w, "an error occured...please re-submit the form...")
 
 	}
 
