@@ -103,8 +103,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		date := r.Form.Get("Schedule")
 		title := r.Form.Get("Title")
 		content := r.Form.Get("Content")
-		t := r.Form.Get("Tags")
-		u := strings.Fields(t)
+		tags := r.Form.Get("Tags")
+		/* u := strings.Fields(t)
 		y := ""
 
 		for _, v := range u {
@@ -113,9 +113,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		strings.TrimSuffix(y, ",")
+		strings.TrimSuffix(y, ",") */
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags:[` + y + `] iscommited: false}) {_id}"}`
+		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: \"` + tags + `\" iscommited: false}) {_id}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -169,19 +169,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-				fmt.Fprint(w, "error #2")
+				fmt.Fprint(w, d)
 
 				return
 
 			}
 
-			fmt.Fprint(w, "error #1")
+			fmt.Fprint(w, b)
 
 			return
 
 		}
 
-		fmt.Fprint(w, "an error occured...please re-fill the form...")
+		fmt.Fprint(w, i)
 
 	}
 
