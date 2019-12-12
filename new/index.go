@@ -57,7 +57,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		u := r.URL.String()
+		u := r.URL.Hostname()
 
 		str := `
 
