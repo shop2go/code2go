@@ -528,8 +528,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 				<div class="container" id="threads` + schedule + `">
 				<!--form class="form-inline" role="form"-->
-				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href=''https://` + schedule + `.code2go.dev/new'">
-							
+				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
+						
 				`
 
 				/* <form class="form-inline" role="form" method="POST">
