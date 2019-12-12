@@ -57,7 +57,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		u := r.URL.Hostname()
+		u := r.URL
 
 		str := `
 
@@ -81,7 +81,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<div class="container" id="data" style="color:white;">
 	<form class="form-inline" role="form" method="POST">
-	<input readonly="true" class="form-control-plaintext" id="thread` + u + `" value="`+u+`" placeholder="`+ u + `">
+	<input readonly="true" class="form-control-plaintext" id="thread` + u.Hostname() + `" value="`+u.Hostname(+`" placeholder="`+ u.Hostname() + `">
 				
 	<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + u + `">
 	<input readonly="true" class="form-control-plaintext" id="Password" aria-label="Password" name ="Password" value="">
