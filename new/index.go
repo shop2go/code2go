@@ -104,6 +104,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		title := r.Form.Get("Title")
 		content := r.Form.Get("Content")
 		tags := r.Form.Get("Tags")
+		
 
 		s := `{"query":"mutation{` + dir + `(data{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + tags + `] iscommited: false}) {_id}"}`
 
@@ -157,7 +158,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
+				fmt.Fprint(w, "error #2")
+
+				return
+
 			}
+
+			fmt.Fprint(w, "error #1")
+
+			return
 
 		}
 
