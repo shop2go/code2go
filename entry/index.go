@@ -190,31 +190,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Post
 
-	str := `
-
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>CODE2GO</title>
-	<!-- CSS -->
-	<!-- Add Material font (Roboto) and Material icon as needed -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-	<!-- Add Material CSS, replace Bootstrap CSS -->
-	<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-	</head>
-
-	<body style="background-color:#adebad">
-
-	<div class="container" id="data" style="color:white;">
-
-	<ul class="list-group">
-	`
-
 	now := time.Now()
 
 	c.Year = now.Year()
@@ -364,6 +339,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	str := `
+
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>CODE2GO</title>
+	<!-- CSS -->
+	<!-- Add Material font (Roboto) and Material icon as needed -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<!-- Add Material CSS, replace Bootstrap CSS -->
+	<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+	</head>
+
+	<body style="background-color:#adebad">
+
+	<div class="container" id="data" style="color:white;">
+
+	<ul class="list-group">
+	`
+
 	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
 
 	for k := q; k <= l; k++ {
@@ -385,7 +385,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span><button><br>
 
 			<div class="container" id="threads` + schedule + `">
-			<form class="form-inline" role="form">
+			<!--form class="form-inline" role="form"-->
 			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='public'">
 						
 			`
@@ -448,7 +448,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str = str + `</form></div>`
+	str = str + `
+		<!--/form-->
+		</div>
+		`
 
 	y := c.Year
 
@@ -536,7 +539,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</span><button><br>
 	
 				<div class="container" id="threads` + schedule + `">
-				<form class="form-inline" role="form">
+				<!--form class="form-inline" role="form"-->
 				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='public'">
 							
 				`
@@ -599,7 +602,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			str = str + `</form></div>`
+			str = str + `
+				<!--/form-->
+				</div>
+				`
 
 		} else {
 
