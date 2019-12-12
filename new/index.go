@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
@@ -53,13 +54,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str := ""
-
 	switch r.Method {
 
 	case "GET":
 
-		str = str + `
+		str := `
 
 		<!DOCTYPE html>
 		<html lang="en">
@@ -81,7 +80,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<div class="container" id="data" style="color:white;">
 		<form class="form-inline" role="form" method="POST">
-		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + r.Host + `">
+		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + strings.TrimSuffix(r.Host, ".code2go.dev") + `">
 		<input class="form-control mr-sm-2" type="text" placeholder="Password" aria-label="Password" id ="Password" name ="Password" value="">
 		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 		<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
