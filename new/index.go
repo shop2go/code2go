@@ -5,7 +5,6 @@ import (
 
 	//"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -81,11 +80,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<body style="background-color:#adebad">
 
 	<div class="container" id="data" style="color:white;">
-	`
-
-		+ u +
-
-			`
+	` + u +	`
 	<form class="form-inline" role="form" method="POST">
 	<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="">
 	<input readonly="true" class="form-control-plaintext" id="Password" aria-label="Password" name ="Password" value="">
