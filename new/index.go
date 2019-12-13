@@ -10,7 +10,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	/* 	"github.com/mschneider82/problem"
@@ -77,11 +76,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-		var access *Access
+		pw := r.Form.Get("Password")
+		date := r.Form.Get("Schedule")
+		title := r.Form.Get("Title")
+		content := r.Form.Get("Content")
+		tags := r.Form.Get("Tags")
+
+		sl := strings.SplitN(date, "-", -1)
+
+		db := sl[0] + "-" + sl[1]
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(time.Now().Format("2006")), "role": "server"}))
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(db), "role": "server"}))
 
 		if err != nil {
 
@@ -91,6 +98,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		var access *Access
+
 		if err := x.Get(&access); err != nil {
 
 			fmt.Fprint(w, err)
@@ -99,27 +108,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		dir := "createPost"
-
-		pw := r.Form.Get("Password")
-		date := r.Form.Get("Schedule")
-		title := r.Form.Get("Title")
-		content := r.Form.Get("Content")
-		t := r.Form.Get("Tags")
-
 		//fmt.Fprint(w, pw, date, title, content, tags)
-		u := strings.Fields(t)
+		u := strings.Fields(tags)
 		y := ""
 
 		for _, v := range u {
 
-			y = y + "#" + v + ", "
+			y = y + "\"#" + v + "\", "
 
 		}
 
-		strings.TrimSuffix(y, ",")
+		y = strings.TrimSuffix(y, ",")
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `] iscommited: false}) {_id}"}`
+		dir := "createPost"
+
+		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `] iscommited: true}) {_id tags}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -167,7 +170,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					id := f.(string)
 
-					fmt.Fprint(w, "created post id: "+id)
+					g := e["tags"]
+
+					tags := g.([]string)
+
+					for _,  s:= range tags {
+
+					fmt.Fprint(w, "created post id: "+id+" with tag: "+s)
+
+					}
 
 					return
 
