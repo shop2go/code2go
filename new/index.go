@@ -82,13 +82,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		content := r.Form.Get("Content")
 		tags := r.Form.Get("Tags")
 
-		sl := strings.SplitN(date, "-", -1)
+/* 		sl := strings.SplitN(date, "-", -1)
 
-		db := sl[0] + "-" + sl[1]
+		db := sl[0] + "-" + sl[1] */
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(db), "role": "server"}))
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("2019"), "role": "server"}))
 
 		if err != nil {
 
@@ -108,7 +108,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//fmt.Fprint(w, pw, date, title, content, tags)
 		u := strings.Fields(tags)
 		y := ""
 
