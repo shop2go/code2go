@@ -156,15 +156,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					id := f.(string)
 
-					g := e["tags"]
-
-					tags := g.([]string)
-
-					for _,  s:= range tags {
-
 					fmt.Fprint(w, "created post id: "+id)
-
-					}
 
 					return
 
