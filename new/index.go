@@ -56,7 +56,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 		<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
 		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-		<textarea class="form-control mr-sm-2" id="Content" rows="4" placeholder="Content"></textarea>
+		<input textarea class="form-control mr-sm-2" id="Content" rows="4" placeholder="Content"></textarea>
 		<br>
 		<button type="submit" class="btn btn-light">submit</button>
 		</form>
@@ -79,7 +79,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		pw := r.Form.Get("Password")
 		date := r.Form.Get("Schedule")
 		title := r.Form.Get("Title")
-		content := r.Form.Get("Entry")
+		content := r.Form.Get("Content")
 		tags := r.Form.Get("Tags")
 
 		sl := strings.SplitN(date, "-", -1)
@@ -108,7 +108,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags:  `+ tags + `}) {_id tags}"}`
+		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: \"`+ tags + `\"}) {_id tags}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
