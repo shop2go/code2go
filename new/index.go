@@ -79,11 +79,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		pw := r.Form.Get("Password")
 		date := r.Form.Get("Schedule")
 		title := r.Form.Get("Title")
-		content := r.Form.Get("Content")
+		content := r.Form.Get("Entry")
 		tags := r.Form.Get("Tags")
 
 		sl := strings.SplitN(date, "-", -1)
-
 		
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -107,20 +106,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		u := strings.Fields(tags)
-		y := ""
-
-		for _, v := range u {
-
-			y = y + v + ", "
-
-		}
-
-		y = strings.TrimSuffix(y, ", ")
-
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags:  `+ y + `}) {_id tags}"}`
+		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags:  `+ tags + `}) {_id tags}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
