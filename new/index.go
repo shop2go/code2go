@@ -116,11 +116,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		y = strings.TrimSuffix(y, ",")
+		y = strings.TrimSuffix(y, ", ")
 
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `] iscommited: true}) {_id tags}"}`
+		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `]}) {_id tags}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
