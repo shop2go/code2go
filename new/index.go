@@ -52,11 +52,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="container" id="data" style="color:white;">
 		<form class="form-inline" role="form" method="POST">
 		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + strings.TrimSuffix(r.Host, ".code2go.dev") + `">
-		<input class="form-control mr-sm-2" type="text" placeholder="Password" aria-label="Password" id ="Password" name ="Password" value="">
+		<input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password" id ="Password" name ="Password" value="">
 		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 		<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
 		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-		<input textarea class="form-control mr-sm-2" id="Content" rows="4" placeholder="Content"></textarea>
+		<input class="form-control mr-sm-2" tyoe="text" id="Content" placeholder="Content"></textarea>
 		<br>
 		<button type="submit" class="btn btn-light">submit</button>
 		</form>
@@ -106,21 +106,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		t := strings.Fields(tags)
-
-		y := ""
-
-		for _, v := range t {
-
-		y = y + "\"#" + v + "\", "
-
-		}
-
-		y = strings.TrimSuffix(y, ", ")
+		tags = strings.ToLower(tags)
 
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `]}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id}}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
