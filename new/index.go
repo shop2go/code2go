@@ -106,9 +106,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		t := strings.Fields(tags)
+
+		y := ""
+
+		for _, v := range t {
+
+		y = y + "\"#" + v + "\", "
+
+		}
+
+		y = strings.TrimSuffix(y, ", ")
+
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: [` + y + `]}) {_id}}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
