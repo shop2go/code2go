@@ -112,7 +112,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for _, v := range u {
 
-			y = y + "\"#" + v + "\", "
+			y = y + "\"" + v + "\", "
 
 		}
 
