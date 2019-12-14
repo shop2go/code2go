@@ -108,7 +108,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id tags}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id}}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -136,7 +136,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		json.Unmarshal(bdy, &i)
 
-		/* if i != nil {
+		if i != nil {
 
 			a := i.(map[string]interface{})
 
@@ -162,7 +162,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					for _,  s:= range tags {
 
-					fmt.Fprint(w, "created post id: "+id+" with tag: "+s)
+					fmt.Fprint(w, "created post id: "+id)
 
 					}
 
@@ -180,7 +180,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			return
 
-		} */
+		}
 
 		fmt.Fprint(w, i)
 
