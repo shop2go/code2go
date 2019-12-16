@@ -53,7 +53,7 @@ func getCache(a *Access) ([]Cache, error) {
 
 	dir := "allCaches"
 
-	s := `{"query":"query{` + dir + `{data{month posts{_id date password title content}}}}"}`
+	s := `{"query":"query{` + dir + `{data{month posts{_id date password topics tags content}}}}"}`
 	body := strings.NewReader(s)
 	req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
