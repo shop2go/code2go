@@ -311,7 +311,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	j := 1
 
-	for j > 0 {
+	for j < 32 {
 
 		d := now.AddDate(0, 0, -j)
 
@@ -463,15 +463,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		c.Year = now.Year()
 
 		c.Month = int(now.Month())
-		day := map[int]string{now.Day(): now.Weekday().String()}
-
-		c.Days = day
 
 		if c.Year == y {
 
-			i := 1
-
-			for i < 32 {
+			for i := 1; i < 32; i++ {
 
 				d := now.AddDate(0, 0, i)
 
@@ -487,17 +482,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				c.Days[e] = d.Weekday().String()
 
-				i++
-
 			}
 
-			for k := 1; k < 32; k++ {
+			j := 1
 
-				if int(now.AddDate(0, 0, k).Month()) != c.Month {
+			for j < 32 {
+
+				d := now.AddDate(0, 0, -j)
+
+				m := int(d.Month())
+
+				if m != c.Month {
 
 					break
 
 				}
+
+				e := d.Day()
+
+				c.Days[e] = d.Weekday().String()
+
+				j++
+
+			}
+
+			p = len(c.Days)
+
+			for k := 1; k <= p; k++ {
 
 				m := fmt.Sprintf("%02d", c.Month)
 

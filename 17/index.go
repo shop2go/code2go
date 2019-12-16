@@ -123,8 +123,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		d := now.AddDate(0, 0, i)
 
-		//m, _ := strconv.Atoi(d.Format("01"))
-
 		m := int(d.Month())
 
 		if m != c.Month {
@@ -143,25 +141,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	j := 1
 
-			for j > 0 {
+	for j < 32 {
 
-				d := now.AddDate(0, 0, -j)
+		d := now.AddDate(0, 0, -j)
 
-				m := int(d.Month())
+		m := int(d.Month())
 
-				if m != c.Month {
+		if m != c.Month {
 
-					break
+			break
 
-				}
+		}
 
-				e := d.Day()
+		e := d.Day()
 
-				c.Days[e] = d.Weekday().String()
+		c.Days[e] = d.Weekday().String()
 
-				j++
+		j++
 
-			}
+	}
 
 	if n == 0 {
 
@@ -1610,17 +1608,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
-		
+
 			if err != nil {
-		
+
 				fmt.Fprint(w, err)
-		
+
 				return
-		
+
 			}
-		
+
 			var access *Access
-		
+
 			x.Get(&access)
 
 		} */
