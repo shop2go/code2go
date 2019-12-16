@@ -390,8 +390,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 			</span><button><br>
 
-			<div class="container" id="threads` + schedule + `">
-			<!--form class="form-inline" role="form"-->
+			<div class="container" id="threads">
+			<form class="form-inline" role="form">
 			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
 						
 			`
@@ -452,20 +452,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str = str + `
-		<!--/form-->
-		</div>
-		`
-
 	y := c.Year
 
 	for o := 1; o < 21; o++ {
+		
+	LOOP:
 
 		now := time.Now().AddDate(0, o, 0)
 
 		c.Year = now.Year()
-
-	LOOP:
 
 		c.Month = int(now.Month())
 		day := map[int]string{now.Day(): now.Weekday().String()}
@@ -496,31 +491,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			j := 1
-
-			for j > 0 {
-
-				d := now.AddDate(0, 0, -j)
-
-				m := int(d.Month())
-
-				if m != c.Month {
-
-					break
-
-				}
-
-				e := d.Day()
-
-				c.Days[e] = d.Weekday().String()
-
-				j++
-
-			}
-
 			l = len(c.Days)
 
-			for k := q; k <= l; k++ {
+			for k := 1; k <= l; k++ {
 
 				m := fmt.Sprintf("%02d", c.Month)
 
@@ -539,9 +512,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
 				</span><button><br>
-	
-				<div class="container" id="threads` + schedule + `">
-				<!--form class="form-inline" role="form"-->
+
 				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
 						
 				`
@@ -615,7 +586,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			str = str + `
-				<!--/form-->
+				</form>
 				</div>
 				`
 

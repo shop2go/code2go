@@ -1708,15 +1708,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
 
-				m := ""
+				var m string
 
 				for i := 0; i < len(cache); i++ {
 
-					m = m + "Ref(Collection(\"Post\")," + cache[i] + "),"
+					m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
 
 				}
 
-				strings.TrimSuffix(m, ",")
+				m = strings.TrimSuffix(m, ", ")
 
 				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" posts: [` + m + `]})}"}`
 
