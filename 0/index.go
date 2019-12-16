@@ -112,7 +112,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		`
 
-	month, _ := strconv.Atoi(now.Format("01"))
+	month, _ := strconv.Atoi(now.Format("1"))
 	c.Month = month
 	day := map[int]string{now.Day(): now.Weekday().String()}
 

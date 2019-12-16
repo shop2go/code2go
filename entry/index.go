@@ -195,7 +195,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 
 	c.Year = now.Year()
-	month, _ := strconv.Atoi(now.Format("01"))
+	month, _ := strconv.Atoi(now.Format("1"))
 	c.Month = month
 	day := map[int]string{now.Day(): now.Weekday().String()}
 
@@ -452,7 +452,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		now = time.Now().AddDate(0, o, 0)
 
 		c.Year = now.Year()
-		month, _ = strconv.Atoi(now.Format("01"))
+
+
+
+		month, _ = strconv.Atoi(now.Format("1"))
 		c.Month = month
 		day = map[int]string{now.Day(): now.Weekday().String()}
 
@@ -488,7 +491,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				d := now.AddDate(0, 0, -j)
 
-				m, _ := strconv.Atoi(d.Format("01"))
+				m, _ := strconv.Atoi(d.Format("1"))
 
 				if m != month {
 
