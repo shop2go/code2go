@@ -190,6 +190,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var posts []Post
 
+	var result []Cache
+
 	now := time.Now()
 
 	c.Year = now.Year()
@@ -219,7 +221,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	result, err := getCache(access)
+	result, err = getCache(access)
 
 	if err != nil {
 
@@ -444,7 +446,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	y := c.Year
 
 	for o := 1; o < 21; o++ {
-
+		
 		LOOP:
 
 		now = time.Now().AddDate(0, o, 0)
@@ -480,7 +482,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			j = 1
+			j := 1
 
 			for j > 0 {
 
@@ -501,10 +503,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				j++
 
 			}
-
-			//all following months without entries
-
-			//store = nil
 
 			l = len(c.Days)
 
