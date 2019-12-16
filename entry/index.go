@@ -589,11 +589,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			str = str + `
-				</form>
-				</div>
-				`
-
 		} else {
 
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -635,6 +630,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	str = str + `
+	
+		</form>
+		</div>
+	
  		</ul>
 		</div>
 		
