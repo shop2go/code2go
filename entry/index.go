@@ -455,7 +455,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	y := c.Year
 
 	for o := 1; o < 21; o++ {
-		
+
 	LOOP:
 
 		now := time.Now().AddDate(0, o, 0)
@@ -491,9 +491,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			l = len(c.Days)
+			for k := 1; k < 32; k++ {
 
-			for k := 1; k <= l; k++ {
+				if int(now.AddDate(0, 0, k).Month()) != c.Month {
+
+					break
+
+				}
 
 				m := fmt.Sprintf("%02d", c.Month)
 
