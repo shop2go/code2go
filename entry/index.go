@@ -445,6 +445,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for o := 1; o < 21; o++ {
 
+		LOOP:
+
 		now = time.Now().AddDate(0, o, 0)
 
 		c.Year = now.Year()
@@ -453,8 +455,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		day = map[int]string{now.Day(): now.Weekday().String()}
 
 		c.Days = day
-
-	LOOP:
 
 		if c.Year == y {
 
