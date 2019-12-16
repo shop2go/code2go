@@ -643,7 +643,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			result, err = getCache(access)
 
-			if err != errOnData {
+			if err != nil {
 
 				fmt.Fprint(w, err)
 
