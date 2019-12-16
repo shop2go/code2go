@@ -33,7 +33,8 @@ type Post struct {
 	ID       string
 	Date     string
 	Password string
-	Title    string
+	Topics   []string
+	Tags     []string
 	Content  interface{}
 }
 
@@ -162,7 +163,9 @@ func getCache(a *Access) ([]Cache, error) {
 
 					resultP[k].Password = p["password"].(string)
 
-					resultP[k].Title = p["title"].(string)
+					resultP[k].Topics = p["topics"].([]string)
+
+					resultP[k].Tags = p["tags"].([]string)
 
 					resultP[k].Content = p["content"]
 
@@ -306,6 +309,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	j := 1
+
+	for j > 0 {
+
+		d := now.AddDate(0, 0, -j)
+
+		m := int(d.Month())
+
+		if m != c.Month {
+
+			break
+
+		}
+
+		e := d.Day()
+
+		c.Days[e] = d.Weekday().String()
+
+		j++
+
+	}
+
 	var q int
 
 	l := len(c.Days)
@@ -375,7 +400,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, v := range result {
 
-				if v.Month == strconv.Itoa(c.Year)+`-`+ m {
+				if v.Month == strconv.Itoa(c.Year)+`-`+m {
 
 					posts = v.Posts
 
@@ -393,16 +418,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					case schedule:
 
+						var s string
+
+						for _, v := range posts[o].Tags {
+
+							s = s + v + ", "
+
+						}
+
 						if posts[o].Password == "" {
 
 							str = str + `
-						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="` + posts[o].Title + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
+						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="` + s + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
 						`
 
 						} else {
 
 							str = str + `
-						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
+						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
 						`
 
 						}
@@ -429,8 +462,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		now := time.Now().AddDate(0, o, 0)
 
 		c.Year = now.Year()
-		
-		LOOP:
+
+	LOOP:
 
 		c.Month = int(now.Month())
 		day := map[int]string{now.Day(): now.Weekday().String()}
@@ -527,7 +560,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					for _, v := range result {
 
-						if v.Month == strconv.Itoa(c.Year)+`-`+ m {
+						if v.Month == strconv.Itoa(c.Year)+`-`+m {
 
 							posts = v.Posts
 
@@ -545,16 +578,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 							case schedule:
 
+								var s string
+
+								for _, v := range posts[o].Tags {
+
+									s = s + v + ", "
+
+								}
+
 								if posts[o].Password == "" {
 
 									str = str + `
-							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="` + posts[o].Title + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
+							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="` + s + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
 							`
 
 								} else {
 
 									str = str + `
-							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
+							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
 							`
 
 								}
