@@ -33,8 +33,8 @@ type Post struct {
 	ID       string
 	Date     string
 	Password string
-	Topics   []string
-	Tags     []string
+	Topics   interface{}
+	Tags     interface{}
 	Content  interface{}
 }
 
@@ -163,9 +163,9 @@ func getCache(a *Access) ([]Cache, error) {
 
 					resultP[k].Password = p["password"].(string)
 
-					resultP[k].Topics = p["topics"].([]string)
+					resultP[k].Topics = p["topics"]
 
-					resultP[k].Tags = p["tags"].([]string)
+					resultP[k].Tags = p["tags"]
 
 					resultP[k].Content = p["content"]
 
@@ -400,7 +400,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, v := range result {
 
-				if v.Month == strconv.Itoa(c.Year)+`-`+ m {
+				if v.Month == strconv.Itoa(c.Year)+`-`+m {
 
 					posts = v.Posts
 
@@ -420,9 +420,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						var s string
 
-						for _, v := range posts[o].Tags {
+						for _, v := range posts[o].Tags.([]interface{}) {
 
-							s = s + v + ", "
+							in := v.(string)
+
+							s = s + in + ", "
 
 						}
 
@@ -580,9 +582,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 								var s string
 
-								for _, v := range posts[o].Tags {
+								for _, v := range posts[o].Tags.([]interface{}) {
 
-									s = s + v + ", "
+									in := v.(string)
+
+									s = s + in + ", "
 
 								}
 
@@ -639,13 +643,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			result, err = getCache(access)
 
-			if err != nil && err == errOnData {
-
-				y = c.Year
-
-				goto LOOP
-
-			} else if err != nil {
+			if err != errOnData {
 
 				fmt.Fprint(w, err)
 
