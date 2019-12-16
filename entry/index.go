@@ -400,7 +400,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, v := range result {
 
-				if v.Month == strconv.Itoa(c.Year)+`-`+m {
+				if v.Month == strconv.Itoa(c.Year)+`-`+ m {
 
 					posts = v.Posts
 
@@ -639,7 +639,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			result, err = getCache(access)
 
-			if err != nil {
+			if err != nil && err == errOnData {
+
+				y = c.Year
+
+				goto LOOP
+
+			} else if err != nil {
 
 				fmt.Fprint(w, err)
 
