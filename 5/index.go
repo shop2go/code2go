@@ -84,6 +84,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Year = now.Year()
 
+	c.Month = int(now.Month())
+	day := map[int]string{now.Day(): now.Weekday().String()}
+
+	c.Days = day
+
 	str := `
 		<!DOCTYPE html>
 		<html lang="en">
@@ -112,12 +117,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		`
 
-	month, _ := strconv.Atoi(now.Format("01"))
-	c.Month = month
-	day := map[int]string{now.Day(): now.Weekday().String()}
-
-	c.Days = day
-
 	i := 1
 
 	for i < 32 {
@@ -126,13 +125,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//m, _ := strconv.Atoi(d.Format("01"))
 
-		if d.Month() != now.Month() {
+		m := int(d.Month())
+
+		if m != c.Month {
 
 			break
 
 		}
 
-		e, _ := strconv.Atoi(d.Format("02"))
+		e := d.Day()
 
 		c.Days[e] = d.Weekday().String()
 
@@ -142,25 +143,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	j := 1
 
-	for j > 0 {
+			for j > 0 {
 
-		d := now.AddDate(0, 0, -j)
+				d := now.AddDate(0, 0, -j)
 
-		//m, _ := strconv.Atoi(d.Format("01"))
+				m := int(d.Month())
 
-		if d.Month() != now.Month() {
+				if m != c.Month {
 
-			break
+					break
 
-		}
+				}
 
-		e, _ := strconv.Atoi(d.Format("02"))
+				e := d.Day()
 
-		c.Days[e] = d.Weekday().String()
+				c.Days[e] = d.Weekday().String()
 
-		j++
+				j++
 
-	}
+			}
 
 	if n == 0 {
 
@@ -184,7 +185,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if now.Month() == time.Now().Month() {
 
-		p, _ = strconv.Atoi(time.Now().Format("02"))
+		p = now.Day()
 
 	} else {
 
@@ -456,9 +457,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for k := q; k < 32; k++ {
 
+		m := fmt.Sprintf("%02d", c.Month)
+
 		n := fmt.Sprintf("%02d", k)
 
-		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+		value = strconv.Itoa(c.Year) + `-` + m + `-` + n
 
 		switch c.Days[k] {
 
@@ -1596,11 +1599,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if cache != nil {
 
 		dir = "cacheByMonth"
-		value = strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month)
+		value = strconv.Itoa(c.Year) + `-` + fmt.Sprintf("%02d", c.Month)
 
 		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){_id}}"}`
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+		/* if c.Year != now.Year() {
+
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
+		
+			if err != nil {
+		
+				fmt.Fprint(w, err)
+		
+				return
+		
+			}
+		
+			var access *Access
+		
+			x.Get(&access)
+
+		} */
 
 		req.Header.Set("Authorization", "Bearer "+access.Secret)
 		req.Header.Set("Content-Type", "application/json")

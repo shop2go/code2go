@@ -56,7 +56,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 		<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
 		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-		<input class="form-control mr-sm-2" tyoe="text" id="Content" placeholder="Content"></textarea>
+		<input class="form-control mr-sm-2" tyoe="text" id="Content"m placeholder="Content"></textarea>
 		<br>
 		<button type="submit" class="btn btn-light">submit</button>
 		</form>

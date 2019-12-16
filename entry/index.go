@@ -195,8 +195,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 
 	c.Year = now.Year()
-	month, _ := strconv.Atoi(now.Format("1"))
-	c.Month = month
+	c.Month = int(now.Month())
 	day := map[int]string{now.Day(): now.Weekday().String()}
 
 	c.Days = day
@@ -291,7 +290,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		d := now.AddDate(0, 0, z)
 
-		m, _ := strconv.Atoi(d.Format("01"))
+		m := int(d.Month())
 
 		if m != c.Month {
 
@@ -299,7 +298,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		e, _ := strconv.Atoi(d.Format("02"))
+		e := d.Day()
 
 		c.Days[e] = d.Weekday().String()
 
@@ -307,33 +306,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	j := 1
-
-	for j > 0 {
-
-		d := now.AddDate(0, 0, -j)
-
-		m, _ := strconv.Atoi(d.Format("01"))
-
-		if m != c.Month {
-
-			break
-
-		}
-
-		e, _ := strconv.Atoi(d.Format("02"))
-
-		c.Days[e] = d.Weekday().String()
-
-		j++
-
-	}
-
-	var p, q int
+	var q int
 
 	l := len(c.Days)
 
-	p, _ = strconv.Atoi(now.Format("02"))
+	p := now.Day()
 
 	for i := l; i >= p; i-- {
 
@@ -370,9 +347,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for k := q; k <= l; k++ {
 
+		m := fmt.Sprintf("%02d", c.Month)
+
 		n := fmt.Sprintf("%02d", k)
 
-		schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+		schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
 
 		str = str + `
 			<br>
@@ -396,7 +375,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, v := range result {
 
-				if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+				if v.Month == strconv.Itoa(c.Year)+`-`+ m {
 
 					posts = v.Posts
 
@@ -404,26 +383,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			m := len(posts)
+			n := len(posts)
 
-			if m > 0 {
+			if n > 0 {
 
-				for n := 0; n < m; n++ {
+				for o := 0; o < n; o++ {
 
-					switch posts[n].Date {
+					switch posts[o].Date {
 
 					case schedule:
 
-						if posts[n].Password == "" {
+						if posts[o].Password == "" {
 
 							str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
+						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="` + posts[o].Title + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
 						`
 
 						} else {
 
 							str = str + `
-						<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
+						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
 						`
 
 						}
@@ -446,18 +425,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	y := c.Year
 
 	for o := 1; o < 21; o++ {
+
+		now := time.Now().AddDate(0, o, 0)
+
+		c.Year = now.Year()
 		
 		LOOP:
 
-		now = time.Now().AddDate(0, o, 0)
-
-		c.Year = now.Year()
-
-
-
-		month, _ = strconv.Atoi(now.Format("1"))
-		c.Month = month
-		day = map[int]string{now.Day(): now.Weekday().String()}
+		c.Month = int(now.Month())
+		day := map[int]string{now.Day(): now.Weekday().String()}
 
 		c.Days = day
 
@@ -469,15 +445,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				d := now.AddDate(0, 0, i)
 
-				m, _ := strconv.Atoi(d.Format("01"))
+				m := int(d.Month())
 
-				if m != month {
+				if m != c.Month {
 
 					break
 
 				}
 
-				e, _ := strconv.Atoi(d.Format("02"))
+				e := d.Day()
 
 				c.Days[e] = d.Weekday().String()
 
@@ -491,15 +467,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				d := now.AddDate(0, 0, -j)
 
-				m, _ := strconv.Atoi(d.Format("1"))
+				m := int(d.Month())
 
-				if m != month {
+				if m != c.Month {
 
 					break
 
 				}
 
-				e, _ := strconv.Atoi(d.Format("02"))
+				e := d.Day()
 
 				c.Days[e] = d.Weekday().String()
 
@@ -511,9 +487,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for k := q; k <= l; k++ {
 
+				m := fmt.Sprintf("%02d", c.Month)
+
 				n := fmt.Sprintf("%02d", k)
 
-				schedule := strconv.Itoa(c.Year) + `-` + strconv.Itoa(c.Month) + `-` + n
+				schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
 
 				str = str + `
 				<br>
@@ -549,7 +527,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					for _, v := range result {
 
-						if v.Month == strconv.Itoa(c.Year)+`-`+strconv.Itoa(c.Month) {
+						if v.Month == strconv.Itoa(c.Year)+`-`+ m {
 
 							posts = v.Posts
 
@@ -557,26 +535,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-					m := len(posts)
+					n := len(posts)
 
-					if m > 0 {
+					if n > 0 {
 
-						for n := 0; n < m; n++ {
+						for o := 0; o < n; o++ {
 
-							switch posts[n].Date {
+							switch posts[o].Date {
 
 							case schedule:
 
-								if posts[n].Password == "" {
+								if posts[o].Password == "" {
 
 									str = str + `
-							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="` + posts[n].Title + `" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/public'">
+							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="` + posts[o].Title + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
 							`
 
 								} else {
 
 									str = str + `
-							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[n].ID + `" value="` + posts[n].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[n].ID + `.code2go.dev/password'">
+							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + posts[o].Title + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
 							`
 
 								}
