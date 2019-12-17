@@ -466,7 +466,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if c.Year == y {
 
-			for i := 1; i < 32; i++ {
+			i := 1
+
+			for i < 32 {
 
 				d := now.AddDate(0, 0, i)
 
@@ -481,6 +483,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				e := d.Day()
 
 				c.Days[e] = d.Weekday().String()
+
+				i++
 
 			}
 
