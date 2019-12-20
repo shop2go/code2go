@@ -54,9 +54,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + strings.TrimSuffix(r.Host, ".code2go.dev") + `">
 		<input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password" id ="Password" name ="Password" value="">
 		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-		<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
+		<!--input class="form-control mr-sm-2" type="text" placeholder="Entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
 		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-		<input class="form-control mr-sm-2" tyoe="text" id="Content"m placeholder="Content"></textarea>
+		<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content"></textarea>
 		<br>
 		<button type="submit" class="btn btn-light">submit</button>
 		</form>
@@ -76,11 +76,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-		pw := r.Form.Get("Password")
+/* 		pw := r.Form.Get("Password")
 		date := r.Form.Get("Schedule")
 		topics := r.Form.Get("Topic")
 		content := r.Form.Get("Content")
-		tags := r.Form.Get("Tags")
+		tags := r.Form.Get("Tags") */
+
+		pw := r.FormValue("Password")
+		date := r.FormValue("Schedule")
+		topics := r.FormValue("Title")
+		tags := r.FormValue("Tags")
+		content := r.FormValue("Entry")
+
 
 		sl := strings.SplitN(date, "-", -1)
 
@@ -164,11 +171,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					if pw == "" {
 
-						http.Redirect(w, r, "https://"+date+".code2go.dev/public", 301)
+						http.Redirect(w, r, "https://"+id+".code2go.dev/public", 301)
 
 					} else {
 
-						http.Redirect(w, r, "https://"+date+".code2go.dev/password", 301)
+						http.Redirect(w, r, "https://"+id+".code2go.dev/password", 301)
 
 					}
 
