@@ -178,15 +178,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-				fmt.Fprint(w, "dir", d)
+				fmt.Fprint(w, "error dir: ", i)
 
 				return
 
 			}
 
-			b = a["error"]
-
-			fmt.Fprint(w, "data", b)
+			fmt.Fprint(w, "error data: ", i)
 
 			return
 
