@@ -184,6 +184,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
+			b = a["error"]
+
 			fmt.Fprint(w, "data", b)
 
 			return
