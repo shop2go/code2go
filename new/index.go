@@ -78,12 +78,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		pw := r.Form.Get("Password")
 		date := r.Form.Get("Schedule")
-		title := r.Form.Get("Title")
+		topics := r.Form.Get("Topic")
 		content := r.Form.Get("Content")
 		tags := r.Form.Get("Tags")
 
 		sl := strings.SplitN(date, "-", -1)
-		
+
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl[0]), "role": "server"}))
@@ -106,11 +106,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		to := strings.ReplaceAll(topics, " ", "\" \"")
+
 		tags = strings.ToLower(tags)
+
+		ta := strings.ReplaceAll(tags, " ", "\" \"")
 
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" title: \"` + title + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" topics: [\"` + to + `\"] content: \"` + content + `\" tags: [\"` + ta + `\"]}) {_id}}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -158,7 +162,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					id := f.(string)
 
-					fmt.Fprint(w, "created post id: "+id)
+					if pw == "" {
+
+						http.Redirect(w, r, "https://"+date+".code2go.dev/public", 301)
+
+					} else {
+
+						http.Redirect(w, r, "https://"+date+".code2go.dev/password", 301)
+
+					}
+
+					fmt.Fprint(w, "checking post id: "+id)
 
 					return
 
