@@ -203,6 +203,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Days = day
 
+	y := c.Year
+
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
@@ -452,61 +454,35 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	y := c.Year
-
 	for o := 1; o < 21; o++ {
 
-	LOOP:
+		now = time.Now().AddDate(0, o, 0)
 
-		now := time.Now().AddDate(0, o, 0)
+		now = now.AddDate(0, 0, (-time.Now().Day())+1)
 
 		c.Year = now.Year()
 
 		c.Month = int(now.Month())
 
+	LOOP:
+
+		c.Days = make(map[int]string, now.AddDate(0, 1, -1).Day())
+
 		if c.Year == y {
 
-			i := 1
-
-			for i < 32 {
+			for i := 0; i < 32; i++ {
 
 				d := now.AddDate(0, 0, i)
 
 				m := int(d.Month())
 
-				if m != c.Month {
+				if m == c.Month {
 
-					break
+					e := d.Day()
 
-				}
-
-				e := d.Day()
-
-				c.Days[e] = d.Weekday().String()
-
-				i++
-
-			}
-
-			j := 1
-
-			for j < 32 {
-
-				d := now.AddDate(0, 0, -j)
-
-				m := int(d.Month())
-
-				if m != c.Month {
-
-					break
+					c.Days[e] = d.Weekday().String()
 
 				}
-
-				e := d.Day()
-
-				c.Days[e] = d.Weekday().String()
-
-				j++
 
 			}
 
