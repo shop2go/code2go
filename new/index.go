@@ -106,11 +106,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		to := strings.ReplaceAll(topics, " ", "\" \"")
+		to := strings.ReplaceAll(topics, " ", "\", \"")
 
 		tags = strings.ToLower(tags)
 
-		ta := strings.ReplaceAll(tags, " ", "\" \"")
+		ta := strings.ReplaceAll(tags, " ", "\", \"")
 
 		dir := "createPost"
 
