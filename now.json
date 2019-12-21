@@ -5,10 +5,8 @@
       { "src": "./main/index.go", "use": "@now/go"},
 
       { "src": "./new/index.go", "use": "@now/go"},
-      
-      { "src": "./public/index.go", "use": "@now/go" },
 
-      { "src": "./password/index.go", "use": "@now/go" },
+      { "src": "./status/index.go", "use": "@now/go" },
 
       { "src": "./entry/index.go", "use": "@now/go"},
       
