@@ -177,16 +177,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						http.Redirect(w, r, "https://"+id+".code2go.dev/public", 301)
 
+						fmt.Fprint(w, "checking post id: "+id)
+
 					} else {
 
 						http.Redirect(w, r, "https://"+id+".code2go.dev/password", 301)
 
+						fmt.Fprint(w, "checking post id: "+id)
+
 					}
-
-					fmt.Fprint(w, "checking post id: "+id)
-
-					return
-
+					
 				}
 
 				fmt.Fprint(w, "error dir: ", i)
