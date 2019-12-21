@@ -115,7 +115,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		to := strings.ReplaceAll(topics, " ", "\", \"")
 
-		to = "\"" + to + "\""
+		//to = "\"" + to + "\""
 
 		tags = strings.ToLower(tags)
 
