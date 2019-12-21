@@ -125,7 +125,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" topics: ` + topics + ` content: \"` + content + `\" tags: ` + tags + `}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" topics: \"` + topics + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id}}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
