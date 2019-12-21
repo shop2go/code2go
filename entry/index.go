@@ -153,6 +153,14 @@ func getCache(a *Access) ([]Cache, error) {
 
 				for k := 0; k < len(o); k++ {
 
+					//q :=  o[k].(interface{})
+					if o[k] == nil {
+
+						return nil, errOnData
+
+
+					}
+
 					p := o[k].(map[string]interface{})
 
 					resultP := make([]Post, len(p))
