@@ -115,15 +115,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		to := strings.ReplaceAll(topics, " ", "\", \"")
 
-		//to = "\"" + to + "\""
+		to = "\"" + to + "\""
 
 		tags = strings.ToLower(tags)
 
 		ta := strings.ReplaceAll(tags, " ", "\", \"")
 
+		ta = "\"" + ta + "\""
+
 		dir := "createPost"
 
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" topics: [` + to + `] content: \"` + content + `\" tags: [` + ta + `]}) {_id}}"}`
+		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" topics: ` + to + ` content: \"` + content + `\" tags: ` + ta + `}) {_id}}"}`
 
 		body := strings.NewReader(s)
 		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
