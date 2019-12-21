@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 
@@ -22,6 +23,8 @@ type Access struct {
 	Secret    string `fauna:"secret"`
 	Role      string `fauna:"role"`
 }
+
+var errOnData = errors.New("error on data")
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
@@ -52,7 +55,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="container" id="data" style="color:white;">
 		<form class="form-inline" role="form" method="POST">
 		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + strings.TrimSuffix(r.Host, ".code2go.dev") + `">
-		<input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password" id ="Password" name ="Password" value="">
+		<input class="form-control mr-sm-2" type="text" placeholder="Secret" aria-label="Secret" id ="Secret" name ="Secret" value="">
 		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 		<!--input class="form-control mr-sm-2" type="text" placeholder="Entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
 		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
@@ -76,18 +79,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-/* 		pw := r.Form.Get("Password")
-		date := r.Form.Get("Schedule")
-		topics := r.Form.Get("Topic")
-		content := r.Form.Get("Content")
-		tags := r.Form.Get("Tags") */
+		/* 		pw := r.Form.Get("Password")
+		   		date := r.Form.Get("Schedule")
+		   		topics := r.Form.Get("Topic")
+		   		content := r.Form.Get("Content")
+		   		tags := r.Form.Get("Tags") */
 
-		pw := r.FormValue("Password")
+		pw := r.FormValue("Secret")
 		date := r.FormValue("Schedule")
 		topics := r.FormValue("Title")
 		tags := r.FormValue("Tags")
 		content := r.FormValue("Entry")
-
 
 		sl := strings.SplitN(date, "-", -1)
 
@@ -173,35 +175,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					id := f.(string)
 
-					if pw == "" {
+					if id != "" {
 
-						http.Redirect(w, r, "https://"+id+".code2go.dev/public", 301)
+						http.Redirect(w, r, "https://"+id+".code2go.dev/status", 301)
 
-						fmt.Fprint(w, "checking post id: "+id)
+						fmt.Fprint(w, sl[0])
 
 					} else {
 
-						http.Redirect(w, r, "https://"+id+".code2go.dev/password", 301)
-
-						fmt.Fprint(w, "checking post id: "+id)
+						fmt.Fprint(w, errOnData)
 
 					}
-					
+
 				}
-
-				fmt.Fprint(w, "error dir: ", i)
-
-				return
 
 			}
 
-			fmt.Fprint(w, "error data: ", i)
+		} else {
 
-			return
+			fmt.Fprint(w, errOnData)
 
 		}
-
-		fmt.Fprint(w, i)
 
 	}
 
