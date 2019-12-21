@@ -79,12 +79,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-		/* 		pw := r.Form.Get("Password")
-		   		date := r.Form.Get("Schedule")
-		   		topics := r.Form.Get("Topic")
-		   		content := r.Form.Get("Content")
-		   		tags := r.Form.Get("Tags") */
-
 		pw := r.FormValue("Secret")
 		date := r.FormValue("Schedule")
 		topics := r.FormValue("Title")
@@ -177,9 +171,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					if id != "" {
 
+						fmt.Fprint(w, sl[0]+"_"+id)
+
 						http.Redirect(w, r, "https://"+id+".code2go.dev/status", 301)
 
-						fmt.Fprint(w, sl[0])
+						
 
 					} else {
 
