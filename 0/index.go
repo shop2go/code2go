@@ -32,7 +32,7 @@ type Access struct {
 
 var cache []string = make([]string, 0)
 
-func response(w http.ResponseWriter, success bool, message string, method string) {
+/* func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
 	body := make(map[string]interface{})
 
@@ -56,7 +56,7 @@ func response(w http.ResponseWriter, success bool, message string, method string
 	w.WriteHeader(http.StatusOK)
 	w.Write(bodyString)
 
-}
+} */
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
@@ -1664,39 +1664,51 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					f := e["_id"]
 
-					dir = "updateCache"
+					if f != nil {
 
-					sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
+						dir = "updateCache"
 
-					m := ""
+						sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
 
-					for i := 0; i < len(cache); i++ {
+						m := ""
 
-						m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
+						for i := 0; i < len(cache); i++ {
+
+							m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
+
+						}
+
+						m = strings.TrimSuffix(m, ", ")
+
+						s := `{"query":"mutation{` + dir + `(id: \"` + f.(string) + `\" data:{posts: [` + m + `]})}"}`
+
+						body := strings.NewReader(s)
+						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+						req.Header.Set("Authorization", "Bearer "+access.Secret)
+						req.Header.Set("Content-Type", "application/json")
+						req.Header.Set("Accept", "application/json")
+						req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+						_, err = http.DefaultClient.Do(req)
+
+						if err != nil {
+
+							fmt.Fprint(w, err)
+
+							return
+
+						}
+
+					} else {
+
+						fmt.Fprint(w, "f err")
 
 					}
 
-					strings.TrimSuffix(m, ", ")
+				} else {
 
-					s := `{"query":"mutation{` + dir + `(id: \"` + f.(string) + `\" data:{posts: [` + m + `]})}"}`
-
-					body := strings.NewReader(s)
-					req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-					req.Header.Set("Authorization", "Bearer "+access.Secret)
-					req.Header.Set("Content-Type", "application/json")
-					req.Header.Set("Accept", "application/json")
-					req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-					_, err = http.DefaultClient.Do(req)
-
-					if err != nil {
-
-						fmt.Fprint(w, err)
-
-						return
-
-					}
+					fmt.Fprint(w, "d err")
 
 				}
 
