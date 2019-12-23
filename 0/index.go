@@ -1674,13 +1674,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						for i := 0; i < len(cache); i++ {
 
-							m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
-
+							//m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
+							m = m + cache[i] + ", "
 						}
 
 						m = strings.TrimSuffix(m, ", ")
 
-						s := `{"query":"mutation{` + dir + `(id: \"` + f.(string) + `\" data:{posts: [` + m + `]})}"}`
+						s := `{"query":"mutation{` + dir + `(id: \"` + f.(string) + `\" data:{month: `+ value + ` posts: [` + m + `]}){_id}}"}`
 
 						body := strings.NewReader(s)
 						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
@@ -1722,7 +1722,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for i := 0; i < len(cache); i++ {
 
-					m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
+					//m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
+					m = m + cache[i] + ", "
 
 				}
 
