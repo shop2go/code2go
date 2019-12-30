@@ -484,6 +484,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		value = strconv.Itoa(c.Year) + `-` + m + `-` + n
 
+		var q struct {
+			PostsByDate struct {
+				Data []Post
+			} `graphql:"postsByDate(date: $date iscommited: true)"`
+		}
+
 		switch c.Days[k] {
 
 		case "Monday":
@@ -504,23 +510,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				PostsByDate struct {
-					Data []Post
-				} `graphql:"postsByDate(date: $date iscommited: true)"`
-			}
-
 			vars := map[string]interface{}{
 				"date": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
-			result := q.PostsByDate.Data
+			l := len(q.PostsByDate.Data)
 
-			if len(result) > 0 {
+			if l > 0 {
 
-				for _, p := range result {
+				for _, p := range q.PostsByDate.Data {
 
 					cache = append(cache, p.ID)
 
@@ -528,7 +530,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-			` + strconv.Itoa(len(result)) + `
+			` + strconv.Itoa(l) + `
 			</span>
 			</button>
 			`
@@ -705,40 +707,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				PostsByDate struct {
-					Data []Post
-				} `graphql:"postsByDate(date: $date iscommited: true)"`
-			}
-
 			vars := map[string]interface{}{
 				"date": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
-			result := q.PostsByDate.Data
+			l := len(q.PostsByDate.Data)
 
-			if len(result) > 0 {
+			if l > 0 {
 
-				for _, p := range result {
+				for _, p := range q.PostsByDate.Data {
 
 					cache = append(cache, p.ID)
 
 				}
 
 				str = str + `
-				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(result)) + `
-				</span>
-				</button>
-				`
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			</button>
+			`
 
 			} else {
 
 				str = str + `
-				</button>
-				`
+			</button>
+			`
 				break
 
 			}
@@ -761,40 +759,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				PostsByDate struct {
-					Data []Post
-				} `graphql:"postsByDate(date: $date iscommited: true)"`
-			}
-
 			vars := map[string]interface{}{
 				"date": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
-			result := q.PostsByDate.Data
+			l := len(q.PostsByDate.Data)
 
-			if len(result) > 0 {
+			if l > 0 {
 
-				for _, p := range result {
+				for _, p := range q.PostsByDate.Data {
 
 					cache = append(cache, p.ID)
 
 				}
 
 				str = str + `
-				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(result)) + `
-				</span>
-				</button>
-				`
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			</button>
+			`
 
 			} else {
 
 				str = str + `
-				</button>
-				`
+			</button>
+			`
 				break
 
 			}
@@ -817,40 +811,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				PostsByDate struct {
-					Data []Post
-				} `graphql:"postsByDate(date: $date iscommited: true)"`
-			}
-
 			vars := map[string]interface{}{
 				"date": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
-			result := q.PostsByDate.Data
+			l := len(q.PostsByDate.Data)
 
-			if len(result) > 0 {
+			if l > 0 {
 
-				for _, p := range result {
+				for _, p := range q.PostsByDate.Data {
 
 					cache = append(cache, p.ID)
 
 				}
 
 				str = str + `
-				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(result)) + `
-				</span>
-				</button>
-				`
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			</button>
+			`
 
 			} else {
 
 				str = str + `
-				</button>
-				`
+			</button>
+			`
 				break
 
 			}
@@ -873,40 +863,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				PostsByDate struct {
-					Data []Post
-				} `graphql:"postsByDate(date: $date iscommited: true)"`
-			}
-
 			vars := map[string]interface{}{
 				"date": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
-			result := q.PostsByDate.Data
+			l := len(q.PostsByDate.Data)
 
-			if len(result) > 0 {
+			if l > 0 {
 
-				for _, p := range result {
+				for _, p := range q.PostsByDate.Data {
 
 					cache = append(cache, p.ID)
 
 				}
 
 				str = str + `
-				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(result)) + `
-				</span>
-				</button>
-				`
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			</button>
+			`
 
 			} else {
 
 				str = str + `
-				</button>
-				`
+			</button>
+			`
 				break
 
 			}
@@ -929,40 +915,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				PostsByDate struct {
-					Data []Post
-				} `graphql:"postsByDate(date: $date iscommited: true)"`
-			}
-
 			vars := map[string]interface{}{
 				"date": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
-			result := q.PostsByDate.Data
+			l := len(q.PostsByDate.Data)
 
-			if len(result) > 0 {
+			if l > 0 {
 
-				for _, p := range result {
+				for _, p := range q.PostsByDate.Data {
 
 					cache = append(cache, p.ID)
 
 				}
 
 				str = str + `
-				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(result)) + `
-				</span>
-				</button>
-				`
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			</button>
+			`
 
 			} else {
 
 				str = str + `
-				</button>
-				`
+			</button>
+			`
 				break
 
 			}
@@ -985,40 +967,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				PostsByDate struct {
-					Data []Post
-				} `graphql:"postsByDate(date: $date iscommited: true)"`
-			}
-
 			vars := map[string]interface{}{
 				"date": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
-			result := q.PostsByDate.Data
+			l := len(q.PostsByDate.Data)
 
-			if len(result) > 0 {
+			if l > 0 {
 
-				for _, p := range result {
+				for _, p := range q.PostsByDate.Data {
 
 					cache = append(cache, p.ID)
 
 				}
 
 				str = str + `
-				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(result)) + `
-				</span>
-				</button>
-				`
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			</button>
+			`
 
 			} else {
 
 				str = str + `
-				</button>
-				`
+			</button>
+			`
 				break
 
 			}
@@ -1041,11 +1019,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				"month": graphql.String(value),
 			}
 
-			call.Query(context.Background(), &q, vars)
+			if err = call.Query(context.Background(), &q, vars); err != nil {
+				fmt.Fprint(w, err)
+			}
 
 			result := q.CacheByMonth
 
-			if result.ID == nil {
+			if result.Posts == nil {
 
 				var m struct {
 					CreateCache struct {
@@ -1059,7 +1039,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					"month": graphql.String(value),
 				}
 
-				call.Mutate(context.Background(), &m, vars)
+				if err = call.Mutate(context.Background(), &m, vars); err != nil {
+					fmt.Fprint(w, err)
+				}
 
 			} else {
 
@@ -1087,7 +1069,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					"posts": posts,
 				}
 
-				call.Mutate(context.Background(), &m, vars)
+				if err = call.Mutate(context.Background(), &m, vars); err != nil {
+					fmt.Fprint(w, err)
+				}
 
 			}
 
