@@ -1,19 +1,24 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
+	//"encoding/json"
 	"fmt"
-	"io/ioutil"
+	//"io/ioutil"
 	"net/http"
 	"os"
-	"sort"
+
+	//"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	//"github.com/mschneider82/problem"
 
+	"golang.org/x/oauth2"
+
 	f "github.com/fauna/faunadb-go/faunadb"
+	"github.com/shurcooL/graphql"
 	//ms "github.com/mitchellh/mapstructure"
 )
 
@@ -30,7 +35,25 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-var cache []string = make([]string, 0)
+type Cache struct {
+	ID    graphql.ID `graphql:"_id"`
+	Month string     `graphql:"month"`
+	Posts []string   `graphql:"posts"`
+}
+
+type Post struct {
+	ID graphql.ID `graphql:"_id"`
+	/* 	Salt       graphql.String   `graphql:"salt"`
+	   	Date       graphql.String   `graphql:"date"`
+	   	Iscommited graphql.Boolean  `graphql:"iscommited"`
+	   	Topics     []graphql.String `graphql:"topics"`
+	   	Content    graphql.String   `graphql:"content"`
+	   	Tags       []graphql.String `graphql:"tags"`
+	   	Isparent   []graphql.String `graphql:"isparent"`
+	   	Ischild    graphql.ID       `graphql:"ischild"` */
+}
+
+var cache []graphql.ID = make([]graphql.ID, 0)
 
 /* func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
@@ -440,17 +463,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	var access *Access
 
 	x.Get(&access)
-	//TODO:make cert client
 
-	/* 		resp, err := http.Get("https://"+ip+"/" + url)
-	   		if err != nil {
-	   			problem.New(problem.Type("https://"+ip+"/404"), problem.Status(404)).WriteTo(w)
-	   			os.Exit(2)
-	   		}
-	   		b, _ := ioutil.ReadAll(resp.Body)
-			   resp.Body.Close() */
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
 
-	dir := "postsByDate"
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+	//dir := "postsByDate"
+
 	value := now.Format("2006-01-02")
 
 	for k := q; k < 32; k++ {
@@ -479,7 +502,47 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
+			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			var q struct {
+				PostsByDate struct {
+					Data []Post
+				} `graphql:"postsByDate(date: $date iscommited: true)"`
+			}
+
+			vars := map[string]interface{}{
+				"date": graphql.String(value),
+			}
+
+			call.Query(context.Background(), &q, vars)
+
+			result := q.PostsByDate.Data
+
+			if len(result) > 0 {
+
+				for _, p := range result {
+
+					cache = append(cache, p.ID)
+
+				}
+
+				str = str + `
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(len(result)) + `
+			</span>
+			</button>
+			`
+
+			} else {
+
+				str = str + `
+			</button>
+			`
+				break
+
+			}
+
+			/* s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
 			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
 
@@ -609,7 +672,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-			}
+			} */
 
 			/* if string(b[k-q]) != "0" {
 				str = str + `
@@ -640,150 +703,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
-			body := strings.NewReader(s)
-			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			req.Header.Set("Authorization", "Bearer "+access.Secret)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-			resp, err := http.DefaultClient.Do(req)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
+			var q struct {
+				PostsByDate struct {
+					Data []Post
+				} `graphql:"postsByDate(date: $date iscommited: true)"`
 			}
 
-			defer resp.Body.Close()
-
-			bdy, _ := ioutil.ReadAll(resp.Body)
-
-			var i interface{}
-
-			json.Unmarshal(bdy, &i)
-
-			if i == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
+			vars := map[string]interface{}{
+				"date": graphql.String(value),
 			}
 
-			a := i.(map[string]interface{})
+			call.Query(context.Background(), &q, vars)
 
-			b := a["data"]
+			result := q.PostsByDate.Data
 
-			if b == nil {
+			if len(result) > 0 {
 
-				str = str + `
-				</button>
-				`
+				for _, p := range result {
 
-				break
-
-			}
-
-			c := b.(map[string]interface{})
-
-			d := c[dir]
-
-			if d == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			e := d.(map[string]interface{})
-
-			f := e["data"]
-
-			if f == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			g := f.([]interface{})
-
-			if g == nil {
-
-				str = str + `
-				</button>
-				`
-				break
-
-			} else {
-
-				h := make([]map[string]interface{}, len(g))
-
-				for j := 0; j < len(g); j++ {
-
-					h[j] = g[j].(map[string]interface{})
+					cache = append(cache, p.ID)
 
 				}
 
-				k := make(map[int]string, 0)
-
-				for j := 0; j < len(g); j++ {
-
-					k[j] = h[j]["_id"].(string)
-
-					if k[j] != "" {
-
-						cache = append(cache, k[j])
-
-					}
-
-				}
-
-				if len(k) > 0 {
-
-					str = str + `
+				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(k)) + `
+				` + strconv.Itoa(len(result)) + `
 				</span>
 				</button>
 				`
 
-				} else {
+			} else {
 
-					str = str + `
+				str = str + `
 				</button>
 				`
-					break
-
-				}
+				break
 
 			}
-
-			/* if string(b[k-q]) != "0" {
-				str = str + `
-				<span class="badge badge-dark">
-				` + string(b[k-q]) + `
-				</span>
-				</button>
-				`
-			} else {
-				str = str + `
-				</button>
-				`
-			} */
 
 		case "Wednesday":
 
@@ -801,150 +759,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
-			body := strings.NewReader(s)
-			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			req.Header.Set("Authorization", "Bearer "+access.Secret)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-			resp, err := http.DefaultClient.Do(req)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
+			var q struct {
+				PostsByDate struct {
+					Data []Post
+				} `graphql:"postsByDate(date: $date iscommited: true)"`
 			}
 
-			defer resp.Body.Close()
-
-			bdy, _ := ioutil.ReadAll(resp.Body)
-
-			var i interface{}
-
-			json.Unmarshal(bdy, &i)
-
-			if i == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
+			vars := map[string]interface{}{
+				"date": graphql.String(value),
 			}
 
-			a := i.(map[string]interface{})
+			call.Query(context.Background(), &q, vars)
 
-			b := a["data"]
+			result := q.PostsByDate.Data
 
-			if b == nil {
+			if len(result) > 0 {
 
-				str = str + `
-				</button>
-				`
+				for _, p := range result {
 
-				break
-
-			}
-
-			c := b.(map[string]interface{})
-
-			d := c[dir]
-
-			if d == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			e := d.(map[string]interface{})
-
-			f := e["data"]
-
-			if f == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			g := f.([]interface{})
-
-			if g == nil {
-
-				str = str + `
-				</button>
-				`
-				break
-
-			} else {
-
-				h := make([]map[string]interface{}, len(g))
-
-				for j := 0; j < len(g); j++ {
-
-					h[j] = g[j].(map[string]interface{})
+					cache = append(cache, p.ID)
 
 				}
 
-				k := make(map[int]string, 0)
-
-				for j := 0; j < len(g); j++ {
-
-					k[j] = h[j]["_id"].(string)
-
-					if k[j] != "" {
-
-						cache = append(cache, k[j])
-
-					}
-
-				}
-
-				if len(k) > 0 {
-
-					str = str + `
+				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(k)) + `
+				` + strconv.Itoa(len(result)) + `
 				</span>
 				</button>
 				`
 
-				} else {
+			} else {
 
-					str = str + `
+				str = str + `
 				</button>
 				`
-					break
-
-				}
+				break
 
 			}
-
-			/* if string(b[k-q]) != "0" {
-				str = str + `
-				<span class="badge badge-dark">
-				` + string(b[k-q]) + `
-				</span>
-				</button>
-				`
-			} else {
-				str = str + `
-				</button>
-				`
-			} */
 
 		case "Thursday":
 
@@ -962,150 +815,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
-			body := strings.NewReader(s)
-			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			req.Header.Set("Authorization", "Bearer "+access.Secret)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-			resp, err := http.DefaultClient.Do(req)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
+			var q struct {
+				PostsByDate struct {
+					Data []Post
+				} `graphql:"postsByDate(date: $date iscommited: true)"`
 			}
 
-			defer resp.Body.Close()
-
-			bdy, _ := ioutil.ReadAll(resp.Body)
-
-			var i interface{}
-
-			json.Unmarshal(bdy, &i)
-
-			if i == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
+			vars := map[string]interface{}{
+				"date": graphql.String(value),
 			}
 
-			a := i.(map[string]interface{})
+			call.Query(context.Background(), &q, vars)
 
-			b := a["data"]
+			result := q.PostsByDate.Data
 
-			if b == nil {
+			if len(result) > 0 {
 
-				str = str + `
-				</button>
-				`
+				for _, p := range result {
 
-				break
-
-			}
-
-			c := b.(map[string]interface{})
-
-			d := c[dir]
-
-			if d == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			e := d.(map[string]interface{})
-
-			f := e["data"]
-
-			if f == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			g := f.([]interface{})
-
-			if g == nil {
-
-				str = str + `
-				</button>
-				`
-				break
-
-			} else {
-
-				h := make([]map[string]interface{}, len(g))
-
-				for j := 0; j < len(g); j++ {
-
-					h[j] = g[j].(map[string]interface{})
+					cache = append(cache, p.ID)
 
 				}
 
-				k := make(map[int]string, 0)
-
-				for j := 0; j < len(g); j++ {
-
-					k[j] = h[j]["_id"].(string)
-
-					if k[j] != "" {
-
-						cache = append(cache, k[j])
-
-					}
-
-				}
-
-				if len(k) > 0 {
-
-					str = str + `
+				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(k)) + `
+				` + strconv.Itoa(len(result)) + `
 				</span>
 				</button>
 				`
 
-				} else {
+			} else {
 
-					str = str + `
+				str = str + `
 				</button>
 				`
-					break
-
-				}
+				break
 
 			}
-
-			/* if string(b[k-q]) != "0" {
-				str = str + `
-				<span class="badge badge-dark">
-				` + string(b[k-q]) + `
-				</span>
-				</button>
-				`
-			} else {
-				str = str + `
-				</button>
-				`
-			} */
 
 		case "Friday":
 
@@ -1123,150 +871,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
-			body := strings.NewReader(s)
-			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			req.Header.Set("Authorization", "Bearer "+access.Secret)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-			resp, err := http.DefaultClient.Do(req)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
+			var q struct {
+				PostsByDate struct {
+					Data []Post
+				} `graphql:"postsByDate(date: $date iscommited: true)"`
 			}
 
-			defer resp.Body.Close()
-
-			bdy, _ := ioutil.ReadAll(resp.Body)
-
-			var i interface{}
-
-			json.Unmarshal(bdy, &i)
-
-			if i == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
+			vars := map[string]interface{}{
+				"date": graphql.String(value),
 			}
 
-			a := i.(map[string]interface{})
+			call.Query(context.Background(), &q, vars)
 
-			b := a["data"]
+			result := q.PostsByDate.Data
 
-			if b == nil {
+			if len(result) > 0 {
 
-				str = str + `
-				</button>
-				`
+				for _, p := range result {
 
-				break
-
-			}
-
-			c := b.(map[string]interface{})
-
-			d := c[dir]
-
-			if d == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			e := d.(map[string]interface{})
-
-			f := e["data"]
-
-			if f == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			g := f.([]interface{})
-
-			if g == nil {
-
-				str = str + `
-				</button>
-				`
-				break
-
-			} else {
-
-				h := make([]map[string]interface{}, len(g))
-
-				for j := 0; j < len(g); j++ {
-
-					h[j] = g[j].(map[string]interface{})
+					cache = append(cache, p.ID)
 
 				}
 
-				k := make(map[int]string, 0)
-
-				for j := 0; j < len(g); j++ {
-
-					k[j] = h[j]["_id"].(string)
-
-					if k[j] != "" {
-
-						cache = append(cache, k[j])
-
-					}
-
-				}
-
-				if len(k) > 0 {
-
-					str = str + `
+				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(k)) + `
+				` + strconv.Itoa(len(result)) + `
 				</span>
 				</button>
 				`
 
-				} else {
+			} else {
 
-					str = str + `
+				str = str + `
 				</button>
 				`
-					break
-
-				}
+				break
 
 			}
-
-			/* if string(b[k-q]) != "0" {
-				str = str + `
-				<span class="badge badge-dark">
-				` + string(b[k-q]) + `
-				</span>
-				</button>
-				`
-			} else {
-				str = str + `
-				</button>
-				`
-			} */
 
 		case "Saturday":
 
@@ -1284,150 +927,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
-			body := strings.NewReader(s)
-			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			req.Header.Set("Authorization", "Bearer "+access.Secret)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-			resp, err := http.DefaultClient.Do(req)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
+			var q struct {
+				PostsByDate struct {
+					Data []Post
+				} `graphql:"postsByDate(date: $date iscommited: true)"`
 			}
 
-			defer resp.Body.Close()
-
-			bdy, _ := ioutil.ReadAll(resp.Body)
-
-			var i interface{}
-
-			json.Unmarshal(bdy, &i)
-
-			if i == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
+			vars := map[string]interface{}{
+				"date": graphql.String(value),
 			}
 
-			a := i.(map[string]interface{})
+			call.Query(context.Background(), &q, vars)
 
-			b := a["data"]
+			result := q.PostsByDate.Data
 
-			if b == nil {
+			if len(result) > 0 {
 
-				str = str + `
-				</button>
-				`
+				for _, p := range result {
 
-				break
-
-			}
-
-			c := b.(map[string]interface{})
-
-			d := c[dir]
-
-			if d == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			e := d.(map[string]interface{})
-
-			f := e["data"]
-
-			if f == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			g := f.([]interface{})
-
-			if g == nil {
-
-				str = str + `
-				</button>
-				`
-				break
-
-			} else {
-
-				h := make([]map[string]interface{}, len(g))
-
-				for j := 0; j < len(g); j++ {
-
-					h[j] = g[j].(map[string]interface{})
+					cache = append(cache, p.ID)
 
 				}
 
-				k := make(map[int]string, 0)
-
-				for j := 0; j < len(g); j++ {
-
-					k[j] = h[j]["_id"].(string)
-
-					if k[j] != "" {
-
-						cache = append(cache, k[j])
-
-					}
-
-				}
-
-				if len(k) > 0 {
-
-					str = str + `
+				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(k)) + `
+				` + strconv.Itoa(len(result)) + `
 				</span>
 				</button>
 				`
 
-				} else {
+			} else {
 
-					str = str + `
+				str = str + `
 				</button>
 				`
-					break
-
-				}
+				break
 
 			}
-
-			/* if string(b[k-q]) != "0" {
-				str = str + `
-				<span class="badge badge-dark">
-				` + string(b[k-q]) + `
-				</span>
-				</button>
-				`
-			} else {
-				str = str + `
-				</button>
-				`
-			} */
 
 		case "Sunday":
 
@@ -1445,309 +983,111 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
-			body := strings.NewReader(s)
-			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			req.Header.Set("Authorization", "Bearer "+access.Secret)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-			resp, err := http.DefaultClient.Do(req)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
+			var q struct {
+				PostsByDate struct {
+					Data []Post
+				} `graphql:"postsByDate(date: $date iscommited: true)"`
 			}
 
-			defer resp.Body.Close()
-
-			bdy, _ := ioutil.ReadAll(resp.Body)
-
-			var i interface{}
-
-			json.Unmarshal(bdy, &i)
-
-			if i == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
+			vars := map[string]interface{}{
+				"date": graphql.String(value),
 			}
 
-			a := i.(map[string]interface{})
+			call.Query(context.Background(), &q, vars)
 
-			b := a["data"]
+			result := q.PostsByDate.Data
 
-			if b == nil {
+			if len(result) > 0 {
 
-				str = str + `
-				</button>
-				`
+				for _, p := range result {
 
-				break
-
-			}
-
-			c := b.(map[string]interface{})
-
-			d := c[dir]
-
-			if d == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			e := d.(map[string]interface{})
-
-			f := e["data"]
-
-			if f == nil {
-
-				str = str + `
-				</button>
-				`
-
-				break
-
-			}
-
-			g := f.([]interface{})
-
-			if g == nil {
-
-				str = str + `
-				</button>
-				`
-				break
-
-			} else {
-
-				h := make([]map[string]interface{}, len(g))
-
-				for j := 0; j < len(g); j++ {
-
-					h[j] = g[j].(map[string]interface{})
+					cache = append(cache, p.ID)
 
 				}
 
-				k := make(map[int]string, 0)
-
-				for j := 0; j < len(g); j++ {
-
-					k[j] = h[j]["_id"].(string)
-
-					if k[j] != "" {
-
-						cache = append(cache, k[j])
-
-					}
-
-				}
-
-				if len(k) > 0 {
-
-					str = str + `
+				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-				` + strconv.Itoa(len(k)) + `
+				` + strconv.Itoa(len(result)) + `
 				</span>
 				</button>
 				`
 
-				} else {
-
-					str = str + `
-				</button>
-				`
-					break
-
-				}
-
-			}
-
-			/* if string(b[k-q]) != "0" {
-				str = str + `
-				<span class="badge badge-dark">
-				` + string(b[k-q]) + `
-				</span>
-				</button>
-				`
 			} else {
+
 				str = str + `
 				</button>
 				`
-			} */
-
-		}
-
-	}
-
-	if cache != nil {
-
-		dir = "cacheByMonth"
-		value = strconv.Itoa(c.Year) + `-` + fmt.Sprintf("%02d", c.Month)
-
-		s := `{"query":"query{` + dir + `(month:\"` + value + `\"){_id}}"}`
-		body := strings.NewReader(s)
-		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-		/* if c.Year != now.Year() {
-
-			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
+				break
 
 			}
 
-			var access *Access
-
-			x.Get(&access)
-
-		} */
-
-		req.Header.Set("Authorization", "Bearer "+access.Secret)
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-		resp, err := http.DefaultClient.Do(req)
-
-		if err != nil {
-
-			fmt.Fprint(w, err)
-
-			return
-
 		}
 
-		defer resp.Body.Close()
+		if cache != nil {
 
-		bdy, _ := ioutil.ReadAll(resp.Body)
+			value = strconv.Itoa(c.Year) + `-` + m
 
-		var i interface{}
+			var q struct {
+				CacheByMonth struct {
+					ID    graphql.ID       `graphql:"_id"`
+					Month graphql.String   `graphql:"month"`
+					Posts []graphql.String `graphql:"posts"`
+				} `graphql:"cacheByMonth(month: $month)"`
+			}
 
-		json.Unmarshal(bdy, &i)
+			vars := map[string]interface{}{
+				"month": graphql.String(value),
+			}
 
-		if i != nil {
+			call.Query(context.Background(), &q, vars)
 
-			a := i.(map[string]interface{})
+			result := q.CacheByMonth
 
-			b := a["data"]
+			if result.ID == nil {
 
-			if b != nil {
-
-				c := b.(map[string]interface{})
-
-				d := c[dir]
-
-				if d != nil {
-
-					e := d.(map[string]interface{})
-
-					f := e["_id"]
-
-					if f != nil {
-
-						dir = "updateCache"
-
-						sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
-
-						m := ""
-
-						for i := 0; i < len(cache); i++ {
-
-							//m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
-							m = m + cache[i] + ", "
-						}
-
-						m = strings.TrimSuffix(m, ", ")
-
-						s := `{"query":"mutation{` + dir + `(id: \"` + f.(string) + `\" data:{month: `+ value + ` posts: [` + m + `]}){_id}}"}`
-
-						body := strings.NewReader(s)
-						req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-						req.Header.Set("Authorization", "Bearer "+access.Secret)
-						req.Header.Set("Content-Type", "application/json")
-						req.Header.Set("Accept", "application/json")
-						req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-						_, err = http.DefaultClient.Do(req)
-
-						if err != nil {
-
-							fmt.Fprint(w, err)
-
-							return
-
-						}
-
-					} else {
-
-						fmt.Fprint(w, "f err")
-
-					}
-
-				} else {
-
-					fmt.Fprint(w, "d err")
-
+				var m struct {
+					CreateCache struct {
+						ID    graphql.ID     `graphql:"_id"`
+						Month graphql.String `graphql:"month"`
+						Posts []string       `graphql:"posts"`
+					} `graphql:"createCache(data:{month: $month})"`
 				}
+
+				vars := map[string]interface{}{
+					"month": graphql.String(value),
+				}
+
+				call.Mutate(context.Background(), &m, vars)
 
 			} else {
 
-				dir = "createCache"
+				var posts []string = make([]string, 0)
 
-				sort.Slice(cache, func(i, j int) bool { return cache[i] > cache[j] })
+				var m struct {
+					UpdateCache struct {
+						ID    graphql.ID     `graphql:"_id"`
+						Month graphql.String `graphql:"month"`
+						Posts []string       `graphql:"posts"`
+					} `graphql:"updateCache(id: $id, data:{month: $month, posts: $posts})"`
+				}
 
-				m := ""
+				for _, p := range result.Posts {
 
-				for i := 0; i < len(cache); i++ {
-
-					//m = m + "Ref(Collection(\"Post\")," + cache[i] + "), "
-					m = m + cache[i] + ", "
+					posts = append(posts, string(p))
 
 				}
 
-				m = strings.TrimSuffix(m, ", ")
+				//posts = append(posts, "253012617168159243")
 
-				s := `{"query":"mutation{` + dir + `(data:{month:\"` + value + `\" posts: [` + m + `]})}"}`
-
-				body := strings.NewReader(s)
-				req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-				req.Header.Set("Authorization", "Bearer "+access.Secret)
-				req.Header.Set("Content-Type", "application/json")
-				req.Header.Set("Accept", "application/json")
-				req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-				_, err = http.DefaultClient.Do(req)
-
-				if err != nil {
-
-					fmt.Fprint(w, err)
-
-					return
-
+				vars = map[string]interface{}{
+					"id":    result.ID,
+					"month": graphql.String(value),
+					"posts": posts,
 				}
+
+				call.Mutate(context.Background(), &m, vars)
 
 			}
 
