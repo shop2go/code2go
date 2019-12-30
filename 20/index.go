@@ -339,7 +339,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			</button>
 			`
-
 	case "Thursday":
 		str = str + `
 			<br>
@@ -472,17 +471,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-	//dir := "postsByDate"
-
 	value := now.Format("2006-01-02")
 
+	mo := fmt.Sprintf("%02d", c.Month)
+
+	o := strconv.Itoa(c.Year)
+
+	v1 := make(map[string]interface{})
+	v2 := make(map[string]interface{})
+	v3 := make(map[string]interface{})
+
 	for k := q; k < 32; k++ {
-
-		m := fmt.Sprintf("%02d", c.Month)
-
-		n := fmt.Sprintf("%02d", k)
-
-		value = strconv.Itoa(c.Year) + `-` + m + `-` + n
+		
+		v1["date"] = graphql.String(o + `-` + mo + `-` + fmt.Sprintf("%02d", k))
 
 		var q struct {
 			PostsByDate struct {
@@ -506,15 +507,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				</button>
-				`
+				`			
 
-			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			vars := map[string]interface{}{
-				"date": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -705,13 +700,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			vars := map[string]interface{}{
-				"date": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -757,13 +746,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			vars := map[string]interface{}{
-				"date": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -809,13 +792,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			vars := map[string]interface{}{
-				"date": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -861,13 +838,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			vars := map[string]interface{}{
-				"date": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -913,13 +884,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			vars := map[string]interface{}{
-				"date": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -965,13 +930,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 
-			//call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			vars := map[string]interface{}{
-				"date": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -1003,9 +962,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		 
+
 		if cache != nil {
 
-			value = strconv.Itoa(c.Year) + `-` + m
+			v2["month"] = strconv.Itoa(c.Year) + `-` + mo
 
 			var q struct {
 				CacheByMonth struct {
@@ -1015,11 +976,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} `graphql:"cacheByMonth(month: $month)"`
 			}
 
-			vars := map[string]interface{}{
-				"month": graphql.String(value),
-			}
-
-			if err = call.Query(context.Background(), &q, vars); err != nil {
+			if err = call.Query(context.Background(), &q, v2); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -1035,11 +992,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					} `graphql:"createCache(data:{month: $month})"`
 				}
 
-				vars := map[string]interface{}{
-					"month": graphql.String(value),
-				}
-
-				if err = call.Mutate(context.Background(), &m, vars); err != nil {
+				if err = call.Mutate(context.Background(), &m, v2); err != nil {
 					fmt.Fprint(w, err)
 				}
 
@@ -1063,13 +1016,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				//posts = append(posts, "253012617168159243")
 
-				vars = map[string]interface{}{
-					"id":    result.ID,
-					"month": graphql.String(value),
-					"posts": posts,
-				}
+				v3["id"] = result.ID
+				v3["month"] = graphql.String(strconv.Itoa(c.Year) + `-` + mo)
+				v3["posts"] = posts
 
-				if err = call.Mutate(context.Background(), &m, vars); err != nil {
+				if err = call.Mutate(context.Background(), &m, v3); err != nil {
 					fmt.Fprint(w, err)
 				}
 
