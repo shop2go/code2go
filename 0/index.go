@@ -222,7 +222,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Year = time.Now().Year()
 
-	t := 1
+	t := 0
 
 	for t < 20 {
 
@@ -475,21 +475,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	mo := fmt.Sprintf("%02d", c.Month)
 
-	o := strconv.Itoa(c.Year)
+	ye := strconv.Itoa(c.Year)
 
 	v1 := make(map[string]interface{})
 	v2 := make(map[string]interface{})
 	v3 := make(map[string]interface{})
 
 	for k := q; k < 32; k++ {
-		
-		v1["date"] = graphql.String(o + `-` + mo + `-` + fmt.Sprintf("%02d", k))
+
+		value = ye + `-` + mo + `-` + fmt.Sprintf("%02d", k)
 
 		var q struct {
 			PostsByDate struct {
 				Data []Post
 			} `graphql:"postsByDate(date: $date iscommited: true)"`
 		}
+
+		v1["date"] = graphql.String(value)
 
 		switch c.Days[k] {
 
@@ -507,7 +509,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				</button>
-				`			
+				`
 
 			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
@@ -962,11 +964,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		 
-
 		if cache != nil {
 
-			v2["month"] = strconv.Itoa(c.Year) + `-` + mo
+			v2["month"] = ye + `-` + mo
 
 			var q struct {
 				CacheByMonth struct {
@@ -977,23 +977,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if err = call.Query(context.Background(), &q, v2); err != nil {
-				fmt.Fprint(w, err)
+				fmt.Fprintf(w, "get cache error: %v", err)
 			}
 
 			result := q.CacheByMonth
 
 			if result.Posts == nil {
 
-				var m struct {
-					CreateCache struct {
-						ID    graphql.ID     `graphql:"_id"`
-						Month graphql.String `graphql:"month"`
-						Posts []string       `graphql:"posts"`
-					} `graphql:"createCache(data:{month: $month})"`
-				}
+				if cache != nil {
 
-				if err = call.Mutate(context.Background(), &m, v2); err != nil {
-					fmt.Fprint(w, err)
+					var m struct {
+						CreateCache struct {
+							ID    graphql.ID     `graphql:"_id"`
+							Month graphql.String `graphql:"month"`
+							Posts []string       `graphql:"posts"`
+						} `graphql:"createCache(data:{month: $month, cache: $cache})"`
+					}
+
+					v2["posts"] = cache
+
+					if err = call.Mutate(context.Background(), &m, v2); err != nil {
+						fmt.Fprintf(w, "create error: %v", err)
+					}
+
 				}
 
 			} else {
@@ -1021,7 +1027,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				v3["posts"] = posts
 
 				if err = call.Mutate(context.Background(), &m, v3); err != nil {
-					fmt.Fprint(w, err)
+					fmt.Fprintf(w, "update error %v", err)
 				}
 
 			}
