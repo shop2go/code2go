@@ -86,7 +86,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var c Cal
 
-	c.Year = now.Year()
+	//c.Year = now.Year()
 
 	c.Month = int(now.Month())
 	day := map[int]string{now.Day(): now.Weekday().String()}
@@ -183,8 +183,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var p, q int
 
-	l := len(c.Days)
-
 	if now.Month() == time.Now().Month() {
 
 		p = now.Day()
@@ -195,6 +193,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	l := len(c.Days)
+
 	for i := l; i >= p; i-- {
 
 		q = i
@@ -203,9 +203,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Year = time.Now().Year()
 
-	t := 1
+	t := 0
 
 	for t < 20 {
+		
+		t++
 
 		y := time.Now().AddDate(0, t, 0).Year()
 
@@ -235,7 +237,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			c.Year = y
 
 		} else {
 
@@ -260,6 +261,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
+		
+		c.Year = y
 
 		/* 			str = str + `
 				<br>
@@ -277,8 +280,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 		} */
-
-		t++
 
 	}
 
@@ -949,9 +950,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var q struct {
 			CacheByMonth struct {
-				ID    graphql.ID     `graphql:"_id"`
-				Month graphql.String `graphql:"month"`
-				Posts []graphql.String       `graphql:"posts"`
+				ID    graphql.ID       `graphql:"_id"`
+				Month graphql.String   `graphql:"month"`
+				Posts []graphql.String `graphql:"posts"`
 			} `graphql:"cacheByMonth(month: $month)"`
 		}
 
