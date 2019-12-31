@@ -35,25 +35,11 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type Cache struct {
-	ID    graphql.ID `graphql:"_id"`
-	Month string     `graphql:"month"`
-	Posts []string   `graphql:"posts"`
-}
-
 type Post struct {
-	ID graphql.ID `graphql:"_id"`
-	/* 	Salt       graphql.String   `graphql:"salt"`
-	   	Date       graphql.String   `graphql:"date"`
-	   	Iscommited graphql.Boolean  `graphql:"iscommited"`
-	   	Topics     []graphql.String `graphql:"topics"`
-	   	Content    graphql.String   `graphql:"content"`
-	   	Tags       []graphql.String `graphql:"tags"`
-	   	Isparent   []graphql.String `graphql:"isparent"`
-	   	Ischild    graphql.ID       `graphql:"ischild"` */
+	ID graphql.String `graphql:"_id"`
 }
 
-var cache []graphql.ID = make([]graphql.ID, 0)
+var cache []string = make([]string, 0)
 
 /* func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
@@ -90,18 +76,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 
-		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
+		fmt.Fprint(w, "... an error occured ... please reload browser window ...")
 
 		return
 
 	}
 
 	now := time.Now().AddDate(0, n, 0)
-
-	/* 	if r.Method == http.MethodOptions {
-		response(w, true, "", r.Method)
-		return
-	} */
 
 	var c Cal
 
@@ -519,7 +500,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, p.ID)
+					cache = append(cache, string(p.ID))
 
 				}
 
@@ -710,7 +691,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, p.ID)
+					cache = append(cache, string(p.ID))
 
 				}
 
@@ -756,7 +737,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, p.ID)
+					cache = append(cache, string(p.ID))
 
 				}
 
@@ -802,7 +783,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, p.ID)
+					cache = append(cache, string(p.ID))
 
 				}
 
@@ -848,7 +829,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, p.ID)
+					cache = append(cache, string(p.ID))
 
 				}
 
@@ -894,7 +875,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, p.ID)
+					cache = append(cache, string(p.ID))
 
 				}
 
@@ -940,7 +921,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, p.ID)
+					cache = append(cache, string(p.ID))
 
 				}
 
@@ -968,9 +949,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var q struct {
 			CacheByMonth struct {
-				ID    graphql.ID       `graphql:"_id"`
-				Month graphql.String   `graphql:"month"`
-				Posts []graphql.String `graphql:"posts"`
+				ID    graphql.ID     `graphql:"_id"`
+				Month graphql.String `graphql:"month"`
+				Posts []string       `graphql:"posts"`
 			} `graphql:"cacheByMonth(month: $month)"`
 		}
 
@@ -984,19 +965,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		result := q.CacheByMonth
 
+		var posts []graphql.String = make([]graphql.String, 0)
+
 		if result.Posts == nil {
 
 			var m struct {
 				CreateCache struct {
-					ID    graphql.ID     `graphql:"_id"`
-					Month graphql.String `graphql:"month"`
-					Posts []graphql.ID   `graphql:"posts"`
+					ID    graphql.ID       `graphql:"_id"`
+					Month graphql.String   `graphql:"month"`
+					Posts []graphql.String `graphql:"posts"`
 				} `graphql:"createCache(data:{month: $month, posts: $posts})"`
+			}
+
+			for _, c := range cache {
+
+				posts = append(posts, graphql.String(c))
 			}
 
 			v3 := map[string]interface{}{
 				"month": v2["month"],
-				"posts": cache,
+				"posts": posts,
 			}
 
 			if err = call.Mutate(context.Background(), &m, v3); err != nil {
@@ -1005,20 +993,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			var posts []graphql.String = make([]graphql.String, 0)
-
 			var m struct {
 				UpdateCache struct {
-					ID    graphql.ID     `graphql:"_id"`
-					Month graphql.String `graphql:"month"`
-					Posts []graphql.ID   `graphql:"posts"`
+					ID    graphql.ID       `graphql:"_id"`
+					Month graphql.String   `graphql:"month"`
+					Posts []graphql.String `graphql:"posts"`
 				} `graphql:"updateCache(id: $id, data:{month: $month, posts: $posts})"`
 			}
 
 			for _, p := range result.Posts {
 
-				posts = append(posts, p)
+				posts = append(posts, graphql.String(p))
 
+			}
+
+			for _, c := range cache {
+
+				posts = append(posts, graphql.String(c))
 			}
 
 			//posts = append(posts, "253012617168159243")
@@ -1026,7 +1017,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			v4 := map[string]interface{}{
 				"id":    result.ID,
 				"month": v2["month"],
-				"posts": cache,
+				"posts": posts,
 			}
 
 			if err = call.Mutate(context.Background(), &m, v4); err != nil {
@@ -1190,19 +1181,5 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
-
-	//case "POST":
-
-	/* client := &http.Client{}
-	req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
-	if err != nil {
-		fmt.Fprint(w, err)
-	}
-	_, err = client.Do(req)
-	if err != nil {
-		fmt.Fprint(w, err)
-	} */
-
-	//}
 
 }
