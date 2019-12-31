@@ -39,7 +39,7 @@ type Post struct {
 	ID graphql.String `graphql:"_id"`
 }
 
-var cache []string = make([]string, 0)
+var cache []graphql.String = make([]graphql.String, 0)
 
 /* func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
@@ -500,7 +500,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, string(p.ID))
+					cache = append(cache, p.ID)
 
 				}
 
@@ -691,7 +691,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, string(p.ID))
+					cache = append(cache, p.ID)
 
 				}
 
@@ -737,7 +737,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, string(p.ID))
+					cache = append(cache, p.ID)
 
 				}
 
@@ -783,7 +783,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, string(p.ID))
+					cache = append(cache, p.ID)
 
 				}
 
@@ -829,7 +829,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, string(p.ID))
+					cache = append(cache, p.ID)
 
 				}
 
@@ -875,7 +875,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, string(p.ID))
+					cache = append(cache, p.ID)
 
 				}
 
@@ -921,7 +921,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				for _, p := range q.PostsByDate.Data {
 
-					cache = append(cache, string(p.ID))
+					cache = append(cache, p.ID)
 
 				}
 
@@ -951,7 +951,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			CacheByMonth struct {
 				ID    graphql.ID     `graphql:"_id"`
 				Month graphql.String `graphql:"month"`
-				Posts []string       `graphql:"posts"`
+				Posts []graphql.String       `graphql:"posts"`
 			} `graphql:"cacheByMonth(month: $month)"`
 		}
 
@@ -979,7 +979,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, c := range cache {
 
-				posts = append(posts, graphql.String(c))
+				posts = append(posts, c)
 			}
 
 			v3 := map[string]interface{}{
@@ -1001,15 +1001,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} `graphql:"updateCache(id: $id, data:{month: $month, posts: $posts})"`
 			}
 
-			for _, p := range result.Posts {
-
-				posts = append(posts, graphql.String(p))
-
-			}
-
 			for _, c := range cache {
 
-				posts = append(posts, graphql.String(c))
+				posts = append(posts, c)
 			}
 
 			//posts = append(posts, "253012617168159243")

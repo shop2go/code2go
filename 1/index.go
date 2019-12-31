@@ -35,25 +35,11 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type Cache struct {
-	ID    graphql.ID `graphql:"_id"`
-	Month string     `graphql:"month"`
-	Posts []string   `graphql:"posts"`
-}
-
 type Post struct {
-	ID graphql.ID `graphql:"_id"`
-	/* 	Salt       graphql.String   `graphql:"salt"`
-	   	Date       graphql.String   `graphql:"date"`
-	   	Iscommited graphql.Boolean  `graphql:"iscommited"`
-	   	Topics     []graphql.String `graphql:"topics"`
-	   	Content    graphql.String   `graphql:"content"`
-	   	Tags       []graphql.String `graphql:"tags"`
-	   	Isparent   []graphql.String `graphql:"isparent"`
-	   	Ischild    graphql.ID       `graphql:"ischild"` */
+	ID graphql.String `graphql:"_id"`
 }
 
-var cache []graphql.ID = make([]graphql.ID, 0)
+var cache []graphql.String = make([]graphql.String, 0)
 
 /* func response(w http.ResponseWriter, success bool, message string, method string) {
 	// Create a map for the response body
@@ -90,18 +76,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 
-		fmt.Fprint(w, "... an error occured ... please refresh browser window ...")
+		fmt.Fprint(w, "... an error occured ... please reload browser window ...")
 
 		return
 
 	}
 
 	now := time.Now().AddDate(0, n, 0)
-
-	/* 	if r.Method == http.MethodOptions {
-		response(w, true, "", r.Method)
-		return
-	} */
 
 	var c Cal
 
@@ -475,21 +456,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	mo := fmt.Sprintf("%02d", c.Month)
 
-	o := strconv.Itoa(c.Year)
+	ye := strconv.Itoa(c.Year)
 
 	v1 := make(map[string]interface{})
-	v2 := make(map[string]interface{})
-	v3 := make(map[string]interface{})
 
 	for k := q; k < 32; k++ {
-		
-		v1["date"] = graphql.String(o + `-` + mo + `-` + fmt.Sprintf("%02d", k))
+
+		value = ye + `-` + mo + `-` + fmt.Sprintf("%02d", k)
 
 		var q struct {
 			PostsByDate struct {
 				Data []Post
 			} `graphql:"postsByDate(date: $date iscommited: true)"`
 		}
+
+		v1["date"] = graphql.String(value)
 
 		switch c.Days[k] {
 
@@ -507,7 +488,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
 				</button>
-				`			
+				`
 
 			if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
@@ -962,68 +943,79 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		 
+	}
 
-		if cache != nil {
+	if cache != nil {
 
-			v2["month"] = strconv.Itoa(c.Year) + `-` + mo
+		var q struct {
+			CacheByMonth struct {
+				ID    graphql.ID     `graphql:"_id"`
+				Month graphql.String `graphql:"month"`
+				Posts []graphql.String       `graphql:"posts"`
+			} `graphql:"cacheByMonth(month: $month)"`
+		}
 
-			var q struct {
-				CacheByMonth struct {
+		v2 := map[string]interface{}{
+			"month": graphql.String(ye + `-` + mo),
+		}
+
+		if err = call.Query(context.Background(), &q, v2); err != nil {
+			fmt.Fprintf(w, "get cache error: %v", err)
+		}
+
+		result := q.CacheByMonth
+
+		var posts []graphql.String = make([]graphql.String, 0)
+
+		if result.Posts == nil {
+
+			var m struct {
+				CreateCache struct {
 					ID    graphql.ID       `graphql:"_id"`
 					Month graphql.String   `graphql:"month"`
 					Posts []graphql.String `graphql:"posts"`
-				} `graphql:"cacheByMonth(month: $month)"`
+				} `graphql:"createCache(data:{month: $month, posts: $posts})"`
 			}
 
-			if err = call.Query(context.Background(), &q, v2); err != nil {
-				fmt.Fprint(w, err)
+			for _, c := range cache {
+
+				posts = append(posts, c)
 			}
 
-			result := q.CacheByMonth
+			v3 := map[string]interface{}{
+				"month": v2["month"],
+				"posts": posts,
+			}
 
-			if result.Posts == nil {
+			if err = call.Mutate(context.Background(), &m, v3); err != nil {
+				fmt.Fprintf(w, "create cache error: %v", err)
+			}
 
-				var m struct {
-					CreateCache struct {
-						ID    graphql.ID     `graphql:"_id"`
-						Month graphql.String `graphql:"month"`
-						Posts []string       `graphql:"posts"`
-					} `graphql:"createCache(data:{month: $month})"`
-				}
+		} else {
 
-				if err = call.Mutate(context.Background(), &m, v2); err != nil {
-					fmt.Fprint(w, err)
-				}
+			var m struct {
+				UpdateCache struct {
+					ID    graphql.ID       `graphql:"_id"`
+					Month graphql.String   `graphql:"month"`
+					Posts []graphql.String `graphql:"posts"`
+				} `graphql:"updateCache(id: $id, data:{month: $month, posts: $posts})"`
+			}
 
-			} else {
+			for _, c := range cache {
 
-				var posts []string = make([]string, 0)
+				posts = append(posts, c)
+			}
 
-				var m struct {
-					UpdateCache struct {
-						ID    graphql.ID     `graphql:"_id"`
-						Month graphql.String `graphql:"month"`
-						Posts []string       `graphql:"posts"`
-					} `graphql:"updateCache(id: $id, data:{month: $month, posts: $posts})"`
-				}
+			//posts = append(posts, "253012617168159243")
 
-				for _, p := range result.Posts {
+			v4 := map[string]interface{}{
+				"id":    result.ID,
+				"month": v2["month"],
+				"posts": posts,
+			}
 
-					posts = append(posts, string(p))
-
-				}
-
-				//posts = append(posts, "253012617168159243")
-
-				v3["id"] = result.ID
-				v3["month"] = graphql.String(strconv.Itoa(c.Year) + `-` + mo)
-				v3["posts"] = posts
-
-				if err = call.Mutate(context.Background(), &m, v3); err != nil {
-					fmt.Fprint(w, err)
-				}
-
+			if err = call.Mutate(context.Background(), &m, v4); err != nil {
+				fmt.Fprintf(w, "update cache error %v", err)
 			}
 
 		}
@@ -1183,19 +1175,5 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
-
-	//case "POST":
-
-	/* client := &http.Client{}
-	req, err := http.NewRequest(http.MethodPut, "localhost:5000/bolt/users/user2", Reader(s))
-	if err != nil {
-		fmt.Fprint(w, err)
-	}
-	_, err = client.Do(req)
-	if err != nil {
-		fmt.Fprint(w, err)
-	} */
-
-	//}
 
 }
