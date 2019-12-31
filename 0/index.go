@@ -237,6 +237,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
+			c.Year = y
 
 		} else {
 
@@ -261,8 +262,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
-		
-		c.Year = y
 
 		/* 			str = str + `
 				<br>
