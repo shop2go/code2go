@@ -1,53 +1,38 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"errors"
 	"fmt"
-
-	//"log"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"golang.org/x/oauth2"
+
 	f "github.com/fauna/faunadb-go/faunadb"
-	/* 	"github.com/mschneider82/problem"
-	   	"github.com/aerogo/packet"
-	   	"github.com/mmaedel/code2go/pb" */)
+	"github.com/shurcooL/graphql"
 
-type Cal struct {
-	Year  int
-	Month int
-	Days  map[int]string
-}
+	)
 
-type Cache struct {
-	Month string
-	Posts []Post
-}
-
-type Post struct {
-	ID       string
-	Date     string
-	Password string
-	Topics   interface{}
-	Tags     interface{}
-	Content  interface{}
-}
-
-type Access struct {
-	//Reference *f.RefV `fauna:"ref"`
-	Timestamp int    `fauna:"ts"`
-	Secret    string `fauna:"secret"`
-	Role      string `fauna:"role"`
-}
+	type Cal struct {
+		Year  int
+		Month int
+		Days  map[int]string
+	}
+	
+	type Access struct {
+		//Reference *f.RefV `fauna:"ref"`
+		Timestamp int    `fauna:"ts"`
+		Secret    string `fauna:"secret"`
+		Role      string `fauna:"role"`
+	}
 
 var errOnData = errors.New("error on data")
 
-func getCache(a *Access) ([]Cache, error) {
+/* func getCache(a *Access) ([]Cache, error) {
 
 	var result []Cache = make([]Cache, 0)
 
@@ -191,17 +176,11 @@ func getCache(a *Access) ([]Cache, error) {
 
 	return result, nil
 
-}
+} */
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var access *Access
-
 	var c Cal
-
-	var posts []Post
-
-	var result []Cache
 
 	now := time.Now()
 
@@ -215,7 +194,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
 
 	if err != nil {
 
@@ -225,78 +204,58 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	if err := x.Get(&access); err != nil {
+	var access *Access
 
-		fmt.Fprint(w, err)
+	x.Get(&access)
 
-		return
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
 
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+	mo := fmt.Sprintf("%02d", c.Month)
+
+	ye := strconv.Itoa(c.Year)
+
+	var query struct {
+		CacheByMonth struct {
+			ID    graphql.ID       `graphql:"_id"`
+			Month graphql.String   `graphql:"month"`
+			Posts []graphql.String `graphql:"posts"`
+		} `graphql:"cacheByMonth(month: $month)"`
 	}
 
-	result, err = getCache(access)
-
-	if err != nil {
-
-		fmt.Fprint(w, err)
-
-		return
-
+	v1 := map[string]interface{}{
+		"month": graphql.String(ye + `-` + mo),
 	}
 
-	//fmt.Fprint(w, result)
+	if err = call.Query(context.Background(), &query, v1); err != nil {
+		fmt.Fprintf(w, "get cache error: %v\n", err)
+	}
 
-	/* addr := &net.TCPAddr{net.ParseIP(a), 8080, "UTC"}
+	result := query.CacheByMonth.Posts
 
-	//switch r.Method {
+	hits := make(map[string]int, len(result))
 
-	//case "GET":
+	if len(result) != 0 {
 
-		store := make([]pb.ReqPost, 0)
+		for _, v := range result {
 
-		query := strings.TrimPrefix(r.URL.Path, "/entry#")
+			m := strings.Split(strings.TrimPrefix(strings.TrimSuffix(string(v), `\"`), `\"`), ":")
 
-		qu := strings.SplitN(query, "-", -1)
+			if c, ok := hits[m[1]]; ok {
 
-		cue, err := strconv.Atoi(qu[2])
+				hits[m[1]] = c + 1
 
-		if err != nil {
-
-			//log.Println(err)
-			cue = 0
+			}
 
 		}
 
-		//persistence layer
-
-		conn, err := net.DialTCP("tcp", nil, addr)
-
-		if err != nil {
-
-			log.Fatal(err)
-
-		}
-
-		// Create a stream
-
-		stream := packet.NewStream(1024)
-
-		stream.SetConnection(conn)
-
-		// Send a message
-
-		stream.Outgoing <- packet.New(byte(cue), []byte(query))
-
-		//conn.CloseWrite()
-
-		//the response gob from conn
-
-		dec := gob.NewDecoder(conn)
-
-		dec.Decode(&store)
-
-		//conn.CloseRead()
-	*/
-
+	}
+	
 	z := 1
 
 	for z < 32 {

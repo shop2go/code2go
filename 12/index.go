@@ -393,7 +393,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-	value := now.Format("2006-01")
+	value := now.Format("2006-01-02")
 
 	mo := fmt.Sprintf("%02d", c.Month)
 
@@ -423,7 +423,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for _, v := range result {
 
-			m := strings.Split(strings.TrimPrefix(strings.TrimSuffix(string(v), `\"`), `\"`), ":")
+			m := strings.Split(string(v), ":")
 
 			if c, ok := hits[m[1]]; ok {
 
