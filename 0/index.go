@@ -277,7 +277,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</button>
 				`
 		} */
-				
+
 		c.Year = y
 
 	}
@@ -452,17 +452,51 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-	value := now.Format("2006-01-02")
+	value := now.Format("2006-01")
 
 	mo := fmt.Sprintf("%02d", c.Month)
 
 	ye := strconv.Itoa(c.Year)
 
-	v1 := make(map[string]interface{})
+	var query struct {
+		CacheByMonth struct {
+			ID    graphql.ID       `graphql:"_id"`
+			Month graphql.String   `graphql:"month"`
+			Posts []graphql.String `graphql:"posts"`
+		} `graphql:"cacheByMonth(month: $month)"`
+	}
+
+	v1 := map[string]interface{}{
+		"month": graphql.String(ye + `-` + mo),
+	}
+
+	if err = call.Query(context.Background(), &query, v1); err != nil {
+		fmt.Fprintf(w, "get cache error: %v\n", err)
+	}
+
+	result := query.CacheByMonth.Posts
+
+	hits := make(map[string]int, len(result))
+
+	if len(result) != 0 {
+
+		for _, v := range result {
+
+			m := strings.Split(strings.TrimPrefix(strings.TrimSuffix(string(v), `\"`), `\"`), ":")
+
+			if c, ok := hits[m[1]]; ok {
+
+				hits[m[1]] = c + 1
+
+			}
+
+		}
+
+	}
 
 	for k := q; k < 32; k++ {
 
-		value = ye + `-` + mo + `-` + fmt.Sprintf("%02d", k)
+		/* value = ye + `-` + mo + `-` + fmt.Sprintf("%02d", k)
 
 		var q struct {
 			PostsByDate struct {
@@ -470,7 +504,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} `graphql:"postsByDate(date: $date iscommited: true)"`
 		}
 
-		v1["date"] = graphql.String(value)
+		v1["date"] = graphql.String(value) */
 
 		switch c.Days[k] {
 
@@ -487,10 +521,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<span class="badge badge-pill badge-light">
 				<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
 				</span>
-				</button>
 				`
 
-			if err = call.Query(context.Background(), &q, v1); err != nil {
+			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+
+				str = str + `
+				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+				` + strconv.Itoa(l) + `
+				</span>
+				`
+
+			}
+
+			str = str + `
+			</button>
+			`
+
+			/* if err = call.Query(context.Background(), &q, v1); err != nil {
 				fmt.Fprint(w, err)
 			}
 
@@ -502,23 +549,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					cache = append(cache, p.ID)
 
-				}
-
-				str = str + `
-			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
-			` + strconv.Itoa(l) + `
-			</span>
-			</button>
-			`
-
-			} else {
-
-				str = str + `
-			</button>
-			`
-				break
-
-			}
+				} */
 
 			/* s := `{"query":"query{` + dir + `(date:\"` + value + `\" iscommited: true){data{_id}}}"}`
 			body := strings.NewReader(s)
@@ -668,6 +699,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "Tuesday":
 
 			str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+			</span>
+			`
+
+			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+
+				str = str + `
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			`
+
+			}
+
+			str = str + `
+		</button>
+		`
+
+			/* str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -709,11 +767,38 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 				break
 
-			}
+			} */
 
 		case "Wednesday":
 
 			str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+			</span>
+			`
+
+			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+
+				str = str + `
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			`
+
+			}
+
+			str = str + `
+		</button>
+		`
+
+			/* str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -755,11 +840,38 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 				break
 
-			}
+			} */
 
 		case "Thursday":
 
 			str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+			</span>
+			`
+
+			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+
+				str = str + `
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			`
+
+			}
+
+			str = str + `
+		</button>
+		`
+
+			/* str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -801,11 +913,38 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 				break
 
-			}
+			} */
 
 		case "Friday":
 
 			str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+			</span>
+			`
+
+			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+
+				str = str + `
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			`
+
+			}
+
+			str = str + `
+		</button>
+		`
+
+			/* str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -847,11 +986,38 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 				break
 
-			}
+			} */
 
 		case "Saturday":
 
 			str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+			</span>
+			`
+
+			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+
+				str = str + `
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			`
+
+			}
+
+			str = str + `
+		</button>
+		`
+
+			/* str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -893,11 +1059,38 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 				break
 
-			}
+			} */
 
 		case "Sunday":
 
 			str = str + `
+			<br>
+			<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+			<span class="badge badge-pill badge-dark">
+			` + c.Days[k] + `
+			</span>
+			</button>
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='entry#` + value + `'">
+			<span class="badge badge-pill badge-light">
+			<input readonly class="form-control-plaintext list-group-item-action" value="` + strconv.Itoa(k) + `" >
+			</span>
+			`
+
+			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+
+				str = str + `
+			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
+			` + strconv.Itoa(l) + `
+			</span>
+			`
+
+			}
+
+			str = str + `
+		</button>
+		`
+
+			/* 	str = str + `
 				<br>
 				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
 				<span class="badge badge-pill badge-dark">
@@ -939,13 +1132,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 				break
 
-			}
+			} */
 
 		}
 
 	}
 
-	if cache != nil {
+	/* if cache != nil {
 
 		var q struct {
 			CacheByMonth struct {
@@ -1020,7 +1213,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-	}
+	} */
 
 	switch c.Days[len(c.Days)] {
 
