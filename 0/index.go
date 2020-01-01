@@ -203,11 +203,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Year = time.Now().Year()
 
-	t := 1
+	var t, y int
 
-	for t < 21 {
+	for t < 20 {
 
-		y := time.Now().AddDate(0, t, 0).Year()
+		t++
+
+		y = time.Now().AddDate(0, t, 0).Year()
 
 		if y > c.Year {
 
@@ -234,8 +236,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 
 			}
-
-			c.Year = y
 
 		} else {
 
@@ -278,7 +278,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				`
 		} */
 				
-		t++
+		c.Year = y
 
 	}
 
@@ -960,7 +960,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err = call.Query(context.Background(), &q, v2); err != nil {
-			fmt.Fprintf(w, "get cache error: %v", err)
+			fmt.Fprintf(w, "get cache error: %v\n", err)
 		}
 
 		result := q.CacheByMonth
@@ -988,7 +988,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if err = call.Mutate(context.Background(), &m, v3); err != nil {
-				fmt.Fprintf(w, "create cache error: %v", err)
+				fmt.Fprintf(w, "create cache error: %v\n", err)
 			}
 
 		} else {
@@ -1015,7 +1015,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if err = call.Mutate(context.Background(), &m, v4); err != nil {
-				fmt.Fprintf(w, "update cache error %v", err)
+				fmt.Fprintf(w, "update cache error %v\n", err)
 			}
 
 		}
