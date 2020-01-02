@@ -1,21 +1,18 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
+	"context"
 	"fmt"
-	"io/ioutil"
-
-	//"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 
+	"golang.org/x/oauth2"
+
 	f "github.com/fauna/faunadb-go/faunadb"
-	/* 	"github.com/mschneider82/problem"
-	   	"github.com/aerogo/packet"
-	   	"github.com/mmaedel/code2go/pb" */)
+	"github.com/shurcooL/graphql"
+)
 
 type Access struct {
 	//Reference *f.RefV `fauna:"ref"`
@@ -24,7 +21,17 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-var errOnData = errors.New("error on data")
+/* type Post struct {
+	ID         graphql.String   `graphql:"_id"`
+	Date       graphql.String   `graphql:"date"`
+	Iscommited graphql.Boolean  `graphql:"iscommited`
+	Salt       graphql.String   `graphql:"salt`
+	Tags       []graphql.String `graphql:"tags`
+	Topics     []graphql.String `graphql:"topics`
+	Content    graphql.String   `graphql:"content`
+	Isparent   []graphql.String `graphql:"isparent`
+	Ischild    graphql.String   `graphql:"ischild`
+} */
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
@@ -101,98 +108,148 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var access *Access
 
-		if err := x.Get(&access); err != nil {
+		x.Get(&access)
 
-			fmt.Fprint(w, err)
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
 
-			return
+		httpClient := oauth2.NewClient(context.Background(), src)
 
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		var mutation struct {
+			CreatePost struct {
+				ID         graphql.String   `graphql:"_id"`
+				Date       graphql.String   `graphql:"date"`
+				Iscommited graphql.Boolean  `graphql:"iscommited`
+				Salt       graphql.String   `graphql:"salt`
+				Tags       []graphql.String `graphql:"tags`
+				Topics     []graphql.String `graphql:"topics`
+				Content    graphql.String   `graphql:"content`
+				Ischild    graphql.String   `graphql:"ischild`
+			} `graphql:"createPost(data:{date: $Date, iscommited: false, salt: $salt, tags: $tags, topics: $topics, content: $content, ischild: $ischild})"`
 		}
 
-		//to := strings.ReplaceAll(topics, " ", "\", \"")
+		qsl := make([]graphql.String, 0)
 
-		//to = "\"" + to + "\""
-
-		tags = strings.ToLower(tags)
-
-		//ta := strings.ReplaceAll(tags, " ", "\", \"")
-
-		//ta = "\"" + ta + "\""
-
-		dir := "createPost"
-
-		s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" topics: \"` + topics + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id}}"}`
-
-		body := strings.NewReader(s)
-		req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
-
-		req.Header.Set("Authorization", "Bearer "+access.Secret)
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("X-Schema-Preview", "partial-update-mutation")
-
-		resp, err := http.DefaultClient.Do(req)
-
-		if err != nil {
-
-			fmt.Fprint(w, err)
-
-			return
-
+		vars := map[string]interface{}{
+			"date":       graphql.String(date),
+			"salt":       graphql.String(pw),
+			"content":    graphql.String(content),
 		}
 
-		defer resp.Body.Close()
+		topic := strings.SplitN(topics, " ", -1)
 
-		bdy, _ := ioutil.ReadAll(resp.Body)
+		for _, v := range topic {
 
-		var i interface{}
+			qsl = append(qsl, graphql.String(v))
+		}
 
-		json.Unmarshal(bdy, &i)
+		vars["topics"] = qsl
 
-		if i != nil {
+		qsl = nil
 
-			a := i.(map[string]interface{})
+		tag := strings.SplitN(tags, " ", -1)
 
-			b := a["data"]
+		for _, v := range tag {
 
-			if b != nil {
+			qsl = append(qsl, graphql.String(strings.ToLower(v)))
+		}
 
-				c := b.(map[string]interface{})
+		vars["tags"] = qsl
 
-				d := c[dir]
+		qsl = nil
 
-				if d != nil {
+		if err = call.Mutate(context.Background(), &mutation, vars); err != nil {
+			fmt.Fprintf(w, "create Post error: %v\n", err)
+		}
 
-					e := d.(map[string]interface{})
+		fmt.Fprint(w, mutation.CreatePost.ID)
 
-					f := e["_id"]
+		/*
+			//to := strings.ReplaceAll(topics, " ", "\", \"")
 
-					id := f.(string)
+			//to = "\"" + to + "\""
 
-					if id != "" {
+			tags = strings.ToLower(tags)
 
-						fmt.Fprint(w, sl[0]+"_"+id)
+			//ta := strings.ReplaceAll(tags, " ", "\", \"")
 
-						http.Redirect(w, r, "https://"+id+".code2go.dev/status", 301)
+			//ta = "\"" + ta + "\""
 
-						
+			dir := "createPost"
 
-					} else {
+			s := `{"query":"mutation{` + dir + `(data:{iscommited: false password: \"` + pw + `\" date: \"` + date + `\" topics: \"` + topics + `\" content: \"` + content + `\" tags: \"` + tags + `\"}) {_id}}"}`
 
-						fmt.Fprint(w, errOnData)
+			body := strings.NewReader(s)
+			req, _ := http.NewRequest("POST", "https://graphql.fauna.com/graphql", body)
+
+			req.Header.Set("Authorization", "Bearer "+access.Secret)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("X-Schema-Preview", "partial-update-mutation")
+
+			resp, err := http.DefaultClient.Do(req)
+
+			if err != nil {
+
+				fmt.Fprint(w, err)
+
+				return
+
+			}
+
+			defer resp.Body.Close()
+
+			bdy, _ := ioutil.ReadAll(resp.Body)
+
+			var i interface{}
+
+			json.Unmarshal(bdy, &i)
+
+			if i != nil {
+
+				a := i.(map[string]interface{})
+
+				b := a["data"]
+
+				if b != nil {
+
+					c := b.(map[string]interface{})
+
+					d := c[dir]
+
+					if d != nil {
+
+						e := d.(map[string]interface{})
+
+						f := e["_id"]
+
+						id := f.(string)
+
+						if id != "" {
+
+							fmt.Fprint(w, sl[0]+"_"+id)
+
+							http.Redirect(w, r, "https://"+id+".code2go.dev/status", 301)
+
+						} else {
+
+							fmt.Fprint(w, errOnData)
+
+						}
 
 					}
 
 				}
 
+			} else {
+
+				fmt.Fprint(w, errOnData)
+
 			}
-
-		} else {
-
-			fmt.Fprint(w, errOnData)
-
-		}
-
+		*/
 	}
 
 }
