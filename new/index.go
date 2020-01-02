@@ -128,7 +128,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Topics     []graphql.String `graphql:"topics`
 				Content    graphql.String   `graphql:"content`
 				Ischild    graphql.String   `graphql:"ischild`
-			} `graphql:"createPost(data:{date: $Date, iscommited: false, salt: $salt, tags: $tags, topics: $topics, content: $content, ischild: $ischild})"`
+			} `graphql:"createPost(data:{date: $date, iscommited: true, salt: $salt, tags: $tags, topics: $topics, content: $content, ischild: $ischild})"`
 		}
 
 		qsl := make([]graphql.String, 0)
