@@ -429,6 +429,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				hits[m[1]] = c + 1
 
+			} else {
+
+				hits[m[1]] = 1
+
 			}
 
 		}
@@ -485,7 +489,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+			if l, ok := hits[value]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -514,7 +518,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+			if l, ok := hits[value]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -543,7 +547,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+			if l, ok := hits[value]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -572,7 +576,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+			if l, ok := hits[value]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -601,7 +605,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+			if l, ok := hits[value]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -630,7 +634,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+			if l, ok := hits[value]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
