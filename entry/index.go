@@ -468,7 +468,13 @@ LOOP:
 
 			loc, _ := time.LoadLocation("")
 
-			if c.Month == int(time.Date(c.Year, time.Now().AddDate(0, o, 0).Month(), k, 0,0,0,0,loc).Month()) {
+			date := time.Date(c.Year, time.Now().AddDate(0, o, 0).Month(), k, 0, 0, 0, 0, loc).Month()
+
+			if c.Month != int(date) {
+
+				goto LOOP
+
+			} else {
 
 				schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
 
@@ -545,122 +551,10 @@ LOOP:
 
 				}
 
-			} else {
-
-				goto LOOP
-
 			}
 
 		}
 
-		/*
-
-			//LOOP:
-
-			c.Days = make(map[int]string, now.AddDate(0, 1, -1).Day())
-
-				for i := 0; i < 32; i++ {
-
-					d := now.AddDate(0, 0, i)
-
-					m := int(d.Month())
-
-					if m == c.Month {
-
-						e := d.Day()
-
-						c.Days[e] = d.Weekday().String()
-
-					}
-
-				}
-
-				p = len(c.Days)
-
-				for k := 1; k <= p; k++ {
-
-					m := fmt.Sprintf("%02d", c.Month)
-
-					n := fmt.Sprintf("%02d", k)
-
-					schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
-
-					str = str + `
-					<br>
-					<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
-					<span class="badge badge-pill badge-dark">
-					` + c.Days[k] + `
-					</span>
-					</button>
-					<button type="button" class="btn btn-light">
-					<span class="badge badge-pill badge-light">
-					<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-					</span><button><br>
-
-					<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
-
-					`
-
-					if v, ok := hits[schedule]; ok {
-
-						sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
-
-						x := fx[strconv.Itoa(c.Year)]
-
-						var access *Access
-
-						x.Get(&access)
-
-						src := oauth2.StaticTokenSource(
-							&oauth2.Token{AccessToken: access.Secret},
-						)
-
-						httpClient := oauth2.NewClient(context.Background(), src)
-
-						call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-						for _, postID := range v {
-
-							var q struct {
-								FindPostByID struct {
-									Data Post
-								} `graphql:"postsByDate(id: $id)"`
-							}
-
-							v1 := map[string]interface{}{
-								"id": postID,
-							}
-
-							if err := call.Query(context.Background(), &q, v1); err != nil {
-								fmt.Fprintf(w, "get post error: %v\n", err)
-							}
-
-							result = q.FindPostByID.Data
-
-						}
-
-					}
-
-					if string(result.Salt) != "" {
-
-						var s string
-
-						for _, v := range result.Topics {
-
-							s = s + string(v)
-						}
-
-						str = str + `
-						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
-						`
-
-					}
-
-					if result != nil {
-					}
-
-				}
-		*/
 	}
 
 	str = str + `
@@ -680,157 +574,4 @@ LOOP:
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
 
-	/* if result != nil {
-
-		for _, v := range result {
-
-			if v.Month == strconv.Itoa(c.Year)+`-`+m {
-
-				posts = v.Posts
-
-			}
-
-		}
-
-		n := len(posts)
-
-		if n > 0 {
-
-			for o := 0; o < n; o++ {
-
-				switch posts[o].Date {
-
-				case schedule:
-
-					var s string
-
-					for _, v := range posts[o].Tags.([]interface{}) {
-
-						in := v.(string)
-
-						s = s + in + ", "
-
-					}
-
-					if posts[o].Password == "" {
-
-						str = str + `
-					<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="` + s + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
-					`
-
-					} else {
-
-						str = str + `
-					<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
-					`
-
-					}
-
-				}
-
-			}
-
-		}
-
-	} */
-
 }
-
-//}
-
-//var s string
-/* var req pb.ReqPost
-
-r.ParseForm()
-
-for k, v := range r.Form {
-
-	switch k {
-
-	case "Topic":
-
-		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-
-		s := strings.Join(v, " ")
-
-		req.Topic = []byte(s)
-
-	case "Entry":
-
-		sb := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
-
-		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-
-		req.Entry = []byte(sb)
-
-	case "Schedule":
-
-		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-		s := strings.Join(v, " ")
-
-		req.Schedule = []byte(s)
-
-	case "Tags":
-
-		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-		s := strings.Join(v, "#")
-
-		req.Tags = []byte(s)
-
-	default:
-
-		continue
-
-	}
-
-}
-
-if req.Topic != nil {
-
-	//Post data
-
-	// Create a stream
-
-	stream = packet.NewStream(1024)
-
-	stream.SetConnection(conn)
-
-	// Send data
-
-	stream.Outgoing <- packet.New('T', req.Topic)
-
-	stream.Outgoing <- packet.New('E', req.Entry)
-
-	stream.Outgoing <- packet.New('S', req.Schedule)
-
-	stream.Outgoing <- packet.New('#', req.Tags)
-
-	w.Write(req.Schedule)
-*/
-//} else {
-/*
-		w.Header().Set("Content-Type", "text/html")
-	   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	   	w.Write([]byte(str))
-*/
-//}
-
-/* client := &http.Client{}
-
-req, err := http.NewRequest("POST", "http://localhost/"+url, bytes.NewBuffer([]byte(s)))
-req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value") // This makes it work
-if err != nil {
-	log.Println(err)
-}
-resp, err := client.Do(req)
-if err != nil {
-	log.Println(err)
-}
-
-defer resp.Body.Close()
-
-body, _ := ioutil.ReadAll(resp.Body)
-w.Header().Set("Content-Length", strconv.Itoa(len(body)))
-w.Write(body) */
-
-//}
