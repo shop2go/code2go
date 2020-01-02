@@ -371,7 +371,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
 
 	if err != nil {
 
@@ -419,7 +419,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	hits := make(map[string]int, len(result))
 
-	if len(result) != 0 {
+	if result != nil {
 
 		for _, v := range result {
 

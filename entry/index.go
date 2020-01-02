@@ -2,35 +2,49 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
-	"strings"
+	//"strings"
 	"time"
 
 	"golang.org/x/oauth2"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/shurcooL/graphql"
+)
 
-	)
+type Cal struct {
+	Year  int
+	Month int
+	Days  map[int]string
+}
 
-	type Cal struct {
-		Year  int
-		Month int
-		Days  map[int]string
-	}
-	
-	type Access struct {
-		//Reference *f.RefV `fauna:"ref"`
-		Timestamp int    `fauna:"ts"`
-		Secret    string `fauna:"secret"`
-		Role      string `fauna:"role"`
-	}
+type Access struct {
+	//Reference *f.RefV `fauna:"ref"`
+	Timestamp int    `fauna:"ts"`
+	Secret    string `fauna:"secret"`
+	Role      string `fauna:"role"`
+}
 
-var errOnData = errors.New("error on data")
+type Cache struct {
+	ID    graphql.String   `graphql:"_id"`
+	Month graphql.String   `graphql:"month"`
+	Posts []graphql.String `graphql:"posts"`
+}
+
+type Post struct {
+	ID         graphql.String   `graphql:"_id"`
+	Date       graphql.String   `graphql:"date"`
+	Iscommited graphql.Boolean  `graphql:"iscommited`
+	Salt       graphql.String   `graphql:"salt`
+	Tags       []graphql.String `graphql:"tags`
+	Topics     []graphql.String `graphql:"topics`
+	Content    graphql.String   `graphql:"content`
+	Isparent   []graphql.String `graphql:"isparent`
+}
 
 /* func getCache(a *Access) ([]Cache, error) {
 
@@ -190,72 +204,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Days = day
 
-	y := c.Year
+	hits := make(map[string][]graphql.String, 21)
 
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+	var year []string = []string{now.Format("2006")}
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server"}))
+	for i := 1; i < 21; i++ {
 
-	if err != nil {
+		t := now.AddDate(0, i, 0).Format("2006")
 
-		fmt.Fprint(w, err)
+		if t != now.AddDate(0, i-1, 0).Format("2006") {
 
-		return
-
-	}
-
-	var access *Access
-
-	x.Get(&access)
-
-	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: access.Secret},
-	)
-
-	httpClient := oauth2.NewClient(context.Background(), src)
-
-	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-	mo := fmt.Sprintf("%02d", c.Month)
-
-	ye := strconv.Itoa(c.Year)
-
-	var query struct {
-		CacheByMonth struct {
-			ID    graphql.ID       `graphql:"_id"`
-			Month graphql.String   `graphql:"month"`
-			Posts []graphql.String `graphql:"posts"`
-		} `graphql:"cacheByMonth(month: $month)"`
-	}
-
-	v1 := map[string]interface{}{
-		"month": graphql.String(ye + `-` + mo),
-	}
-
-	if err = call.Query(context.Background(), &query, v1); err != nil {
-		fmt.Fprintf(w, "get cache error: %v\n", err)
-	}
-
-	result := query.CacheByMonth.Posts
-
-	hits := make(map[string]int, len(result))
-
-	if len(result) != 0 {
-
-		for _, v := range result {
-
-			m := strings.Split(strings.TrimPrefix(strings.TrimSuffix(string(v), `\"`), `\"`), ":")
-
-			if c, ok := hits[m[1]]; ok {
-
-				hits[m[1]] = c + 1
-
-			}
+			year = append(year, t)
 
 		}
 
 	}
-	
+
 	z := 1
 
 	for z < 32 {
@@ -300,18 +264,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var q int
-
-	l := len(c.Days)
-
-	p := now.Day()
-
-	for i := l; i >= p; i-- {
-
-		q = i
-
-	}
-
 	str := `
 
 	<!DOCTYPE html>
@@ -337,9 +289,80 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<ul class="list-group">
 	`
 
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	l := len(year)
+
+	fx := make(map[string]f.Value, l)
+
+	sort.Slice(year, func(i, j int) bool { return year[i] < year[j] })
+
+	for i := 0; i < l; i++ {
+
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(year[i]), "role": "server-readonly"}))
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		fx[year[i]] = x
+
+		var access *Access
+
+		x.Get(&access)
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		var query struct {
+			AllCaches struct {
+				Data []Cache
+			}
+		}
+
+		if err = call.Query(context.Background(), &query, nil); err != nil {
+			fmt.Fprintf(w, "get cache error: %v\n", err)
+		}
+
+		result := query.AllCaches.Data
+
+		if result != nil {
+
+			for _, v := range result {
+
+				hits[string(v.Month)] = v.Posts
+
+			}
+
+		}
+
+	}
+
+	var q int
+
+	l = len(c.Days)
+
+	p := now.Day()
+
+	for i := l; i >= p; i-- {
+
+		q = i
+
+	}
 	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
 
 	for k := q; k <= l; k++ {
+
+		var result Post
 
 		m := fmt.Sprintf("%02d", c.Month)
 
@@ -365,223 +388,57 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						
 			`
 
-		if result != nil {
+		if v, ok := hits[schedule]; ok {
 
-			for _, v := range result {
+			sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
 
-				if v.Month == strconv.Itoa(c.Year)+`-`+m {
+			x := fx[strconv.Itoa(c.Year)]
 
-					posts = v.Posts
+			var access *Access
 
+			x.Get(&access)
+
+			src := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			httpClient := oauth2.NewClient(context.Background(), src)
+
+			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			for _, postID := range v {
+
+				var q struct {
+					FindPostByID struct {
+						Data Post
+					} `graphql:"postsByDate(id: $id)"`
 				}
 
-			}
-
-			n := len(posts)
-
-			if n > 0 {
-
-				for o := 0; o < n; o++ {
-
-					switch posts[o].Date {
-
-					case schedule:
-
-						var s string
-
-						for _, v := range posts[o].Tags.([]interface{}) {
-
-							in := v.(string)
-
-							s = s + in + ", "
-
-						}
-
-						if posts[o].Password == "" {
-
-							str = str + `
-						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="` + s + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
-						`
-
-						} else {
-
-							str = str + `
-						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
-						`
-
-						}
-
-					}
-
+				v1 := map[string]interface{}{
+					"id": postID,
 				}
+
+				if err := call.Query(context.Background(), &q, v1); err != nil {
+					fmt.Fprintf(w, "get post error: %v\n", err)
+				}
+
+				result = q.FindPostByID.Data
 
 			}
 
 		}
 
-	}
+		if string(result.Salt) != "" {
 
-	for o := 1; o < 21; o++ {
+			var s string
 
-		now = time.Now().AddDate(0, o, 0)
+			for _, v := range result.Topics {
 
-		now = now.AddDate(0, 0, (-time.Now().Day())+1)
-
-		c.Year = now.Year()
-
-		c.Month = int(now.Month())
-
-	LOOP:
-
-		c.Days = make(map[int]string, now.AddDate(0, 1, -1).Day())
-
-		if c.Year == y {
-
-			for i := 0; i < 32; i++ {
-
-				d := now.AddDate(0, 0, i)
-
-				m := int(d.Month())
-
-				if m == c.Month {
-
-					e := d.Day()
-
-					c.Days[e] = d.Weekday().String()
-
-				}
-
+				s = s + string(v)
 			}
-
-			p = len(c.Days)
-
-			for k := 1; k <= p; k++ {
-
-				m := fmt.Sprintf("%02d", c.Month)
-
-				n := fmt.Sprintf("%02d", k)
-
-				schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
-
-				str = str + `
-				<br>
-				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
-				<span class="badge badge-pill badge-dark">
-				` + c.Days[k] + `
-				</span>
-				</button>
-				<button type="button" class="btn btn-light">
-				<span class="badge badge-pill badge-light">
-				<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
-				</span><button><br>
-
-				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
-						
-				`
-
-				/* <form class="form-inline" role="form" method="POST">
-				<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + schedule + `" type="hidden">
-				<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-				<!--input class="form-control mr-sm-2" type="text" placeholder="entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-				<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-				<textarea class="form-control  mr-sm-2" id="Content" rows="2" placeholder="Content"></textarea>
-				<br>
-				<button type="submit" class="btn btn-light">submit</button>
-				</form>
-				</div>
-				` */
-
-				if result != nil {
-
-					for _, v := range result {
-
-						if v.Month == strconv.Itoa(c.Year)+`-`+m {
-
-							posts = v.Posts
-
-						}
-
-					}
-
-					n := len(posts)
-
-					if n > 0 {
-
-						for o := 0; o < n; o++ {
-
-							switch posts[o].Date {
-
-							case schedule:
-
-								var s string
-
-								for _, v := range posts[o].Tags.([]interface{}) {
-
-									in := v.(string)
-
-									s = s + in + ", "
-
-								}
-
-								if posts[o].Password == "" {
-
-									str = str + `
-							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="` + s + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
-							`
-
-								} else {
-
-									str = str + `
-							<input readonly class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
-							`
-
-								}
-
-							}
-
-						}
-
-					}
-
-				}
-
-			}
-
-		} else {
-
-			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(now.Format("2006")), "role": "server-readonly"}))
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
-			}
-
-			if err := x.Get(&access); err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
-			}
-
-			result, err = getCache(access)
-
-			if err != nil {
-
-				fmt.Fprint(w, err)
-
-				return
-
-			}
-
-			y = c.Year
-
-			goto LOOP
+			str = str + `
+					<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
+					`	
 
 		}
 
@@ -604,103 +461,157 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
 
-	//}
+	/* if result != nil {
 
-	//var s string
-	/* var req pb.ReqPost
+		for _, v := range result {
 
-	r.ParseForm()
+			if v.Month == strconv.Itoa(c.Year)+`-`+m {
 
-	for k, v := range r.Form {
+				posts = v.Posts
 
-		switch k {
-
-		case "Topic":
-
-			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-
-			s := strings.Join(v, " ")
-
-			req.Topic = []byte(s)
-
-		case "Entry":
-
-			sb := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
-
-			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-
-			req.Entry = []byte(sb)
-
-		case "Schedule":
-
-			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-			s := strings.Join(v, " ")
-
-			req.Schedule = []byte(s)
-
-		case "Tags":
-
-			//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
-			s := strings.Join(v, "#")
-
-			req.Tags = []byte(s)
-
-		default:
-
-			continue
+			}
 
 		}
 
-	}
+		n := len(posts)
 
-	if req.Topic != nil {
+		if n > 0 {
 
-		//Post data
+			for o := 0; o < n; o++ {
 
-		// Create a stream
+				switch posts[o].Date {
 
-		stream = packet.NewStream(1024)
+				case schedule:
 
-		stream.SetConnection(conn)
+					var s string
 
-		// Send data
+					for _, v := range posts[o].Tags.([]interface{}) {
 
-		stream.Outgoing <- packet.New('T', req.Topic)
+						in := v.(string)
 
-		stream.Outgoing <- packet.New('E', req.Entry)
+						s = s + in + ", "
 
-		stream.Outgoing <- packet.New('S', req.Schedule)
+					}
 
-		stream.Outgoing <- packet.New('#', req.Tags)
+					if posts[o].Password == "" {
 
-		w.Write(req.Schedule)
-	*/
-	//} else {
-	/*
-			w.Header().Set("Content-Type", "text/html")
-		   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		   	w.Write([]byte(str))
-	*/
-	//}
+						str = str + `
+					<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="` + s + `" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/public'">
+					`
 
-	/* client := &http.Client{}
+					} else {
 
-	req, err := http.NewRequest("POST", "http://localhost/"+url, bytes.NewBuffer([]byte(s)))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value") // This makes it work
-	if err != nil {
-		log.Println(err)
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println(err)
-	}
+						str = str + `
+					<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + posts[o].ID + `" value="` + s + `" placeholder="password protected" onclick="window.location.href='https://` + posts[o].ID + `.code2go.dev/password'">
+					`
 
-	defer resp.Body.Close()
+					}
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	w.Header().Set("Content-Length", strconv.Itoa(len(body)))
-	w.Write(body) */
+				}
 
-	//}
+			}
+
+		}
+
+	} */
 
 }
+
+//}
+
+//var s string
+/* var req pb.ReqPost
+
+r.ParseForm()
+
+for k, v := range r.Form {
+
+	switch k {
+
+	case "Topic":
+
+		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+
+		s := strings.Join(v, " ")
+
+		req.Topic = []byte(s)
+
+	case "Entry":
+
+		sb := "\x00" + strings.Join(v, "\x20\x00") // x20 = space and x00 = null
+
+		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+
+		req.Entry = []byte(sb)
+
+	case "Schedule":
+
+		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+		s := strings.Join(v, " ")
+
+		req.Schedule = []byte(s)
+
+	case "Tags":
+
+		//s = s + k + ": " + strings.Join(v, " ") + "\n\r"
+		s := strings.Join(v, "#")
+
+		req.Tags = []byte(s)
+
+	default:
+
+		continue
+
+	}
+
+}
+
+if req.Topic != nil {
+
+	//Post data
+
+	// Create a stream
+
+	stream = packet.NewStream(1024)
+
+	stream.SetConnection(conn)
+
+	// Send data
+
+	stream.Outgoing <- packet.New('T', req.Topic)
+
+	stream.Outgoing <- packet.New('E', req.Entry)
+
+	stream.Outgoing <- packet.New('S', req.Schedule)
+
+	stream.Outgoing <- packet.New('#', req.Tags)
+
+	w.Write(req.Schedule)
+*/
+//} else {
+/*
+		w.Header().Set("Content-Type", "text/html")
+	   	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	   	w.Write([]byte(str))
+*/
+//}
+
+/* client := &http.Client{}
+
+req, err := http.NewRequest("POST", "http://localhost/"+url, bytes.NewBuffer([]byte(s)))
+req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value") // This makes it work
+if err != nil {
+	log.Println(err)
+}
+resp, err := client.Do(req)
+if err != nil {
+	log.Println(err)
+}
+
+defer resp.Body.Close()
+
+body, _ := ioutil.ReadAll(resp.Body)
+w.Header().Set("Content-Length", strconv.Itoa(len(body)))
+w.Write(body) */
+
+//}
