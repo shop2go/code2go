@@ -393,11 +393,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-	value := now.Format("2006-01-02")
-
 	mo := fmt.Sprintf("%02d", c.Month)
 
 	ye := strconv.Itoa(c.Year)
+
+	var value string
 
 	var query struct {
 		CacheByMonth struct {
@@ -437,6 +437,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for k := q; k < 32; k++ {
 
+		value = ye +"-"+mo+"-"+fmt.Sprintf("%02d", k)
+
 		switch c.Days[k] {
 
 		case "Monday":
@@ -454,7 +456,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</span>
 				`
 
-			if l, ok := hits[ye+"-"+mo+"-"+fmt.Sprintf("%02d", k)]; ok {
+			if l, ok := hits[value]; ok {
 
 				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
