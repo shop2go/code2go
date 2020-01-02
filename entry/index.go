@@ -206,7 +206,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	hits := make(map[string][]graphql.String, 21)
 
-	var year []string = []string{now.Format("2006")}
+	var years []string = []string{now.Format("2006")}
 
 	for i := 1; i < 21; i++ {
 
@@ -214,7 +214,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if t != now.AddDate(0, i-1, 0).Format("2006") {
 
-			year = append(year, t)
+			years = append(years, t)
 
 		}
 
@@ -291,15 +291,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	l := len(year)
+	l := len(years)
 
 	fx := make(map[string]f.Value, l)
 
-	sort.Slice(year, func(i, j int) bool { return year[i] < year[j] })
+	sort.Slice(years, func(i, j int) bool { return years[i] < years[j] })
 
 	for i := 0; i < l; i++ {
 
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(year[i]), "role": "server-readonly"}))
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(years[i]), "role": "server-readonly"}))
 
 		if err != nil {
 
@@ -309,7 +309,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fx[year[i]] = x
+		fx[years[i]] = x
 
 		var access *Access
 
@@ -358,11 +358,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		q = i
 
 	}
+
+	var result Post
+
 	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
 
 	for k := q; k <= l; k++ {
-
-		var result Post
 
 		m := fmt.Sprintf("%02d", c.Month)
 
@@ -424,24 +425,240 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				result = q.FindPostByID.Data
 
+				if string(result.Salt) != "" {
+
+					var s string
+
+					for _, v := range result.Topics {
+
+						s = s + string(v)
+					}
+
+					str = str + `
+							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
+							`
+
+				}
+
 			}
 
 		}
 
-		if string(result.Salt) != "" {
+	}
 
-			var s string
+	o := 0
 
-			for _, v := range result.Topics {
+LOOP:
 
-				s = s + string(v)
+	for o < 21 {
+
+		o++
+
+		now = time.Now().AddDate(0, o, 0)
+
+		c.Year = now.Year()
+
+		c.Month = int(now.Month())
+
+		for k := 1; k <= 32; k++ {
+
+			m := fmt.Sprintf("%02d", c.Month)
+
+			n := fmt.Sprintf("%02d", k)
+
+			if m == now.Format("01") {
+
+				schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
+
+				str = str + `
+				<br>
+				<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+				<span class="badge badge-pill badge-dark">
+				` + c.Days[k] + `
+				</span>
+				</button>
+				<button type="button" class="btn btn-light">
+				<span class="badge badge-pill badge-light">
+				<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
+				</span><button><br>
+	
+				<div class="container" id="threads">
+				<form class="form-inline" role="form">
+				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
+							
+				`
+
+				if v, ok := hits[schedule]; ok {
+
+					sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
+
+					x := fx[strconv.Itoa(c.Year)]
+
+					var access *Access
+
+					x.Get(&access)
+
+					src := oauth2.StaticTokenSource(
+						&oauth2.Token{AccessToken: access.Secret},
+					)
+
+					httpClient := oauth2.NewClient(context.Background(), src)
+
+					call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+					for _, postID := range v {
+
+						var q struct {
+							FindPostByID struct {
+								Data Post
+							} `graphql:"postsByDate(id: $id)"`
+						}
+
+						v1 := map[string]interface{}{
+							"id": postID,
+						}
+
+						if err := call.Query(context.Background(), &q, v1); err != nil {
+							fmt.Fprintf(w, "get post error: %v\n", err)
+						}
+
+						result = q.FindPostByID.Data
+
+						if string(result.Salt) != "" {
+
+							var s string
+
+							for _, v := range result.Topics {
+
+								s = s + string(v)
+							}
+
+							str = str + `
+								<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
+								`
+
+						}
+
+					}
+
+				}
+
+			} else {
+
+				goto LOOP
+
 			}
-			str = str + `
-					<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
-					`	
 
 		}
 
+		/*
+
+			//LOOP:
+
+			c.Days = make(map[int]string, now.AddDate(0, 1, -1).Day())
+
+				for i := 0; i < 32; i++ {
+
+					d := now.AddDate(0, 0, i)
+
+					m := int(d.Month())
+
+					if m == c.Month {
+
+						e := d.Day()
+
+						c.Days[e] = d.Weekday().String()
+
+					}
+
+				}
+
+				p = len(c.Days)
+
+				for k := 1; k <= p; k++ {
+
+					m := fmt.Sprintf("%02d", c.Month)
+
+					n := fmt.Sprintf("%02d", k)
+
+					schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
+
+					str = str + `
+					<br>
+					<button type="button" class="btn btn-link" onclick="window.location.href='` + c.Days[k] + `'">
+					<span class="badge badge-pill badge-dark">
+					` + c.Days[k] + `
+					</span>
+					</button>
+					<button type="button" class="btn btn-light">
+					<span class="badge badge-pill badge-light">
+					<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
+					</span><button><br>
+
+					<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
+
+					`
+
+					if v, ok := hits[schedule]; ok {
+
+						sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
+
+						x := fx[strconv.Itoa(c.Year)]
+
+						var access *Access
+
+						x.Get(&access)
+
+						src := oauth2.StaticTokenSource(
+							&oauth2.Token{AccessToken: access.Secret},
+						)
+
+						httpClient := oauth2.NewClient(context.Background(), src)
+
+						call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+						for _, postID := range v {
+
+							var q struct {
+								FindPostByID struct {
+									Data Post
+								} `graphql:"postsByDate(id: $id)"`
+							}
+
+							v1 := map[string]interface{}{
+								"id": postID,
+							}
+
+							if err := call.Query(context.Background(), &q, v1); err != nil {
+								fmt.Fprintf(w, "get post error: %v\n", err)
+							}
+
+							result = q.FindPostByID.Data
+
+						}
+
+					}
+
+					if string(result.Salt) != "" {
+
+						var s string
+
+						for _, v := range result.Topics {
+
+							s = s + string(v)
+						}
+
+						str = str + `
+						<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
+						`
+
+					}
+
+					if result != nil {
+					}
+
+				}
+		*/
 	}
 
 	str = str + `
