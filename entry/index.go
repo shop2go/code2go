@@ -435,7 +435,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					str = str + `
-							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
+							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/status'">
 							`
 
 				}
@@ -536,7 +536,7 @@ LOOP:
 							}
 
 							str = str + `
-								<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/public'">
+								<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/status'">
 								`
 
 						}
