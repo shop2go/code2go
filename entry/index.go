@@ -460,13 +460,15 @@ LOOP:
 
 		c.Month = int(now.Month())
 
-		for k := 1; k <= 32; k++ {
+		for k := 1; k <= 31; k++ {
 
 			m := fmt.Sprintf("%02d", c.Month)
 
 			n := fmt.Sprintf("%02d", k)
 
-			if m == now.Format("01") {
+			loc, _ := time.LoadLocation("")
+
+			if c.Month == int(time.Date(c.Year, time.Now().AddDate(0, o, 0).Month(), k, 0,0,0,0,loc).Month()) {
 
 				schedule := strconv.Itoa(c.Year) + `-` + m + `-` + n
 
