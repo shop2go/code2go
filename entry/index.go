@@ -441,7 +441,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				result = q.FindPostByID.Data
 
-				if string(result.Salt) != "" {
+				if string(result.Salt) == "" {
 
 					var s string
 
@@ -552,7 +552,7 @@ LOOP:
 
 						result = q.FindPostByID.Data
 
-						if string(result.Salt) != "" {
+						if string(result.Salt) == "" {
 
 							var s string
 
