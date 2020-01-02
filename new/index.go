@@ -134,9 +134,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		qsl := make([]graphql.String, 0)
 
 		vars := map[string]interface{}{
-			"date":       graphql.String(date),
-			"salt":       graphql.String(pw),
-			"content":    graphql.String(content),
+			"date":    graphql.String(date),
+			"salt":    graphql.String(pw),
+			"content": graphql.String(content),
+			"ischild": graphql.String(""),
 		}
 
 		topic := strings.SplitN(topics, " ", -1)
