@@ -208,11 +208,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var years []string = []string{now.Format("2006")}
 
-	for i := 1; i < 21; i++ {
+	i := 0
 
-		t := now.AddDate(0, i, 0).Format("2006")
+	for i < 21 {
 
-		if t != now.AddDate(0, i-1, 0).Format("2006") {
+		i++
+
+		loc, _ := time.LoadLocation("")
+
+		t := time.Date(c.Year, now.AddDate(0, i, 0).Month(), 1, 0, 0, 0, 0, loc).Format("2006")
+
+		//t := now.AddDate(0, i, 0).Format("2006")
+
+		if t != time.Date(c.Year, now.AddDate(0, i-1, 0).Month(), 1, 0, 0, 0, 0, loc).Format("2006") {
 
 			years = append(years, t)
 
@@ -295,7 +303,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fx := make(map[string]f.Value, l)
 
-	sort.Slice(years, func(i, j int) bool { return years[i] < years[j] })
+	//sort.Slice(years, func(i, j int) bool { return years[i] < years[j] })
 
 	for i := 0; i < l; i++ {
 
@@ -313,7 +321,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var access *Access
 
-		x.Get(&access)
+		if err = x.Get(&access); err != nil {
+
+			fmt.Fprint(w, err)
+
+		}
 
 		src := oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: access.Secret},
@@ -397,7 +409,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			var access *Access
 
-			x.Get(&access)
+			if err := x.Get(&access); err != nil {
+
+				fmt.Fprint(w, err)
+	
+			}
 
 			src := oauth2.StaticTokenSource(
 				&oauth2.Token{AccessToken: access.Secret},
@@ -504,7 +520,11 @@ LOOP:
 
 					var access *Access
 
-					x.Get(&access)
+					if err := x.Get(&access); err != nil {
+
+						fmt.Fprint(w, err)
+			
+					}
 
 					src := oauth2.StaticTokenSource(
 						&oauth2.Token{AccessToken: access.Secret},
