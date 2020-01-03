@@ -428,11 +428,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				var q struct {
 					FindPostByID struct {
 						Data Post
-					} `graphql:"postsByDate(id: $id)"`
+					} `graphql:"findPostByID(id: $id)"`
 				}
 
 				v1 := map[string]interface{}{
-					"id": graphql.String(postID),
+					"id": postID,
 				}
 
 				if err := call.Query(context.Background(), &q, v1); err != nil {
@@ -539,11 +539,11 @@ LOOP:
 						var q struct {
 							FindPostByID struct {
 								Data Post
-							} `graphql:"postsByDate(id: $id)"`
+							} `graphql:"findPostByID(id: $id)"`
 						}
 
 						v1 := map[string]interface{}{
-							"id": graphql.String(postID),
+							"id": postID,
 						}
 
 						if err := call.Query(context.Background(), &q, v1); err != nil {
