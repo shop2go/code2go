@@ -380,12 +380,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</button>
 			<button type="button" class="btn btn-light">
 			<span class="badge badge-pill badge-light">
-			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `" placeholder="` + schedule + `">
+			<input readonly class="form-control-plaintext list-group-item-action" id="` + schedule + `" value="` + schedule + `">
 			</span><button><br>
 
 			<div class="container" id="threads">
 			<form class="form-inline" role="form">
-			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
+			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new" p onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
 						
 			`
 
@@ -455,19 +455,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						s = s + ": " + string(result.Content) + " - "
 
-						var t string
-
-						for _, v := range result.Tags {
-
-							t = t + "#" + string(v) + " "
-						}
-
-						s = s + t
-
 						str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 									<br>
 									`
+
+									for _, v := range result.Tags {
+			
+										str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="#` + string(v) + `" onclick="window.location.href='code2go.dev/status#` +string(v) + `'">
+									<br>
+									`
+									}
 
 						for _, id := range result.Isparent {
 
@@ -594,9 +593,9 @@ LOOP:
 							result := q.FindPostByID
 		
 							if string(result.Salt) == "" {
-		
+								
 								var s string
-		
+
 								for _, v := range result.Topics {
 		
 									s = string(v) + " " + s
@@ -604,19 +603,18 @@ LOOP:
 		
 								s = s + ": " + string(result.Content) + " - "
 		
-								var t string
-		
-								for _, v := range result.Tags {
-		
-									t = t + "#" + string(v) + " "
-								}
-		
-								s = s + t
-		
 								str = str + `
 											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 											<br>
 											`
+		
+											for _, v := range result.Tags {
+					
+												str = str + `
+											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="#` + string(v) + `" onclick="window.location.href='code2go.dev/status#` +string(v) + `'">
+											<br>
+											`
+											}
 		
 								for _, id := range result.Isparent {
 		
