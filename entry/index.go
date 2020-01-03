@@ -432,7 +432,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					vars := map[string]interface{}{
-						"id": graphql.String(postID),
+						"id": graphql.ID(postID),
 					}
 
 					if err := call.Query(context.Background(), &q, vars); err != nil {
@@ -579,7 +579,7 @@ LOOP:
 							}
 
 							vars := map[string]interface{}{
-								"id": graphql.String(postID),
+								"id": graphql.ID(postID),
 							}
 
 							if err := call.Query(context.Background(), &q, vars); err != nil {
