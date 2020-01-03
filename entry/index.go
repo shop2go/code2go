@@ -463,7 +463,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 									for _, v := range result.Tags {
 			
 										str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="#` + string(v) + `" onclick="window.location.href='code2go.dev/status#` +string(v) + `'">
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="#` + string(v) + `" onclick="window.location.href='status#` +string(v) + `'">
 									<br>
 									`
 									}
@@ -593,7 +593,7 @@ LOOP:
 							result := q.FindPostByID
 		
 							if string(result.Salt) == "" {
-								
+
 								var s string
 
 								for _, v := range result.Topics {
@@ -611,7 +611,7 @@ LOOP:
 											for _, v := range result.Tags {
 					
 												str = str + `
-											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="#` + string(v) + `" onclick="window.location.href='code2go.dev/status#` +string(v) + `'">
+											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="#` + string(v) + `" onclick="window.location.href='status#` +string(v) + `'">
 											<br>
 											`
 											}
