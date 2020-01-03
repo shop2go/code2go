@@ -192,6 +192,8 @@ type Post struct {
 
 } */
 
+var hits map[string][]graphql.String = make(map[string][]graphql.String, 21)
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var c Cal
@@ -203,8 +205,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	day := map[int]string{now.Day(): now.Weekday().String()}
 
 	c.Days = day
-
-	hits := make(map[string][]graphql.String, 21)
 
 	var years []string = []string{now.Format("2006")}
 
@@ -272,6 +272,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	var q int
+
+	l := len(c.Days)
+
+	p := now.Day()
+
+	for i := l; i >= p; i-- {
+
+		q = i
+
+	}
+
 	str := `
 
 	<!DOCTYPE html>
@@ -299,7 +311,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	l := len(years)
+	l = len(years)
 
 	fx := make(map[string]f.Value, l)
 
@@ -359,18 +371,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var q int
-
-	l = len(c.Days)
-
-	p := now.Day()
-
-	for i := l; i >= p; i-- {
-
-		q = i
-
-	}
-
 	var result Post
 
 	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
@@ -401,9 +401,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						
 			`
 
-		if v, ok := hits[schedule]; ok {
+		if v, ok := hits[strconv.Itoa(c.Year) + `-` + m]; ok {
 
-			sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
+			//sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
 
 			x := fx[strconv.Itoa(c.Year)]
 
@@ -512,7 +512,7 @@ LOOP:
 							
 				`
 
-				if v, ok := hits[schedule]; ok {
+				if v, ok := hits[strconv.Itoa(c.Year) + `-` + m]; ok {
 
 					sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
 
