@@ -430,11 +430,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						} `graphql:"findPostByID(id: $id)"`
 					}
 
-					v1 := map[string]interface{}{
-						"id": graphql.ID(postID),
+					vars := map[string]interface{}{
+						"id": graphql.String(postID),
 					}
 
-					if err := call.Query(context.Background(), &q, v1); err != nil {
+					if err := call.Query(context.Background(), &q, vars); err != nil {
 						fmt.Printf("get post error: %v\n", err)
 					}
 
@@ -506,9 +506,9 @@ LOOP:
 
 			loc, _ := time.LoadLocation("")
 
-			date := time.Date(c.Year, time.Now().AddDate(0, o, 0).Month(), k, 0, 0, 0, 0, loc).Month()
+			d := time.Date(c.Year, time.Now().AddDate(0, o, 0).Month(), k, 0, 0, 0, 0, loc).Month()
 
-			if c.Month != int(date) {
+			if c.Month != int(d) {
 
 				goto LOOP
 
@@ -576,11 +576,11 @@ LOOP:
 								} `graphql:"findPostByID(id: $id)"`
 							}
 
-							v1 := map[string]interface{}{
-								"id": graphql.ID(postID),
+							vars := map[string]interface{}{
+								"id": graphql.String(postID),
 							}
 
-							if err := call.Query(context.Background(), &q, v1); err != nil {
+							if err := call.Query(context.Background(), &q, vars); err != nil {
 								fmt.Printf("get post error: %v\n", err)
 							}
 
