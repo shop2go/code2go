@@ -30,13 +30,13 @@ type Access struct {
 }
 
 type Cache struct {
-	ID    graphql.String   `graphql:"_id"`
+	ID    graphql.ID   `graphql:"_id"`
 	Month graphql.String   `graphql:"month"`
 	Posts []graphql.String `graphql:"posts"`
 }
 
 type Post struct {
-	ID         graphql.String   `graphql:"_id"`
+	ID         graphql.String   
 	Date       graphql.String   `graphql:"date"`
 	Iscommited graphql.Boolean  `graphql:"iscommited`
 	Salt       graphql.String   `graphql:"salt`
@@ -429,7 +429,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					FindPostByID struct {
 						ID   graphql.String 
 						Data Post
-					} `graphql:"findPostByID(_id: $id)"`
+					} `graphql:"findPostByID(id: $id)"`
 				}
 
 				v1 := map[string]interface{}{
@@ -541,7 +541,7 @@ LOOP:
 							FindPostByID struct {
 								ID   graphql.String
 								Data Post
-							} `graphql:"findPostByID(_id: $id)"`
+							} `graphql:"findPostByID(id: $id)"`
 						}
 
 						v1 := map[string]interface{}{
