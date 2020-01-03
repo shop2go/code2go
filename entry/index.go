@@ -401,7 +401,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						
 			`
 
-		if v, ok := hits[strconv.Itoa(c.Year) + `-` + m]; ok {
+		if v, ok := hits[strconv.Itoa(c.Year)+`-`+m]; ok {
 
 			//sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
 
@@ -412,7 +412,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if err := x.Get(&access); err != nil {
 
 				fmt.Fprint(w, err)
-	
+
 			}
 
 			src := oauth2.StaticTokenSource(
@@ -427,6 +427,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				var q struct {
 					FindPostByID struct {
+						ID   graphql.String
 						Data Post
 					} `graphql:"findPostByID(id: $id)"`
 				}
@@ -512,7 +513,7 @@ LOOP:
 							
 				`
 
-				if v, ok := hits[strconv.Itoa(c.Year) + `-` + m]; ok {
+				if v, ok := hits[strconv.Itoa(c.Year)+`-`+m]; ok {
 
 					sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
 
@@ -523,7 +524,7 @@ LOOP:
 					if err := x.Get(&access); err != nil {
 
 						fmt.Fprint(w, err)
-			
+
 					}
 
 					src := oauth2.StaticTokenSource(
@@ -538,6 +539,7 @@ LOOP:
 
 						var q struct {
 							FindPostByID struct {
+								ID   graphql.String
 								Data Post
 							} `graphql:"findPostByID(id: $id)"`
 						}
