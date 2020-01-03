@@ -445,13 +445,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					for _, v := range result.Topics {
 
-						s = s + string(v)
+						s = string(v) + " " + s
 					}
 
-					str = str + `
-							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + value + `" value="` + s + `" onclick="window.location.href='https://` + value + `.code2go.dev/status'">
-							`
+					s = s + ": " + string(result.Content) + " - "
 
+					var t string
+
+					for _, v := range result.Tags {
+
+						t = "#" + string(v) + " "
+					}
+
+					s = s + t
+
+					str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + value + `" value="` + s + `" onclick="window.location.href='https://` + value + `.code2go.dev/status'">
+									<br>
+									`
+
+					for _, v := range result.Isparent {
+
+						str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
+									<br>
+									`
+
+					}
 				}
 
 			}
@@ -536,7 +556,7 @@ LOOP:
 
 						postID := strings.SplitN(string(post), ":", -1)
 						value := postID[0]
-		
+
 						var q struct {
 							FindPostByID struct {
 								ID         graphql.ID       `graphql:"_id"`
@@ -549,32 +569,53 @@ LOOP:
 								Isparent   []graphql.String `graphql:"isparent`
 							} `graphql:"findPostByID(id: $id)"`
 						}
-		
+
 						v1 := map[string]interface{}{
 							"id": graphql.ID(value),
 						}
-		
+
 						if err := call.Query(context.Background(), &q, v1); err != nil {
 							fmt.Printf("get post error: %v\n", err)
 						}
-		
+
 						result := q.FindPostByID
-		
+
 						if string(result.Salt) == "" {
-		
+
 							var s string
-		
+
 							for _, v := range result.Topics {
-		
-								s = s + string(v)
+
+								s = string(v) + " " + s
 							}
-		
+
+							s = s + ": " + string(result.Content) + " - "
+
+							var t string
+
+							for _, v := range result.Tags {
+
+								t = "#" + string(v) + " "
+							}
+
+							s = s + t
+
 							str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + value + `" value="` + s + `" onclick="window.location.href='https://` + value + `.code2go.dev/status'">
+									<br>
 									`
-		
+
+							for _, v := range result.Isparent {
+
+								str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
+									<br>
+									`
+
+							}
+
 						}
-		
+
 					}
 
 				}
