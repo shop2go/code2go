@@ -427,7 +427,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				var q struct {
 					FindPostByID struct {
-						Data Post `graphql:"data"`
+						Data struct {
+							Post
+						}
 					} `graphql:"findPostByID(id: $id)"`
 				}
 
@@ -439,7 +441,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "get post error: %v\n", err)
 				}
 
-				result = q.FindPostByID.Data
+				result = q.FindPostByID.Data.Post
 
 				if string(result.Salt) == "" {
 
@@ -538,7 +540,9 @@ LOOP:
 
 						var q struct {
 							FindPostByID struct {
-								Data Post `graphql:"data"`
+								Data struct {
+									Post
+								}
 							} `graphql:"findPostByID(id: $id)"`
 						}
 
@@ -550,7 +554,7 @@ LOOP:
 							fmt.Fprintf(w, "get post error: %v\n", err)
 						}
 
-						result = q.FindPostByID.Data
+						result = q.FindPostByID.Data.Post
 
 						if string(result.Salt) == "" {
 
