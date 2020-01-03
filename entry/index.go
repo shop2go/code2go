@@ -413,9 +413,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for _, post := range v {
 
 				value := strings.SplitN(string(post), ":", -1)
-				postID := value[0]
 
-				if value[1] == schedule {
+				//if value[1] == schedule {
+
+					postID := value[0]
 
 					var q struct {
 						FindPostByID struct {
@@ -476,7 +477,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-				}
+				//}
 
 			}
 
@@ -536,7 +537,7 @@ LOOP:
 
 				if v, ok := hits[strconv.Itoa(c.Year)+`-`+m]; ok {
 
-					sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
+					//sort.Slice(v, func(i, j int) bool { return v[i] > v[j] })
 
 					x := fx[strconv.Itoa(c.Year)]
 
@@ -559,9 +560,10 @@ LOOP:
 					for _, post := range v {
 
 						value := strings.SplitN(string(post), ":", -1)
-						postID := value[0]
 
-						if value[1] == schedule {
+						//if value[1] == schedule {
+
+							postID := value[0]
 
 							var q struct {
 								FindPostByID struct {
@@ -622,7 +624,7 @@ LOOP:
 
 							}
 
-						}
+						//}
 
 					}
 
