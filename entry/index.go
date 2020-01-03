@@ -427,7 +427,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				var q struct {
 					FindPostByID struct {
-						ID   graphql.String 
 						Data Post
 					} `graphql:"findPostByID(id: $id)"`
 				}
@@ -539,7 +538,6 @@ LOOP:
 
 						var q struct {
 							FindPostByID struct {
-								ID   graphql.String
 								Data Post
 							} `graphql:"findPostByID(id: $id)"`
 						}
