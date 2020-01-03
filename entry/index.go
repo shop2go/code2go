@@ -36,17 +36,6 @@ type Cache struct {
 	Posts []graphql.String `graphql:"posts"`
 }
 
-type Post struct {
-	ID         graphql.String   `graphql:"id"`
-	Date       graphql.String   `graphql:"date"`
-	Iscommited graphql.Boolean  `graphql:"iscommited`
-	Salt       graphql.String   `graphql:"salt`
-	Tags       []graphql.String `graphql:"tags`
-	Topics     []graphql.String `graphql:"topics`
-	Content    graphql.String   `graphql:"content`
-	Isparent   []graphql.String `graphql:"isparent`
-}
-
 /* func getCache(a *Access) ([]Cache, error) {
 
 	var result []Cache = make([]Cache, 0)
@@ -372,8 +361,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var result Post
-
 	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
 
 	for k := q; k <= l; k++ {
@@ -428,21 +415,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				var q struct {
 					FindPostByID struct {
-						Data Post
+						ID         graphql.ID       `graphql:"_id"`
+						Date       graphql.String   `graphql:"date"`
+						Iscommited graphql.Boolean  `graphql:"iscommited`
+						Salt       graphql.String   `graphql:"salt`
+						Tags       []graphql.String `graphql:"tags`
+						Topics     []graphql.String `graphql:"topics`
+						Content    graphql.String   `graphql:"content`
+						Isparent   []graphql.String `graphql:"isparent`
 					} `graphql:"findPostByID(id: $id)"`
 				}
 
 				v1 := map[string]interface{}{
-					"id": postID,
+					"id": graphql.ID(postID),
 				}
 
 				if err := call.Query(context.Background(), &q, v1); err != nil {
-					fmt.Fprintf(w, "get post error: %v\n", err)
+					fmt.Printf("get post error: %v\n", err)
 				}
 
-				result = q.FindPostByID.Data
+				result := q.FindPostByID
 
-				if bool(result.Iscommited) && string(result.Salt) == "" {
+				if string(result.Salt) == "" {
 
 					var s string
 
@@ -452,7 +446,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					str = str + `
-							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/status'">
+							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(postID) + `" value="` + s + `" onclick="window.location.href='https://` + string(postID) + `.code2go.dev/status'">
 							`
 
 				}
@@ -539,21 +533,28 @@ LOOP:
 
 						var q struct {
 							FindPostByID struct {
-								Data Post
+								ID         graphql.ID       `graphql:"_id"`
+								Date       graphql.String   `graphql:"date"`
+								Iscommited graphql.Boolean  `graphql:"iscommited`
+								Salt       graphql.String   `graphql:"salt`
+								Tags       []graphql.String `graphql:"tags`
+								Topics     []graphql.String `graphql:"topics`
+								Content    graphql.String   `graphql:"content`
+								Isparent   []graphql.String `graphql:"isparent`
 							} `graphql:"findPostByID(id: $id)"`
 						}
 
 						v1 := map[string]interface{}{
-							"id": postID,
+							"id": graphql.ID(postID),
 						}
 
 						if err := call.Query(context.Background(), &q, v1); err != nil {
-							fmt.Fprintf(w, "get post error: %v\n", err)
+							fmt.Printf("get post error: %v\n", err)
 						}
 
-						result = q.FindPostByID.Data
+						result := q.FindPostByID
 
-						if bool(result.Iscommited) && string(result.Salt) == "" {
+						if string(result.Salt) == "" {
 
 							var s string
 
@@ -563,7 +564,7 @@ LOOP:
 							}
 
 							str = str + `
-								<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.ID) + `" value="` + s + `" onclick="window.location.href='https://` + string(result.ID) + `.code2go.dev/status'">
+								<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(postID) + `" value="` + s + `" onclick="window.location.href='https://` + string(postID) + `.code2go.dev/status'">
 								`
 
 						}
