@@ -429,7 +429,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					FindPostByID struct {
 						ID   graphql.String 
 						Data Post
-					} `graphql:"findPostByID(_id: $id)"`
+					} `graphql:"findPostByID(id: $id)"`
 				}
 
 				v1 := map[string]interface{}{
@@ -541,7 +541,7 @@ LOOP:
 							FindPostByID struct {
 								ID   graphql.String
 								Data Post
-							} `graphql:"findPostByID(_id: $id)"`
+							} `graphql:"findPostByID(id: $id)"`
 						}
 
 						v1 := map[string]interface{}{
