@@ -428,7 +428,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				var q struct {
 					FindPostByID struct {
-						Data Post
+						ID         graphql.String   `graphql:"id"`
+						Iscommited graphql.Boolean  `graphql:"iscommited`
+						Salt       graphql.String   `graphql:"salt`
+						Tags       []graphql.String `graphql:"tags`
+						Isparent   []graphql.String `graphql:"isparent`
 					} `graphql:"findPostByID(id: $id)"`
 				}
 
@@ -539,7 +543,11 @@ LOOP:
 
 						var q struct {
 							FindPostByID struct {
-								Data Post
+								ID         graphql.String   `graphql:"id"`
+								Iscommited graphql.Boolean  `graphql:"iscommited`
+								Salt       graphql.String   `graphql:"salt`
+								Tags       []graphql.String `graphql:"tags`
+								Isparent   []graphql.String `graphql:"isparent`
 							} `graphql:"findPostByID(id: $id)"`
 						}
 
