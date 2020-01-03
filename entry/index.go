@@ -31,7 +31,7 @@ type Access struct {
 }
 
 type Cache struct {
-	ID    graphql.ID       `graphql:"_id"`
+	//ID    graphql.ID       `graphql:"_id"`
 	Month graphql.String   `graphql:"month"`
 	Posts []graphql.String `graphql:"posts"`
 }
@@ -182,6 +182,8 @@ type Cache struct {
 
 } */
 
+var hits map[string][]graphql.String = make(map[string][]graphql.String, 21)
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var c Cal
@@ -194,11 +196,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Days = day
 
-	var years []string = make([]string, 0)
+	years := []string{now.Format("2006")}
 
-	
+	i := 0
 
-	for i := 0; i < 21; i++ {
+	for i < 21 {
+
+		i++
 
 		loc, _ := time.LoadLocation("")
 
@@ -213,6 +217,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+
+	l := len(years)
 
 	z := 1
 
@@ -258,38 +264,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	str := `
-
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>CODE2GO</title>
-	<!-- CSS -->
-	<!-- Add Material font (Roboto) and Material icon as needed -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-	<!-- Add Material CSS, replace Bootstrap CSS -->
-	<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-	</head>
-
-	<body style="background-color:#adebad">
-
-	<div class="container" id="data" style="color:white;">
-
-	<ul class="list-group">
-	`
-
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	l := len(years)
-
 	fx := make(map[string]f.Value, l)
-
-	var hits map[string][]graphql.String = make(map[string][]graphql.String, 21)
 
 	//sort.Slice(years, func(i, j int) bool { return years[i] < years[j] })
 
@@ -347,6 +324,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	fmt.Fprintf(w, "%v", hits)
 	
 	var q int
 
@@ -359,6 +337,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		q = i
 
 	}
+
+	str := `
+
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>CODE2GO</title>
+	<!-- CSS -->
+	<!-- Add Material font (Roboto) and Material icon as needed -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<!-- Add Material CSS, replace Bootstrap CSS -->
+	<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+	</head>
+
+	<body style="background-color:#adebad">
+
+	<div class="container" id="data" style="color:white;">
+
+	<ul class="list-group">
+	`
 
 	//expose the anchor of specified date++; list apropriate entries for that date whithin the actual month from persitence layer
 
