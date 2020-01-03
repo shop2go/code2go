@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strconv"
 
-	//"strings"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -411,7 +411,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			for _, postID := range v {
+			for _, post := range v {
+
+				postID := strings.SplitN(string(post), ":", -1)
+				value := postID[0]
 
 				var q struct {
 					FindPostByID struct {
@@ -427,7 +430,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 				v1 := map[string]interface{}{
-					"id": graphql.ID(postID),
+					"id": graphql.ID(value),
 				}
 
 				if err := call.Query(context.Background(), &q, v1); err != nil {
@@ -446,7 +449,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					str = str + `
-							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(postID) + `" value="` + s + `" onclick="window.location.href='https://` + string(postID) + `.code2go.dev/status'">
+							<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + value + `" value="` + s + `" onclick="window.location.href='https://` + value + `.code2go.dev/status'">
 							`
 
 				}
@@ -529,8 +532,11 @@ LOOP:
 
 					call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-					for _, postID := range v {
+					for _, post := range v {
 
+						postID := strings.SplitN(string(post), ":", -1)
+						value := postID[0]
+		
 						var q struct {
 							FindPostByID struct {
 								ID         graphql.ID       `graphql:"_id"`
@@ -543,32 +549,32 @@ LOOP:
 								Isparent   []graphql.String `graphql:"isparent`
 							} `graphql:"findPostByID(id: $id)"`
 						}
-
+		
 						v1 := map[string]interface{}{
-							"id": graphql.ID(postID),
+							"id": graphql.ID(value),
 						}
-
+		
 						if err := call.Query(context.Background(), &q, v1); err != nil {
 							fmt.Printf("get post error: %v\n", err)
 						}
-
+		
 						result := q.FindPostByID
-
+		
 						if string(result.Salt) == "" {
-
+		
 							var s string
-
+		
 							for _, v := range result.Topics {
-
+		
 								s = s + string(v)
 							}
-
+		
 							str = str + `
-								<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(postID) + `" value="` + s + `" onclick="window.location.href='https://` + string(postID) + `.code2go.dev/status'">
-								`
-
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + value + `" value="` + s + `" onclick="window.location.href='https://` + value + `.code2go.dev/status'">
+									`
+		
 						}
-
+		
 					}
 
 				}
