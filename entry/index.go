@@ -30,13 +30,13 @@ type Access struct {
 }
 
 type Cache struct {
-	ID    graphql.ID   `graphql:"_id"`
+	ID    graphql.ID       `graphql:"_id"`
 	Month graphql.String   `graphql:"month"`
 	Posts []graphql.String `graphql:"posts"`
 }
 
 type Post struct {
-	ID         graphql.String   
+	ID         graphql.String   `graphql:"_id"`
 	Date       graphql.String   `graphql:"date"`
 	Iscommited graphql.Boolean  `graphql:"iscommited`
 	Salt       graphql.String   `graphql:"salt`
