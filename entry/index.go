@@ -182,8 +182,6 @@ type Cache struct {
 
 } */
 
-var hits map[string][]graphql.String = make(map[string][]graphql.String, 21)
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var c Cal
@@ -305,6 +303,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fx := make(map[string]f.Value, l)
 
+	var hits map[string][]graphql.String = make(map[string][]graphql.String, 21)
+
 	//sort.Slice(years, func(i, j int) bool { return years[i] < years[j] })
 
 	for i := 0; i < l; i++ {
@@ -413,65 +413,70 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, post := range v {
 
-				postID := strings.SplitN(string(post), ":", -1)
-				value := postID[0]
+				value := strings.SplitN(string(post), ":", -1)
+				postID := value[0]
 
-				var q struct {
-					FindPostByID struct {
-						ID         graphql.ID       `graphql:"_id"`
-						Date       graphql.String   `graphql:"date"`
-						Iscommited graphql.Boolean  `graphql:"iscommited`
-						Salt       graphql.String   `graphql:"salt`
-						Tags       []graphql.String `graphql:"tags`
-						Topics     []graphql.String `graphql:"topics`
-						Content    graphql.String   `graphql:"content`
-						Isparent   []graphql.String `graphql:"isparent`
-					} `graphql:"findPostByID(id: $id)"`
-				}
+				if value[1] == schedule {
 
-				v1 := map[string]interface{}{
-					"id": graphql.ID(value),
-				}
-
-				if err := call.Query(context.Background(), &q, v1); err != nil {
-					fmt.Printf("get post error: %v\n", err)
-				}
-
-				result := q.FindPostByID
-
-				if string(result.Salt) == "" {
-
-					var s string
-
-					for _, v := range result.Topics {
-
-						s = string(v) + " " + s
+					var q struct {
+						FindPostByID struct {
+							ID         graphql.ID       `graphql:"_id"`
+							Date       graphql.String   `graphql:"date"`
+							Iscommited graphql.Boolean  `graphql:"iscommited`
+							Salt       graphql.String   `graphql:"salt`
+							Tags       []graphql.String `graphql:"tags`
+							Topics     []graphql.String `graphql:"topics`
+							Content    graphql.String   `graphql:"content`
+							Isparent   []graphql.String `graphql:"isparent`
+						} `graphql:"findPostByID(id: $id)"`
 					}
 
-					s = s + ": " + string(result.Content) + " - "
-
-					var t string
-
-					for _, v := range result.Tags {
-
-						t = "#" + string(v) + " "
+					v1 := map[string]interface{}{
+						"id": graphql.ID(postID),
 					}
 
-					s = s + t
+					if err := call.Query(context.Background(), &q, v1); err != nil {
+						fmt.Printf("get post error: %v\n", err)
+					}
 
-					str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + value + `" value="` + s + `" onclick="window.location.href='https://` + value + `.code2go.dev/status'">
+					result := q.FindPostByID
+
+					if string(result.Salt) == "" {
+
+						var s string
+
+						for _, v := range result.Topics {
+
+							s = string(v) + " " + s
+						}
+
+						s = s + ": " + string(result.Content) + " - "
+
+						var t string
+
+						for _, v := range result.Tags {
+
+							t = "#" + string(v) + " "
+						}
+
+						s = s + t
+
+						str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 									<br>
 									`
 
-					for _, v := range result.Isparent {
+						for _, v := range result.Isparent {
 
-						str = str + `
+							str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
 									<br>
 									`
 
+						}
+
 					}
+
 				}
 
 			}
@@ -554,63 +559,67 @@ LOOP:
 
 					for _, post := range v {
 
-						postID := strings.SplitN(string(post), ":", -1)
-						value := postID[0]
+						value := strings.SplitN(string(post), ":", -1)
+						postID := value[0]
 
-						var q struct {
-							FindPostByID struct {
-								ID         graphql.ID       `graphql:"_id"`
-								Date       graphql.String   `graphql:"date"`
-								Iscommited graphql.Boolean  `graphql:"iscommited`
-								Salt       graphql.String   `graphql:"salt`
-								Tags       []graphql.String `graphql:"tags`
-								Topics     []graphql.String `graphql:"topics`
-								Content    graphql.String   `graphql:"content`
-								Isparent   []graphql.String `graphql:"isparent`
-							} `graphql:"findPostByID(id: $id)"`
-						}
+						if value[1] == schedule {
 
-						v1 := map[string]interface{}{
-							"id": graphql.ID(value),
-						}
-
-						if err := call.Query(context.Background(), &q, v1); err != nil {
-							fmt.Printf("get post error: %v\n", err)
-						}
-
-						result := q.FindPostByID
-
-						if string(result.Salt) == "" {
-
-							var s string
-
-							for _, v := range result.Topics {
-
-								s = string(v) + " " + s
+							var q struct {
+								FindPostByID struct {
+									ID         graphql.ID       `graphql:"_id"`
+									Date       graphql.String   `graphql:"date"`
+									Iscommited graphql.Boolean  `graphql:"iscommited`
+									Salt       graphql.String   `graphql:"salt`
+									Tags       []graphql.String `graphql:"tags`
+									Topics     []graphql.String `graphql:"topics`
+									Content    graphql.String   `graphql:"content`
+									Isparent   []graphql.String `graphql:"isparent`
+								} `graphql:"findPostByID(id: $id)"`
 							}
 
-							s = s + ": " + string(result.Content) + " - "
-
-							var t string
-
-							for _, v := range result.Tags {
-
-								t = "#" + string(v) + " "
+							v1 := map[string]interface{}{
+								"id": graphql.ID(postID),
 							}
 
-							s = s + t
+							if err := call.Query(context.Background(), &q, v1); err != nil {
+								fmt.Printf("get post error: %v\n", err)
+							}
 
-							str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + value + `" value="` + s + `" onclick="window.location.href='https://` + value + `.code2go.dev/status'">
+							result := q.FindPostByID
+
+							if string(result.Salt) == "" {
+
+								var s string
+
+								for _, v := range result.Topics {
+
+									s = string(v) + " " + s
+								}
+
+								s = s + ": " + string(result.Content) + " - "
+
+								var t string
+
+								for _, v := range result.Tags {
+
+									t = "#" + string(v) + " "
+								}
+
+								s = s + t
+
+								str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 									<br>
 									`
 
-							for _, v := range result.Isparent {
+								for _, v := range result.Isparent {
 
-								str = str + `
+									str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
 									<br>
 									`
+
+								}
 
 							}
 
