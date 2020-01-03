@@ -441,7 +441,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for k := q; k < 32; k++ {
 
-		value = ye +"-"+mo+"-"+fmt.Sprintf("%02d", k)
+		d := fmt.Sprintf("%02d", k)
+
+		value = ye +"-"+ mo  +"-"+ d
 
 		switch c.Days[k] {
 
@@ -460,7 +462,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</span>
 				`
 
-			if l, ok := hits[value]; ok {
+			if l, ok := hits[d]; ok {
 
 				str = str + `
 				<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -489,7 +491,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[value]; ok {
+			if l, ok := hits[d]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -518,7 +520,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[value]; ok {
+			if l, ok := hits[d]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -547,7 +549,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[value]; ok {
+			if l, ok := hits[d]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -576,7 +578,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[value]; ok {
+			if l, ok := hits[d]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -605,7 +607,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[value]; ok {
+			if l, ok := hits[d]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
@@ -634,7 +636,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</span>
 			`
 
-			if l, ok := hits[value]; ok {
+			if l, ok := hits[d]; ok {
 
 				str = str + `
 			<span style="text-align: inherit; color: #70db70" class="badge badge-pill badge-dark">
