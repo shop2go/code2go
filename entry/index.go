@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+
 	//"strings"
 	"time"
 
@@ -36,7 +37,7 @@ type Cache struct {
 }
 
 type Post struct {
-	ID         graphql.String   `graphql:"_id"`
+	ID         graphql.String   `graphql:"id"`
 	Date       graphql.String   `graphql:"date"`
 	Iscommited graphql.Boolean  `graphql:"iscommited`
 	Salt       graphql.String   `graphql:"salt`
@@ -427,9 +428,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				var q struct {
 					FindPostByID struct {
-						Data struct {
-							Post
-						}
+						Data Post
 					} `graphql:"findPostByID(id: $id)"`
 				}
 
@@ -441,9 +440,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "get post error: %v\n", err)
 				}
 
-				result = q.FindPostByID.Data.Post
+				result = q.FindPostByID.Data
 
-				if string(result.Salt) == "" {
+				if bool(result.Iscommited) && string(result.Salt) == "" {
 
 					var s string
 
@@ -540,9 +539,7 @@ LOOP:
 
 						var q struct {
 							FindPostByID struct {
-								Data struct {
-									Post
-								}
+								Data Post
 							} `graphql:"findPostByID(id: $id)"`
 						}
 
@@ -554,9 +551,9 @@ LOOP:
 							fmt.Fprintf(w, "get post error: %v\n", err)
 						}
 
-						result = q.FindPostByID.Data.Post
+						result = q.FindPostByID.Data
 
-						if string(result.Salt) == "" {
+						if bool(result.Iscommited) && string(result.Salt) == "" {
 
 							var s string
 
