@@ -194,13 +194,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	c.Days = day
 
-	var years []string = []string{now.Format("2006")}
+	var years []string = make([]string, 0)
 
-	i := 0
+	
 
-	for i < 21 {
-
-		i++
+	for i := 0; i < 21; i++ {
 
 		loc, _ := time.LoadLocation("")
 
@@ -260,18 +258,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var q int
-
-	l := len(c.Days)
-
-	p := now.Day()
-
-	for i := l; i >= p; i-- {
-
-		q = i
-
-	}
-
 	str := `
 
 	<!DOCTYPE html>
@@ -299,7 +285,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	l = len(years)
+	l := len(years)
 
 	fx := make(map[string]f.Value, l)
 
@@ -358,6 +344,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
+
+	}
+
+	
+	var q int
+
+	l = len(c.Days)
+
+	p := now.Day()
+
+	for i := l; i >= p; i-- {
+
+		q = i
 
 	}
 
@@ -456,7 +455,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						for _, v := range result.Tags {
 
-							t = "#" + string(v) + " "
+							t = t + "#" + string(v) + " "
 						}
 
 						s = s + t
@@ -602,7 +601,7 @@ LOOP:
 
 								for _, v := range result.Tags {
 
-									t = "#" + string(v) + " "
+									t = t + "#" + string(v) + " "
 								}
 
 								s = s + t
