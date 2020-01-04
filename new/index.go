@@ -61,6 +61,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<div class="container" id="data" style="color:white;">
 		<form class="form-inline" role="form" method="POST">
+		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email">
+		<br>
 		<input readonly="true" class="form-control-plaintext" id="Schedule" aria-label="Schedule" name ="Schedule" value="` + strings.TrimSuffix(r.Host, ".code2go.dev") + `">
 		<input class="form-control mr-sm-2" type="text" placeholder="Secret" aria-label="Secret" id ="Secret" name ="Secret" value="">
 		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
@@ -86,6 +88,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
+		//email := r.FormValue("Email")
 		pw := r.FormValue("Secret")
 		date := r.FormValue("Schedule")
 		topics := r.FormValue("Title")
@@ -118,7 +121,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-		var mutation struct {
+		var m1 struct {
 			CreatePost struct {
 				ID         graphql.String   `graphql:"_id"`
 				Date       graphql.String   `graphql:"date"`
@@ -133,7 +136,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		qsl := make([]graphql.String, 0)
 
-		vars := map[string]interface{}{
+		v1 := map[string]interface{}{
 			"date":    graphql.String(date),
 			"salt":    graphql.String(pw),
 			"content": graphql.String(content),
@@ -147,7 +150,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			qsl = append(qsl, graphql.String(v))
 		}
 
-		vars["topics"] = qsl
+		v1["topics"] = qsl
 
 		qsl = nil
 
@@ -158,15 +161,52 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			qsl = append(qsl, graphql.String(strings.ToLower(v)))
 		}
 
-		vars["tags"] = qsl
+		v1["tags"] = qsl
 
 		qsl = nil
 
-		if err = call.Mutate(context.Background(), &mutation, vars); err != nil {
+		if err = call.Mutate(context.Background(), &m1, v1); err != nil {
 			fmt.Fprintf(w, "create Post error: %v\n", err)
 		}
 
-		fmt.Fprint(w, mutation.CreatePost.ID)
+		id := m1.CreatePost.ID /*  + graphql.String(":") + graphql.String(date) */
+
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("users"), "role": "server"}))
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		x.Get(&access)
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call = graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		var m2 struct {
+			CreatePost struct {
+				ID   graphql.String `graphql:"_id"`
+				Post graphql.String `graphql:"post"`
+			} `graphql:"createPost(data:{post: $post})"`
+		}
+
+		v2 := map[string]interface{}{
+			"post": id,
+		}
+
+		if err = call.Mutate(context.Background(), &m2, v2); err != nil {
+			fmt.Fprintf(w, "create Post error: %v\n", err)
+		}
+
+		http.Redirect(w, r, "https://"+string(id)+".code2go.dev/status#"+string(m2.CreatePost.ID), http.StatusAccepted)
 
 		/*
 			//to := strings.ReplaceAll(topics, " ", "\", \"")

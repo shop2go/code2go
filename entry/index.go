@@ -385,7 +385,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<div class="container" id="threads">
 			<form class="form-inline" role="form">
-			<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new" p onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
+			<input readonly class="form-control-plaintext list-group-item-action" id="new` + schedule + `" value="new" p onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
 						
 			`
 
@@ -533,7 +533,7 @@ LOOP:
 	
 				<div class="container" id="threads">
 				<form class="form-inline" role="form">
-				<input readonly class="form-control-plaintext list-group-item-action" id="thread` + schedule + `" value="new thread" placeholder="new thread" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
+				<input readonly class="form-control-plaintext list-group-item-action" id="new` + schedule + `" value="new" onclick="window.location.href='https://` + schedule + `.code2go.dev/new'">
 							
 				`
 
