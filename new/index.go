@@ -171,7 +171,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		id := m1.CreatePost.ID /*  + graphql.String(":") + graphql.String(date) */
 
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("users"), "role": "server"}))
+		x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database("users"), "role": "server"}))
 
 		if err != nil {
 
@@ -183,11 +183,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		x.Get(&access)
 
-		src := oauth2.StaticTokenSource(
+		src = oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: access.Secret},
 		)
 
-		httpClient := oauth2.NewClient(context.Background(), src)
+		httpClient = oauth2.NewClient(context.Background(), src)
 
 		call = graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
