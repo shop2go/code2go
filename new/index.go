@@ -196,11 +196,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if secret != "" {
 
-			http.Redirect(w, r, "https://"+string(id)+".code2go.dev/status#"+ secret, http.StatusFound)
+			http.Redirect(w, r, "https://"+string(id)+"_"+secret+".code2go.dev/status", http.StatusFound)
+
+
 
 		} else {
 
-			http.Redirect(w, r, "https://"+string(id)+".code2go.dev/status#"+ string(m2.CreatePost.ID), http.StatusFound)
+			http.Redirect(w, r, "https://"+string(id)+"_"+string(m2.CreatePost.ID)+".code2go.dev/status", http.StatusFound)
 	
 		}
 		/*

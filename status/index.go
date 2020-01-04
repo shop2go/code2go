@@ -23,10 +23,11 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	secret := strings.SplitAfterN(strings.TrimPrefix(r.URL.Path, "/"), "#", -1)
-	url := strings.TrimSuffix(r.URL.String(), "/")
+	url := r.URL.User.Username()
 
-	http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status#notAproved", http.StatusFound)
+	secret := strings.SplitN(url, "_", -1)
+
+	//http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status", http.StatusFound)
 
 	switch r.Method {
 
@@ -53,7 +54,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		<div class="container" id="data" style="color:white;">
 		<br>
-		` + url +
+		` + secret[1] +
 		`
 		<br>
 		<form class="form-inline" role="form" method="POST">
