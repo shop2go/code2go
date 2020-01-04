@@ -206,7 +206,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "create Post error: %v\n", err)
 		}
 
-		http.Redirect(w, r, "https://"+string(id)+"_notAproved.code2go.dev/status#"+string(m2.CreatePost.ID), http.StatusAccepted)
+		http.Redirect(w, r, "https://"+string(m2.CreatePost.Post)+"_notAproved.code2go.dev/status#"+string(m2.CreatePost.ID), http.StatusAccepted)
 
 		/*
 			//to := strings.ReplaceAll(topics, " ", "\", \"")
