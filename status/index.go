@@ -25,7 +25,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	url := r.URL.User.Username()
 
-	secret := strings.SplitN(url, "_", -1)
+	id := strings.SplitN(url, "_", -1)
 
 	//http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status", http.StatusFound)
 
@@ -54,7 +54,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		<div class="container" id="data" style="color:white;">
 		<br>
-		` + secret[1] +
+		` + id[1] +
 		`
 		<br>
 		<form class="form-inline" role="form" method="POST">

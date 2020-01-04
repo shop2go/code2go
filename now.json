@@ -2,11 +2,11 @@
     "version": 2,
     "builds": [
 
-      { "src": "./main/index.go", "use": "@now/go"},
+      {"src": "./main/index.go", "use": "@now/go"},
 
-      { "src": "./new/index.go", "use": "@now/go"},
+      {"src": "./new/index.go", "use": "@now/go"},
 
-      { "src": "./status/index.go", "use": "@now/go" },
+      {"src": "./status/index.go", "use": "@now/go"},
 
       { "src": "./entry/index.go", "use": "@now/go"},
       
