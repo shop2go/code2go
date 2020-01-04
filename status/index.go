@@ -5,10 +5,13 @@ import (
 	"net/http"
 	//"os"
 	"strconv"
-	//"strings"
+	"strings"
 	//"github.com/mmaedel/code2go/pb"
 
-	//f "github.com/fauna/faunadb-go/faunadb"
+/* 	"golang.org/x/oauth2"
+
+	f "github.com/fauna/faunadb-go/faunadb"
+	"github.com/shurcooL/graphql" */
 )
 
 type Access struct {
@@ -20,33 +23,14 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	secret := strings.SplitAfterN(strings.TrimPrefix(r.URL.Path, "/"), "#", -1)
+	url := strings.TrimSuffix(r.URL.String(), "/")
+
+	http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status#notAproved", http.StatusFound)
+
 	switch r.Method {
 
 	case "GET":
-
-		//strings.TrimSuffix(r.Host, ".code2go.dev")
-
-		/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(sl[0]), "role": "server"}))
-
-		if err != nil {
-
-			fmt.Fprint(w, err)
-
-			return
-
-		}
-
-		var access *Access
-
-		if err := x.Get(&access); err != nil {
-
-			fmt.Fprint(w, err)
-
-			return
-
-		} */
 
 		str := `
 		<!DOCTYPE html>
@@ -67,13 +51,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</div>
 		<br>
-		<div class="container" id="nav" style="color:white;">
-		<br>`
+		<div class="container" id="data" style="color:white;">
+		<br>
+		` + url +
+		`
+		<br>
+		<form class="form-inline" role="form" method="POST">
+		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email">
+		<br>
+		<input class="form-control mr-sm-2" type="password" placeholder="Secret" aria-label="Secret" id ="Secret" name ="Secret" value="">
+		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
+		<!--input class="form-control mr-sm-2" type="text" placeholder="Entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
+		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
+		<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content"></textarea>
+		<br>
+		<button type="submit" class="btn btn-light">submit</button>
+		</form>
+		</div>
+		`
 
 		
 
 		str = str + `
-		</div>
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
 		</script>
 		</body>

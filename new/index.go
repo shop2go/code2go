@@ -21,18 +21,6 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-/* type Post struct {
-	ID         graphql.String   `graphql:"_id"`
-	Date       graphql.String   `graphql:"date"`
-	Iscommited graphql.Boolean  `graphql:"iscommited`
-	Salt       graphql.String   `graphql:"salt`
-	Tags       []graphql.String `graphql:"tags`
-	Topics     []graphql.String `graphql:"topics`
-	Content    graphql.String   `graphql:"content`
-	Isparent   []graphql.String `graphql:"isparent`
-	Ischild    graphql.String   `graphql:"ischild`
-} */
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
@@ -89,7 +77,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 
 		//email := r.FormValue("Email")
-		pw := r.FormValue("Secret")
+		secret := r.FormValue("Secret")
 		date := r.FormValue("Schedule")
 		topics := r.FormValue("Title")
 		tags := r.FormValue("Tags")
@@ -138,7 +126,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		v1 := map[string]interface{}{
 			"date":    graphql.String(date),
-			"salt":    graphql.String(pw),
+			"salt":    graphql.String(secret),
 			"content": graphql.String(content),
 			"ischild": graphql.String(""),
 		}
@@ -206,8 +194,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "create Post error: %v\n", err)
 		}
 
-		http.Redirect(w, r, "https://"+string(id)+"_notAproved.code2go.dev/status", http.StatusFound)
+		if secret != "" {
 
+			http.Redirect(w, r, "https://"+string(id)+".code2go.dev/status#"+ secret, http.StatusFound)
+
+		} else {
+
+			http.Redirect(w, r, "https://"+string(id)+".code2go.dev/status#"+ string(m2.CreatePost.ID), http.StatusFound)
+	
+		}
 		/*
 			//to := strings.ReplaceAll(topics, " ", "\", \"")
 
