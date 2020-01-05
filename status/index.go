@@ -5,7 +5,7 @@ import (
 	"net/http"
 	//"os"
 	"strconv"
-	//"strings"
+	"strings"
 	//"github.com/mmaedel/code2go/pb"
 
 /* 	"golang.org/x/oauth2"
@@ -23,7 +23,9 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL.Host
+	url := r.URL.Path
+
+	id := strings.SplitN(url, "/status#", -1)
 
 	//id := strings.SplitN(url, "_", -1)
 
@@ -54,7 +56,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		<div class="container" id="data" style="color:white;">
 		<br>
-		` + url +
+		` + id[1] +
 		`
 		<br>
 		<form class="form-inline" role="form" method="POST">
