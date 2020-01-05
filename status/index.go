@@ -25,7 +25,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	url := r.URL.Host
 
-	id := strings.SplitN(url, ".", -1)
+	//id := strings.SplitN(url, ".", -1)
 
 	//v := strings.TrimPrefix(id[0])
 
@@ -33,7 +33,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status", http.StatusFound)
 
-	fmt.Fprint(w, id[0])
+	fmt.Fprint(w, url)
 
 	switch r.Method {
 

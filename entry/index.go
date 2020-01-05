@@ -444,9 +444,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					result := q.FindPostByID
 
-					sort.Slice(result.Topics, func(i, j int) bool { return result.Topics[i] < result.Topics[j] })
+					/* sort.Slice(result.Topics, func(i, j int) bool { return result.Topics[i] < result.Topics[j] })
 
-					l = len(result.Topics)
+					l = len(result.Topics) */
+					
 					//if string(result.Salt) == " " {
 
 					/* var s string
@@ -458,14 +459,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					//s = s + ": " + string(result.Content) + " - "
 
-				for i := 0; i < l; i++ {
+				/* for i := 0; i < l; i++ {
 
 						str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
 									<br>
 									<br>
 									`
-
+ */
 						str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + string(result.Content) + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 									<br>
@@ -488,7 +489,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						}
 
-					}
+					//}
 
 					//}
 
@@ -605,9 +606,9 @@ LOOP:
 
 							result := q.FindPostByID
 
-							sort.Slice(result.Topics, func(i, j int) bool { return result.Topics[i] < result.Topics[j] })
+							/* sort.Slice(result.Topics, func(i, j int) bool { return result.Topics[i] < result.Topics[j] })
 
-					l = len(result.Topics)
+							l = len(result.Topics) */
 							//if string(result.Salt) == "" {
 
 								/* var s string
@@ -619,13 +620,13 @@ LOOP:
 
 								//s = s + ": " + string(result.Content) + " - "
 
-								for i := 0; i < l; i++ {
+								/* for i := 0; i < l; i++ {
 
 									str = str + `
 												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
 												<br>
 												<br>
-												`
+												` */
 			
 									str = str + `
 												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + string(result.Content) + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
@@ -649,7 +650,7 @@ LOOP:
 			
 									}
 			
-								}
+								//}
 
 							//}
 
