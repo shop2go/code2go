@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-//"sort"
+	"sort"
 	"strconv"
 
 	"strings"
@@ -323,7 +323,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-	
+
 	var q int
 
 	l = len(c.Days)
@@ -444,29 +444,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					result := q.FindPostByID
 
-					if string(result.Salt) == "" {
+					sort.Slice(result.Topics, func(i, j int) bool { return result.Topics[i] < result.Topics[j] })
 
-						var s string
+					l = len(result.Topics)
+					//if string(result.Salt) == " " {
 
-						for _, v := range result.Topics {
+					/* var s string
 
-							s = string(v) + " " + s
-						}
+					for _, v := range result.Topics {
 
-						s = s + ": " + string(result.Content) + " - "
+						s = string(v) + " " + s
+					} */
+
+					//s = s + ": " + string(result.Content) + " - "
+
+				for i := 0; i < l; i++ {
 
 						str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="#` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
+									<br>
 									<br>
 									`
 
-									for _, v := range result.Tags {
-			
-										str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="#` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
+						str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + string(result.Content) + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 									<br>
 									`
-									}
+
+						for _, w := range result.Tags {
+
+							str = str + `
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(w) + `" value="#` + string(w) + `" onclick="window.location.href='https://` + string(w) + `.code2go.dev/status'">
+									<br>
+									`
+						}
 
 						for _, id := range result.Isparent {
 
@@ -478,6 +489,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						}
 
 					}
+
+					//}
 
 				}
 
@@ -564,11 +577,11 @@ LOOP:
 						value := strings.SplitN(string(post), ":", -1)
 
 						switch value[1] {
-		
+
 						case n:
-		
+
 							postID := value[0]
-		
+
 							var q struct {
 								FindPostByID struct {
 									ID         graphql.ID       `graphql:"_id"`
@@ -581,54 +594,67 @@ LOOP:
 									Isparent   []graphql.String `graphql:"isparent`
 								} `graphql:"findPostByID(id: $id)"`
 							}
-		
+
 							vars := map[string]interface{}{
 								"id": graphql.ID(postID),
 							}
-		
+
 							if err := call.Query(context.Background(), &q, vars); err != nil {
 								fmt.Printf("get post error: %v\n", err)
 							}
-		
-							result := q.FindPostByID
-		
-							if string(result.Salt) == "" {
 
-								var s string
-		
+							result := q.FindPostByID
+
+							sort.Slice(result.Topics, func(i, j int) bool { return result.Topics[i] < result.Topics[j] })
+
+					l = len(result.Topics)
+							//if string(result.Salt) == "" {
+
+								/* var s string
+
 								for _, v := range result.Topics {
-		
+
 									s = string(v) + " " + s
-								}
-		
-								s = s + ": " + string(result.Content) + " - "
-		
-								str = str + `
-											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
-											<br>
-											`
-		
-											for _, v := range result.Tags {
-					
-												str = str + `
-											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="#` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
-											<br>
-											`
-											}
-		
-								for _, id := range result.Isparent {
-		
+								} */
+
+								//s = s + ": " + string(result.Content) + " - "
+
+								for i := 0; i < l; i++ {
+
 									str = str + `
-											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status'">
-											<br>
-											`
-		
+												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="#` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
+												<br>
+												<br>
+												`
+			
+									str = str + `
+												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + string(result.Content) + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
+												<br>
+												`
+			
+									for _, w := range result.Tags {
+			
+										str = str + `
+												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(w) + `" value="#` + string(w) + `" onclick="window.location.href='https://` + string(w) + `.code2go.dev/status'">
+												<br>
+												`
+									}
+			
+									for _, id := range result.Isparent {
+			
+										str = str + `
+												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status'">
+												<br>
+												`
+			
+									}
+			
 								}
-		
-							}
-		
+
+							//}
+
 						}
-		
+
 					}
 
 				}
