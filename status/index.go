@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"net/http"
 	//"os"
 	"strconv"
@@ -23,7 +23,7 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL.Host
+	url := r.URL.Hostname()
 
 	id := strings.SplitN(url, ".", -1)
 
@@ -32,6 +32,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	//id := strings.SplitN(url, "_", -1)
 
 	//http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status", http.StatusFound)
+
+	fmt.Fprint(w, id[0])
 
 	switch r.Method {
 
@@ -56,9 +58,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</div>
 		<br>
-		<br>
-		`+ id[0]+ 
-		`
 		<div class="container" id="data" style="color:white;">
 		<br>
 		<form class="form-inline" role="form" method="POST">
