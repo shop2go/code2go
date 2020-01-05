@@ -461,7 +461,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				for i := 0; i < l; i++ {
 
 						str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="#` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
 									<br>
 									<br>
 									`
@@ -622,7 +622,7 @@ LOOP:
 								for i := 0; i < l; i++ {
 
 									str = str + `
-												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="#` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
+												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
 												<br>
 												<br>
 												`
