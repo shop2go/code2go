@@ -456,14 +456,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						s = s + ": " + string(result.Content) + " - "
 
 						str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status#` + postID + `'">
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 									<br>
 									`
 
 									for _, v := range result.Tags {
 			
 										str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="#` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status#` + postID + `'">
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="#` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
 									<br>
 									`
 									}
@@ -471,7 +471,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						for _, id := range result.Isparent {
 
 							str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status#` + postID + `'">
+									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status'">
 									<br>
 									`
 
@@ -604,14 +604,14 @@ LOOP:
 								s = s + ": " + string(result.Content) + " - "
 		
 								str = str + `
-											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status#` + postID + `'">
+											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + s + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 											<br>
 											`
 		
 											for _, v := range result.Tags {
 					
 												str = str + `
-											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="#` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status#` + postID + `'">
+											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(v) + `" value="#` + string(v) + `" onclick="window.location.href='https://` + string(v) + `.code2go.dev/status'">
 											<br>
 											`
 											}
@@ -619,7 +619,7 @@ LOOP:
 								for _, id := range result.Isparent {
 		
 									str = str + `
-											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status#` + postID + `'">
+											<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status'">
 											<br>
 											`
 		

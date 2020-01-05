@@ -23,9 +23,11 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL.Path
+	url := r.URL.Host
 
-	id := strings.SplitN(url, "/status#", -1)
+	id := strings.SplitN(url, ".", -1)
+
+	//v := strings.TrimPrefix(id[0])
 
 	//id := strings.SplitN(url, "_", -1)
 
@@ -54,10 +56,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
 		</div>
 		<br>
-		<div class="container" id="data" style="color:white;">
 		<br>
-		` + id[1] +
+		`+ id[0]+ 
 		`
+		<div class="container" id="data" style="color:white;">
 		<br>
 		<form class="form-inline" role="form" method="POST">
 		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email">
