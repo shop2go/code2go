@@ -23,7 +23,7 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL.User.Username()
+	url := r.URL.Hostname()
 
 	//id := strings.SplitN(url, "_", -1)
 
