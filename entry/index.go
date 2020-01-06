@@ -272,55 +272,59 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < l; i++ {
 
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(years[i]), "role": "server-readonly"}))
+		go func() {
 
-		if err != nil {
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(years[i]), "role": "server-readonly"}))
 
-			fmt.Fprint(w, err)
+			if err != nil {
 
-			return
+				fmt.Fprint(w, err)
 
-		}
-
-		fx[years[i]] = x
-
-		var access *Access
-
-		if err = x.Get(&access); err != nil {
-
-			fmt.Fprint(w, err)
-
-		}
-
-		src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: access.Secret},
-		)
-
-		httpClient := oauth2.NewClient(context.Background(), src)
-
-		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-		var query struct {
-			AllCaches struct {
-				Data []Cache
-			}
-		}
-
-		if err = call.Query(context.Background(), &query, nil); err != nil {
-			fmt.Fprintf(w, "get cache error: %v\n", err)
-		}
-
-		result := query.AllCaches.Data
-
-		if result != nil {
-
-			for _, v := range result {
-
-				hits[string(v.Month)] = v.Posts
+				return
 
 			}
 
-		}
+			fx[years[i]] = x
+
+			var access *Access
+
+			if err = x.Get(&access); err != nil {
+
+				fmt.Fprint(w, err)
+
+			}
+
+			src := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			httpClient := oauth2.NewClient(context.Background(), src)
+
+			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			var query struct {
+				AllCaches struct {
+					Data []Cache
+				}
+			}
+
+			if err = call.Query(context.Background(), &query, nil); err != nil {
+				fmt.Fprintf(w, "get cache error: %v\n", err)
+			}
+
+			result := query.AllCaches.Data
+
+			if result != nil {
+
+				for _, v := range result {
+
+					hits[string(v.Month)] = v.Posts
+
+				}
+
+			}
+
+		}()
 
 	}
 
@@ -447,7 +451,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					/* sort.Slice(result.Topics, func(i, j int) bool { return result.Topics[i] < result.Topics[j] })
 
 					l = len(result.Topics) */
-					
+
 					//if string(result.Salt) == " " {
 
 					/* var s string
@@ -459,35 +463,35 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					//s = s + ": " + string(result.Content) + " - "
 
-				/* for i := 0; i < l; i++ {
+					/* for i := 0; i < l; i++ {
 
-						str = str + `
-									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
-									<br>
-									<br>
-									`
- */
-						str = str + `
+					str = str + `
+								<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
+								<br>
+								<br>
+								`
+					*/
+					str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + string(result.Content) + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 									<br>
 									`
 
-						for _, w := range result.Tags {
+					for _, w := range result.Tags {
 
-							str = str + `
+						str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(w) + `" value="#` + string(w) + `" onclick="window.location.href='https://` + string(w) + `.code2go.dev/status'">
 									<br>
 									`
-						}
+					}
 
-						for _, id := range result.Isparent {
+					for _, id := range result.Isparent {
 
-							str = str + `
+						str = str + `
 									<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status'">
 									<br>
 									`
 
-						}
+					}
 
 					//}
 
@@ -611,46 +615,46 @@ LOOP:
 							l = len(result.Topics) */
 							//if string(result.Salt) == "" {
 
-								/* var s string
+							/* var s string
 
-								for _, v := range result.Topics {
+							for _, v := range result.Topics {
 
-									s = string(v) + " " + s
-								} */
+								s = string(v) + " " + s
+							} */
 
-								//s = s + ": " + string(result.Content) + " - "
+							//s = s + ": " + string(result.Content) + " - "
 
-								/* for i := 0; i < l; i++ {
+							/* for i := 0; i < l; i++ {
 
-									str = str + `
-												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
-												<br>
-												<br>
-												` */
-			
-									str = str + `
+							str = str + `
+										<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(result.Topics[i]) + `" value="` + string(result.Topics[i]) + `" onclick="window.location.href='https://` + string(result.Topics[i]) + `.code2go.dev/status'">
+										<br>
+										<br>
+										` */
+
+							str = str + `
 												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + postID + `" value="` + string(result.Content) + `" onclick="window.location.href='https://` + postID + `.code2go.dev/status'">
 												<br>
 												`
-			
-									for _, w := range result.Tags {
-			
-										str = str + `
+
+							for _, w := range result.Tags {
+
+								str = str + `
 												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(w) + `" value="#` + string(w) + `" onclick="window.location.href='https://` + string(w) + `.code2go.dev/status'">
 												<br>
 												`
-									}
-			
-									for _, id := range result.Isparent {
-			
-										str = str + `
+							}
+
+							for _, id := range result.Isparent {
+
+								str = str + `
 												<input readonly="true" class="form-control-plaintext list-group-item-action" id="` + string(id) + `" value="` + string(id) + `" onclick="window.location.href='https://` + string(id) + `.code2go.dev/status'">
 												<br>
 												`
-			
-									}
-			
-								//}
+
+							}
+
+							//}
 
 							//}
 
