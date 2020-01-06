@@ -272,59 +272,55 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < l; i++ {
 
-		go func() {
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(years[i]), "role": "server-readonly"}))
 
-			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(years[i]), "role": "server-readonly"}))
+		if err != nil {
 
-			if err != nil {
+			fmt.Fprint(w, err)
 
-				fmt.Fprint(w, err)
+			return
 
-				return
+		}
+
+		fx[years[i]] = x
+
+		var access *Access
+
+		if err = x.Get(&access); err != nil {
+
+			fmt.Fprint(w, err)
+
+		}
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		var query struct {
+			AllCaches struct {
+				Data []Cache
+			}
+		}
+
+		if err = call.Query(context.Background(), &query, nil); err != nil {
+			fmt.Fprintf(w, "get cache error: %v\n", err)
+		}
+
+		result := query.AllCaches.Data
+
+		if result != nil {
+
+			for _, v := range result {
+
+				hits[string(v.Month)] = v.Posts
 
 			}
 
-			fx[years[i]] = x
-
-			var access *Access
-
-			if err = x.Get(&access); err != nil {
-
-				fmt.Fprint(w, err)
-
-			}
-
-			src := oauth2.StaticTokenSource(
-				&oauth2.Token{AccessToken: access.Secret},
-			)
-
-			httpClient := oauth2.NewClient(context.Background(), src)
-
-			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			var query struct {
-				AllCaches struct {
-					Data []Cache
-				}
-			}
-
-			if err = call.Query(context.Background(), &query, nil); err != nil {
-				fmt.Fprintf(w, "get cache error: %v\n", err)
-			}
-
-			result := query.AllCaches.Data
-
-			if result != nil {
-
-				for _, v := range result {
-
-					hits[string(v.Month)] = v.Posts
-
-				}
-
-			}
-
-		}()
+		}
 
 	}
 
