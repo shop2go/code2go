@@ -182,8 +182,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var m2 struct {
 			CreatePost struct {
 				ID   graphql.String `graphql:"_id"`
-				//Month graphql.String
-				//TS	 graphql.String `graphql:"_ts"`
 				Date graphql.String `graphql:"date"`
 				Post graphql.String `graphql:"post"`
 			} `graphql:"createPost(data:{post: $post, date: $date})"`
