@@ -6,7 +6,6 @@ import (
 	//"os"
 	"strconv"
 	//"strings"
-	//"github.com/mmaedel/code2go/pb"
 
 /* 	"golang.org/x/oauth2"
 
