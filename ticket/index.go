@@ -66,21 +66,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 
 	 	<script>
-		 paypal.Buttons({
-			createOrder: function() {
-				return fetch('/transaction', {
-				  method: 'post',
-				  headers: {
-					'content-type': 'application/json'
-				  }
-				}).then(function(res) {
-				  return res.json();
-				}).then(function(data) {
-				  return data.orderID;
-				});
-			  }
-		  }).render('#paypal-button-container');  
-		   </script>
+		 paypal.Buttons().render('#paypal-button-container'); 
+		</script>
 		   
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
 		</script>
