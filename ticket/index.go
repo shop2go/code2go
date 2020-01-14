@@ -42,7 +42,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<body style="background-color: #bcbcbc;">
 		<script
 		src="https://www.paypal.com/sdk/js?client-id=AbBxx3BR2eA63A4i1g5rQduQ5K2LSqkybP7IdOAlTS65SoRfqwxqaEymvl5DHy183eUO1QQ8hqWwB9mE&currency=EUR">
-	  </script>
+	  	</script>
    		<div class="container" id="search" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form">
 	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
@@ -64,8 +64,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="container" id="paypal-button-container">
 		</div>
 
-	 	<script>
-		 paypal.Buttons().render('#paypal-button-container'); 
+		 <script>
+
+		 paypal.Buttons({
+			function() {
+				fetch('https://code2go.dev/ticket', {
+				  method: 'post',
+				  headers: {
+					'content-type': 'application/json'
+				  }
+				});
+		  }).render('#paypal-button-container');
+		  
 		</script>
 		   
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
