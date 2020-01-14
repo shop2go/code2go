@@ -1,29 +1,26 @@
 package main
 
 import (
-	//"fmt"
+	"context"
+	"fmt"
 	"net/http"
-	//"os"
+	"os"
 	"strconv"
 	//"strings"
-
-/* 	"golang.org/x/oauth2"
+	"golang.org/x/oauth2"
 
 	//f "github.com/fauna/faunadb-go/faunadb"
-	"github.com/plutov/paypal" */
-
+	"github.com/plutov/paypal"
 )
-
-
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-/* 	c, err := paypal.NewClient(os.Getenv("PP_ID"), os.Getenv("PP_SECRET"), paypal.APIBaseSandBox)
+	/* 	c, err := paypal.NewClient(os.Getenv("PP_ID"), os.Getenv("PP_SECRET"), paypal.APIBaseSandBox)
 
-	if err != nil {
+	   	if err != nil {
 
-		fmt.Printf(w, err)
-	} */
+	   		fmt.Printf(w, err)
+	   	} */
 
 	switch r.Method {
 
@@ -58,20 +55,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<form class="form-inline" role="form" method="POST">
 		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email">
 		<br>
-		<input class="form-control mr-sm-2" type="password" placeholder="Secret" aria-label="Secret" id ="Secret" name ="Secret" value="">
-		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-		<!--input class="form-control mr-sm-2" type="text" placeholder="Entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-		<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content"></textarea>
-		<br>
-		<button type="submit" class="btn btn-light">submit</button>
+		<input readonly="true" class="form-control-plaintext" id="Ticket" aria-label="Ticket" name ="Ticket" value="Ticket">
+		<input class="form-control-plaintext" id="Count" aria-label="Count" name ="Count" placeholder="1">
+		<input readonly="true" class="form-control-plaintext" id="Price" aria-label="Price" name ="Price" value="50">
 		</form>
 		</div>
-		`
-
-		
-
-		str = str + `
 		<br>
 		<br>
 		<div class="container" id="paypal-button-container">
@@ -79,18 +67,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	 	<script>
 		 paypal.Buttons({
-			createOrder: function(data, actions) {
-			  // This function sets up the details of the transaction, including the amount and line item details.
-			  return actions.order.create({
-				purchase_units: [{
-				  amount: {
-					value: '55.00'
+			createOrder: function() {
+				return fetch('/ticket', {
+				  method: 'post',
+				  headers: {
+					'content-type': 'application/json'
 				  }
-				}]
-			  });
-			}
+				}).then(function(res) {
+				  return res.json();
+				}).then(function(data) {
+				  return data.orderID;
+				});
+			  }
 		  }).render('#paypal-button-container');  
-   		</script>
+		   </script>
+		   
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
 		</script>
 		</body>
@@ -100,6 +91,68 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
+
+	case "POST":
+
+		r.ParseForm()
+
+		email := r.FormValue("Email")
+		count := r.FormValue("Count")
+		//price := r.FormValue("Price")
+
+		i, err := strconv.Atoi(count)
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+		}
+
+		price := i * 50
+
+		var payer *paypal.CreateOrderPayer
+
+		payer.EmailAddress = email
+
+		var purchase []paypal.PurchaseUnitRequest = make([]paypal.PurchaseUnitRequest, 1)
+
+		purchase[0].Amount.Currency = "EUR"
+		purchase[0].Amount.Value = strconv.Itoa(price)
+
+		c, err := paypal.NewClient("AbBxx3BR2eA63A4i1g5rQduQ5K2LSqkybP7IdOAlTS65SoRfqwxqaEymvl5DHy183eUO1QQ8hqWwB9mE", os.Getenv("PP_SECRET"), paypal.APIBaseSandBox)
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+		}
+
+		accessToken, err := c.GetAccessToken()
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+		}
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: accessToken.Token},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		c.SetHTTPClient(httpClient)
+
+		order, err := c.CreateOrder("CAPTURE", purchase, payer, nil)
+
+		if err != nil {
+
+			fmt.Fprint(w, err)
+
+		}
+
+		fmt.Fprint(w, order.ID)
+
 	}
 
 }
