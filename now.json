@@ -10,6 +10,8 @@
 
       {"src": "./ticket/index.go", "use": "@now/go"},
 
+      {"src": "./transaction/index.go", "use": "@now/go"},
+
       { "src": "./entry/index.go", "use": "@now/go"},
       
       {"src": "./0/index.go", "use": "@now/go"},

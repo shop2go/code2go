@@ -68,7 +68,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	 	<script>
 		 paypal.Buttons({
 			createOrder: function() {
-				return fetch('/ticket', {
+				return fetch('/transaction', {
 				  method: 'post',
 				  headers: {
 					'content-type': 'application/json'
