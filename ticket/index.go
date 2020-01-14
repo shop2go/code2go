@@ -63,7 +63,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 		<br>
 		<br>
-		<div class="container" id="paypal-button-container">
+		<div class="container" id="paypal-button-container" Method="post">
 		</div>
 
 	 	<script>
@@ -80,7 +80,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-		//case "POST":
+		case "POST":
 
 		r.ParseForm()
 
