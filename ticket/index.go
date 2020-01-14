@@ -7,28 +7,23 @@ import (
 	"strconv"
 	//"strings"
 
+/* 	"golang.org/x/oauth2"
+
+	//f "github.com/fauna/faunadb-go/faunadb"
+	"github.com/plutov/paypal" */
+
 )
 
-type Access struct {
-	//Reference *f.RefV `fauna:"ref"`
-	Timestamp int    `fauna:"ts"`
-	Secret    string `fauna:"secret"`
-	Role      string `fauna:"role"`
-}
+
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL.Host
+/* 	c, err := paypal.NewClient(os.Getenv("PP_ID"), os.Getenv("PP_SECRET"), paypal.APIBaseSandBox)
 
-	//id := strings.SplitN(url, ".", -1)
+	if err != nil {
 
-	//v := strings.TrimPrefix(id[0])
-
-	//id := strings.SplitN(url, "_", -1)
-
-	//http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status", http.StatusFound)
-
-	fmt.Fprint(w, url)
+		fmt.Printf(w, err)
+	} */
 
 	switch r.Method {
 
@@ -49,7 +44,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<body style="background-color: #bcbcbc;">
 
 		<script
-		src="https://www.paypal.com/sdk/js?client-id=AbBxx3BR2eA63A4i1g5rQduQ5K2LSqkybP7IdOAlTS65SoRfqwxqaEymvl5DHy183eUO1QQ8hqWwB9mE">
+		src="https://www.paypal.com/sdk/js?client-id=AbBxx3BR2eA63A4i1g5rQduQ5K2LSqkybP7IdOAlTS65SoRfqwxqaEymvl5DHy183eUO1QQ8hqWwB9mE&currency=EUR">
 	  	</script>
 
    		<div class="container" id="search" style="color:white; font-size:30px;">
@@ -77,10 +72,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 
 		str = str + `
-		<div class="container" id="paypal-button-container"></div>
+		<br>
+		<br>
+		<div class="container" id="paypal-button-container">
+		</div>
 
-  		<script>
-    	paypal.Buttons().render('#paypal-button-container');
+	 	<script>
+		 paypal.Buttons({
+			createOrder: function(data, actions) {
+			  // This function sets up the details of the transaction, including the amount and line item details.
+			  return actions.order.create({
+				purchase_units: [{
+				  amount: {
+					value: '55.00'
+				  }
+				}]
+			  });
+			}
+		  }).render('#paypal-button-container');  
    		</script>
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
 		</script>
