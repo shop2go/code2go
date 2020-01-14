@@ -79,7 +79,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	case "POST":
+	//case "POST":
 
 		r.ParseForm()
 
