@@ -57,6 +57,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input readonly="true" class="form-control-plaintext" id="Ticket" aria-label="Ticket" name ="Ticket" value="Ticket">
 		<input class="form-control-plaintext" id="Count" aria-label="Count" name ="Count" placeholder="1" value="1">
 		<input readonly="true" class="form-control-plaintext" id="Price" aria-label="Price" name ="Price" value="50">
+		<br>
+		<button type="submit" class="btn btn-light">submit</button>
 		</form>
 		</div>
 		<br>
