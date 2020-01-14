@@ -77,7 +77,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 
 		str = str + `
-		<div id="paypal-button-container"></div>
+		<div class="container" id="paypal-button-container"></div>
 
   		<script>
     	paypal.Buttons().render('#paypal-button-container');
