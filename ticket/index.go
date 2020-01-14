@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
 	//"strings"
 	"golang.org/x/oauth2"
 
@@ -79,7 +80,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	//case "POST":
+		//case "POST":
 
 		r.ParseForm()
 
@@ -99,7 +100,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var payer *paypal.CreateOrderPayer
 
-		payer.EmailAddress = email
+		if email != "" {
+
+			payer.EmailAddress = email
+
+		}
 
 		var purchase []paypal.PurchaseUnitRequest = make([]paypal.PurchaseUnitRequest, 1)
 
