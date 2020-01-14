@@ -57,13 +57,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email">
 		<br>
 		<input readonly="true" class="form-control-plaintext" id="Ticket" aria-label="Ticket" name ="Ticket" value="Ticket">
-		<input class="form-control-plaintext" id="Count" aria-label="Count" name ="Count" placeholder="1">
+		<input class="form-control-plaintext" id="Count" aria-label="Count" name ="Count" placeholder="1" value="1">
 		<input readonly="true" class="form-control-plaintext" id="Price" aria-label="Price" name ="Price" value="50">
 		</form>
 		</div>
 		<br>
 		<br>
-		<div class="container" id="paypal-button-container" Method="post">
+		<div class="container" id="paypal-button-container">
 		</div>
 
 	 	<script>
