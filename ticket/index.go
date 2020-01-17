@@ -77,6 +77,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		http.Redirect(w, r, "/transaction", 301) */
 
-	}
+	
 
 }
