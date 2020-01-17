@@ -39,12 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</head>
 		<body style="background-color: #bcbcbc;">
 		
-   		<div class="container" id="search" style="color:white; font-size:30px;">
-		<form class="form-inline" role="form">
-	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
-	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-		</div>
-		<br>
+   		
 		<div class="container" id="data" style="color:white;">
 		<br>
 		<form class="form-inline" role="form" method="POST">
