@@ -8,10 +8,6 @@ import (
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	switch r.Method {
-
-	case "POST":
-
 		r.ParseForm()
 
 		//email := r.FormValue("Email")
@@ -125,6 +121,6 @@ onApprove: function(data, actions) {
 
 		fmt.Fprint(w, order.ID)
 		*/
-	}
+	
 
 }
