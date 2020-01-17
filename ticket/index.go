@@ -70,7 +70,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-		http.Redirect(w, r, "https://code2go.dev/transaction", 301)
+		http.Redirect(w, r, "/transaction", http.StatusFound)
 
 	}
 
