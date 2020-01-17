@@ -1,17 +1,15 @@
 package main
 
 import (
-	"context"
+	//"context"
 	"fmt"
 	"net/http"
-	"os"
+	//"os"
 	"strconv"
-
 	//"strings"
-	"golang.org/x/oauth2"
-
+	//"golang.org/x/oauth2"
 	//f "github.com/fauna/faunadb-go/faunadb"
-	"github.com/plutov/paypal"
+	//"github.com/plutov/paypal"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -40,9 +38,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 		</head>
 		<body style="background-color: #bcbcbc;">
-		<script
-		src="https://www.paypal.com/sdk/js?client-id=AbBxx3BR2eA63A4i1g5rQduQ5K2LSqkybP7IdOAlTS65SoRfqwxqaEymvl5DHy183eUO1QQ8hqWwB9mE&currency=EUR">
-	  	</script>
+		
    		<div class="container" id="search" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form">
 	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
@@ -58,27 +54,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input class="form-control-plaintext" id="Count" aria-label="Count" name ="Count" placeholder="1" value="1">
 		<input readonly="true" class="form-control-plaintext" id="Price" aria-label="Price" name ="Price" value="50">
 		<br>
-		<button type="submit" class="btn btn-light">submit</button>
+		<button type="submit" class="btn btn-light">checkout</button>
 		</form>
 		</div>
 		<br>
 		<br>
-		<div class="container" id="paypal-button-container">
-		</div>
 
-		 <script>
-
-		 paypal.Buttons({
-			function() {
-				fetch('https://code2go.dev/ticket', {
-				  method: 'post',
-				  headers: {
-					'content-type': 'application/json'
-				  }
-				});
-		  }).render('#paypal-button-container');
-		  
-		</script>
 		   
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
 		</script>
@@ -90,11 +71,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-		case "POST":
+	case "POST":
 
 		r.ParseForm()
 
-		email := r.FormValue("Email")
+		//email := r.FormValue("Email")
 		count := r.FormValue("Count")
 		//price := r.FormValue("Price")
 
@@ -108,7 +89,59 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		price := i * 50
 
-		var payer *paypal.CreateOrderPayer
+		str := `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>CODE2GO</title>
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+		</head>
+		<body style="background-color: #bcbcbc;">
+		<script
+		src="https://www.paypal.com/sdk/js?client-id=AbBxx3BR2eA63A4i1g5rQduQ5K2LSqkybP7IdOAlTS65SoRfqwxqaEymvl5DHy183eUO1QQ8hqWwB9mE&currency=EUR">
+	  	</script>
+   		<br>
+		<div class="container" id="paypal-button-container">
+		</div>
+
+		<script>
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      // This function sets up the details of the transaction, including the amount and line item details.
+      return actions.order.create({
+        purchase_units: [{
+		  amount: {
+			  value: '` + strconv.Itoa(price) + `'
+          }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      // This function captures the funds from the transaction.
+      return actions.order.capture().then(function(details) {
+        // This function shows a transaction success message to your buyer.
+        alert('Transaction completed by ' + details.payer.name.given_name);
+      });
+    }
+  }).render('#paypal-button-container');
+</script>
+		   
+		<script src="https://assets.medienwerk.now.sh/material.min.js">
+		</script>
+		</body>
+		</html>
+		`
+
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
+
+		/* var payer *paypal.CreateOrderPayer
 
 		if email != "" {
 
@@ -154,7 +187,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		fmt.Fprint(w, order.ID)
-
+		*/
 	}
 
 }
