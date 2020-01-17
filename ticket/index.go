@@ -68,9 +68,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		//r.ParseForm()
+		r.ParseForm()
 
 		http.Redirect(w, r, "https://code2go.dev/transaction", 301)
 
 	}
+
 }

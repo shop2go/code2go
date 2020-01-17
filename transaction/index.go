@@ -8,10 +8,10 @@ import (
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-		r.ParseForm()
+		//r.ParseForm()
 
 		//email := r.FormValue("Email")
-		count := r.FormValue("Count")
+		count := r.Form.Get("Count")
 		//price := r.FormValue("Price")
 
 		i, err := strconv.Atoi(count)
