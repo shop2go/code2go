@@ -21,9 +21,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   		fmt.Printf(w, err)
 		   } */
 
-/* 	switch r.Method {
+	switch r.Method {
 
-	case "GET": */
+	case "GET":
 
 		str := `
 		<!DOCTYPE html>
@@ -49,7 +49,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input class="form-control-plaintext" id="Count" aria-label="Count" name ="Count" placeholder="1" value="1">
 		<input readonly="true" class="form-control-plaintext" id="Price" aria-label="Price" name ="Price" value="50">
 		<br>
-		<button type="submit" class="btn btn-light" onclick="window.location.href='https://code2go.dev/transaction'">checkout</button>
+		<button type="submit" class="btn btn-light">checkout</button>
 		</form>
 		</div>
 		<br>
@@ -66,12 +66,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-/* 	case "POST":
+	case "POST":
 
 		//r.ParseForm()
 
-		http.Redirect(w, r, "/transaction", 301) */
+		http.Redirect(w, r, "https://code2go.dev/transaction", 301)
 
-	
-
+	}
 }
