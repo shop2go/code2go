@@ -102,7 +102,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</head>
 	<body style="background-color: #bcbcbc;">
 	<script
-	src="https://www.paypal.com/sdk/js?client-id=AdWs1Mh2qwvGHPp-8PMwKp9agG5u23iftziWXnzq46uBPRPmIk6JeDbAtApJ96VhG50ATo1mr1TBkt5S&currency=EUR">
+	src="https://www.paypal.com/sdk/js?client-id=` +
+	 os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
 	  </script>
 	   <br>
 	   <br>
