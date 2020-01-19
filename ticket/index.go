@@ -4,7 +4,7 @@ import (
 	//"context"
 	"fmt"
 	"net/http"
-	//"os"
+	"os"
 	"strconv"
 	//"strings"
 	//"golang.org/x/oauth2"
@@ -102,7 +102,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</head>
 	<body style="background-color: #bcbcbc;">
 	<script
-	src="https://www.paypal.com/sdk/js?client-id=AbBxx3BR2eA63A4i1g5rQduQ5K2LSqkybP7IdOAlTS65SoRfqwxqaEymvl5DHy183eUO1QQ8hqWwB9mE&currency=EUR">
+	src="https://www.paypal.com/sdk/js?client-id=` +
+	 os.Getenv("PP_SECRET") + `&currency=EUR">
 	  </script>
 	   <br>
 	   <br>
@@ -113,8 +114,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 paypal.Buttons({
 createOrder: function(data, actions) {
   return actions.order.create({
+	"intent": "CAPTURE", 
 	purchase_units: [{
 	  amount: {
+		"currency_code": "EUR",
 		  value: '` + strconv.Itoa(price) + `'
 	  }
 	}]

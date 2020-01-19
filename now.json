@@ -69,6 +69,7 @@
     
     "env": {
       "FAUNA_ACCESS": "@fdb",
+      "PP_CLIENT_ID": "@ppc",
       "PP_SECRET": "@pps"
       }
         
