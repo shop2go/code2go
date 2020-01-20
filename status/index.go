@@ -19,6 +19,9 @@ type Access struct {
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	
+	url := r.Host
+
+	fmt.Fprint(w, url)
 
 	//id := strings.SplitN(url, ".", -1)
 
@@ -32,9 +35,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		url := r.URL.Hostname()
-
-		fmt.Fprint(w, url)
 
 
 		str := `
