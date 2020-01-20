@@ -5,7 +5,7 @@ import (
 	"net/http"
 	//"os"
 	"strconv"
-	//"strings"
+	"strings"
 
 )
 
@@ -19,9 +19,19 @@ type Access struct {
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	
-	url := r.Host
+	u := r.Host
 
-	fmt.Fprint(w, url)
+	u = strings.TrimSuffix(u, "code2go.dev")
+
+	if u != "" {
+
+		u = strings.TrimSuffix(u, ".")
+
+	}
+	
+	fmt.Fprint(w, u)
+
+	
 
 	//id := strings.SplitN(url, ".", -1)
 
