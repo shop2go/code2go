@@ -18,7 +18,7 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := r.URL.Host
+	
 
 	//id := strings.SplitN(url, ".", -1)
 
@@ -28,11 +28,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status", http.StatusFound)
 
-	fmt.Fprint(w, url)
-
 	switch r.Method {
 
 	case "GET":
+
+		url := r.URL.Host
+		
+		fmt.Fprint(w, url)
 
 		str := `
 		<!DOCTYPE html>
