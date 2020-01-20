@@ -32,9 +32,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		url := r.URL.Host
-		
+		url := r.URL.Hostname()
+
 		fmt.Fprint(w, url)
+
 
 		str := `
 		<!DOCTYPE html>
