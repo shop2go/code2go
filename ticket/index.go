@@ -23,9 +23,11 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	c, _ := r.Cookie("user")
+/* 	c, _ := r.Cookie("user")
 
-	token := c.Value
+	token := c.Value */
+
+	token := "test"
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
