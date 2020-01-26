@@ -1,12 +1,17 @@
 package main
 
 import (
-	"fmt"
+	//"context"
+	//"fmt"
 	"net/http"
 	//"os"
 	"strconv"
-	"strings"
+	//"strings"
 
+/* 	"golang.org/x/oauth2"
+
+	f "github.com/fauna/faunadb-go/faunadb"
+	"github.com/shurcooL/graphql" */
 )
 
 type Access struct {
@@ -17,8 +22,31 @@ type Access struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+/* 
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("users"), "role": "server"}))
+
+	if err != nil {
+
+		fmt.Fprint(w, err)
+
+		return
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
+
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
@@ -28,24 +56,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		u = strings.TrimSuffix(u, ".")
 
 	}
-	
-	fmt.Fprint(w, u)
-
-	
-
-	//id := strings.SplitN(url, ".", -1)
-
-	//v := strings.TrimPrefix(id[0])
-
-	//id := strings.SplitN(url, "_", -1)
-
-	//http.Redirect(w, r, "https://" + secret[1] + ".code2go.dev/status", http.StatusFound)
-
+ */
 	switch r.Method {
 
 	case "GET":
-
-
 
 		str := `
 		<!DOCTYPE html>
@@ -69,20 +83,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="container" id="data" style="color:white;">
 		<br>
 		<form class="form-inline" role="form" method="POST">
-		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email">
+		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id="Email" name ="Email">
 		<br>
-		<input class="form-control mr-sm-2" type="password" placeholder="Secret" aria-label="Secret" id ="Secret" name ="Secret" value="">
-		<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-		<!--input class="form-control mr-sm-2" type="text" placeholder="Entry" aria-label="Entry" id ="Entry" name ="Entry" required-->
-		<input class="form-control mr-sm-2" type="text" placeholder="Tags" aria-label="Tags" id ="Tags" name ="Tags">
-		<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content"></textarea>
+		<input type="text" class="form-control" aria-label="User" id="User" name ="User">
+		<input class="form-control mr-sm-2" type="password" placeholder="Secret" aria-label="Secret" id="Secret" name ="Secret" value="">
 		<br>
-		<button type="submit" class="btn btn-light">submit</button>
+		<button type="submit" class="btn btn-light">login</button>
 		</form>
 		</div>
 		`
-
-		
 
 		str = str + `
 		<script src="https://assets.medienwerk.now.sh/material.min.js">
