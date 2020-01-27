@@ -23,10 +23,14 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var result []struct {
+	var Cat struct {
 		Category graphql.String `graphql:"category"`
 		Quantity graphql.Int    `graphql:"quantity"`
 		Price    graphql.Float  `graphql:"price"`
+	}
+
+	var result []struct {
+		Cat
 	}
 
 	u := r.Host
