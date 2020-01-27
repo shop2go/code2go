@@ -21,13 +21,13 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+type Cat struct {
+	Category graphql.String `graphql:"category"`
+	Quantity graphql.Int    `graphql:"quantity"`
+	Price    graphql.Float  `graphql:"price"`
+}
 
-	type Cat struct {
-		Category graphql.String `graphql:"category"`
-		Quantity graphql.Int    `graphql:"quantity"`
-		Price    graphql.Float  `graphql:"price"`
-	}
+func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []Cat
 
@@ -84,7 +84,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				ID          graphql.ID      `graphql:"_id"`
 				Name        graphql.String  `graphql:"name"`
 				Date        graphql.String  `graphql:"date"`
-				Isconfirmed graphql.Boolean `graphql:"isconfirmed"`
 				Host        struct {
 					ID       graphql.ID     `graphql:"_id"`
 					Username graphql.String `graphql:"username"`
