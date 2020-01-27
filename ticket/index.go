@@ -94,7 +94,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						Category graphql.String `graphql:"category"`
 						Quantity graphql.Int    `graphql:"quantity"`
 						Price    graphql.Float  `graphql:"price"`
-					} `graphql:"cats"`
+					} `graphql:"cat"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
 		}
