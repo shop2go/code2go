@@ -85,7 +85,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Isconfirmed graphql.Boolean `graphql:"isconfirmed"`
 				Host        struct {
 					ID       graphql.ID     `graphql:"_id"`
-					Username graphql.String `graphql:"usernamename"`
+					Username graphql.String `graphql:"username"`
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
 				Tickets struct {
