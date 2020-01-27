@@ -23,11 +23,11 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var result []struct {
+	/* var result []struct {
 		Category graphql.String `graphql:"category"`
 		Quantity graphql.Int    `graphql:"quantity"`
 		Price    graphql.Float  `graphql:"price"`
-	}
+	} */
 
 	u := r.Host
 
@@ -90,11 +90,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Tickets struct {
 					ID    graphql.ID  `graphql:"_id"`
 					Total graphql.Int `graphql:"total"`
-					Cats  []struct { 
+					/* Cats  []struct { 
 							Category graphql.String `graphql:"category"`
 							Quantity graphql.Int    `graphql:"quantity"`
 							Price    graphql.Float  `graphql:"price"`
-					} `graphql:"cats"`
+					} `graphql:"cats"` */
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
 		}
@@ -112,7 +112,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		result = q2.eventByName.Tickets.Cats
+		//result = q2.eventByName.Tickets.Cats
 
 	}
 
@@ -176,7 +176,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			`
 
-			for i, v := range result {
+			/* for i, v := range result {
 
 				count := strconv.Itoa(i)
 
@@ -195,7 +195,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				
 				`
 
-			}
+			} */
 
 			str = str + `
 			
