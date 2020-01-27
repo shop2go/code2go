@@ -21,7 +21,7 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type Cat struct {
+type CAT struct {
 	Category graphql.String `graphql:"category"`
 	Quantity graphql.Int    `graphql:"quantity"`
 	Price    graphql.Float  `graphql:"price"`
@@ -29,11 +29,7 @@ type Cat struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var result := []struct {
-		Category graphql.String `graphql:"category"`
-		Quantity graphql.Int    `graphql:"quantity"`
-		Price    graphql.Float  `graphql:"price"`
-	}
+	var result []CAT
 
 	u := r.Host
 
