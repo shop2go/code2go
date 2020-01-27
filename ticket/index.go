@@ -21,9 +21,19 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
+type Cat struct {
+	Category graphql.String `graphql:"category"`
+	Quantity graphql.Int    `graphql:"quantity"`
+	Price    graphql.Float  `graphql:"price"`
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var result struct
+	var result := []struct {
+		Category graphql.String `graphql:"category"`
+		Quantity graphql.Int    `graphql:"quantity"`
+		Price    graphql.Float  `graphql:"price"`
+	}
 
 	u := r.Host
 
@@ -110,7 +120,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		result = q2
+		result = q2.eventByName.Tickets.Cats
 
 	}
 
