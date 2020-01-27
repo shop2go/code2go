@@ -21,17 +21,7 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type Cats []Cat
-
-type Cat struct {
-	Category graphql.String `graphql:"category"`
-	Quantity graphql.Int    `graphql:"quantity"`
-	Price    graphql.Float  `graphql:"price"`
-}
-
 func Handler(w http.ResponseWriter, r *http.Request) {
-
-	var result Cats
 
 	u := r.Host
 
@@ -94,7 +84,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Tickets struct {
 					ID    graphql.ID  `graphql:"_id"`
 					Total graphql.Int `graphql:"total"`
-					Cats  Cats       `graphql:"cats"`
+					Cats  []struct {
+						Cat struct {
+							Category graphql.String `graphql:"category"`
+							Quantity graphql.Int    `graphql:"quantity"`
+							Price    graphql.Float  `graphql:"price"`
+						} `graphql:"cat"`
+					} `graphql:"cats"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
 		}
@@ -112,7 +108,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		result = q2.eventByName.Tickets.Cats
+		result := q2.eventByName.Tickets.Cats
 
 	}
 
