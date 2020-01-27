@@ -143,7 +143,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} `graphql:"userByToken(token: $token, isregistered: $isregistered)"`
 			}
 
-			v1 := map[string]interface{}{
+			v1 = map[string]interface{}{
 				"token":        graphql.String(token),
 				"isregistered": graphql.Boolean(true),
 			}
@@ -187,11 +187,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				//q = append(q, int(v.Quantity))
 
 				str = str + `
-				<span>`
 
-				+ string(v.Category) + `
-
-				</span><br>
+				<span>`+ string(v.Category) + `</span><br>
 				
 				<input readonly="true" class="form-control-plaintext" id="Ticket` + count + `" aria-label="Ticket` + count + `" name ="Ticket` + count + `" value="` + quant + `">
 				<input class="form-control-plaintext" id="Count` + count + `" aria-label="Count` + count + `" name ="Count` + count + `" placeholder="" value="0">
