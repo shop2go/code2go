@@ -100,7 +100,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
 		}
 
-		v1 = map[string]interface{}{
+		v1 := map[string]interface{}{
 			"name":        graphql.String(u),
 			"isconfirmed": graphql.Boolean(true),
 		}
@@ -187,10 +187,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				//q = append(q, int(v.Quantity))
 
 				str = str + `
-
 				<span>`
 
-				+string(v.Category) + `
+				+ string(v.Category) + `
 
 				</span><br>
 				
