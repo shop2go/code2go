@@ -143,7 +143,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} `graphql:"userByToken(token: $token, isregistered: $isregistered)"`
 			}
 
-			v1 = map[string]interface{}{
+			v1 := map[string]interface{}{
 				"token":        graphql.String(token),
 				"isregistered": graphql.Boolean(true),
 			}
