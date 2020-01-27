@@ -97,7 +97,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						Price    graphql.Float  `graphql:"price"`
 					} `graphql:"Cat"`
 				} `graphql:"Ticket"`
-			} `graphql:"eventByName(name: $name, isconfirmed: true)"`
+			} `graphql:"eventByName(name: $name, isconfirmed: ` + graphql.Boolean(true) + `)"`
 		}
 
 		v1 := map[string]interface{}{
