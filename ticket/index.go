@@ -23,11 +23,31 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-/* 	c, _ := r.Cookie("user")
+	var result []struct {
+		Category graphql.String `graphql:"category"`
+		Quantity graphql.Int    `graphql:"quantity"`
+		Price    graphql.Float  `graphql:"price"`
+	}
 
-	token := c.Value */
+	u := r.Host
+
+	u = strings.TrimSuffix(u, "code2go.dev")
 
 	token := "test"
+
+	s := r.Cookies()
+
+	for _, c := range s {
+
+		if c.Name == "code2go.dev" {
+
+			token = c.Value
+
+		}
+
+	}
+
+	//var q []int = make([]int, 0)
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -52,6 +72,50 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	httpClient := oauth2.NewClient(context.Background(), src)
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+	if u != "" {
+
+		u = strings.TrimSuffix(u, ".")
+
+		var q2 struct {
+			eventByName struct {
+				ID          graphql.ID      `graphql:"_id"`
+				Name        graphql.String  `graphql:"name"`
+				Date        graphql.String  `graphql:"date"`
+				Isconfirmed graphql.Boolean `graphql:"isconfirmed"`
+				Host        struct {
+					ID       graphql.ID     `graphql:"_id"`
+					Username graphql.String `graphql:"usernamename"`
+					Email    graphql.String `graphql:"email"`
+				} `graphql:"User"`
+				Tickets struct {
+					ID    graphql.ID  `graphql:"_id"`
+					Total graphql.Int `graphql:"total"`
+					Cat   []struct {
+						Category graphql.String `graphql:"category"`
+						Quantity graphql.Int    `graphql:"quantity"`
+						Price    graphql.Float  `graphql:"price"`
+					} `graphql:"Cat"`
+				} `graphql:"Ticket"`
+			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
+		}
+
+		v1 = map[string]interface{}{
+			"name":        graphql.String(u),
+			"isconfirmed": graphql.Boolean(true),
+		}
+
+		if err := call.Query(context.Background(), &q2, v1); err != nil {
+
+			fmt.Fprint(w, err)
+
+			return
+
+		}
+
+		result = q2.eventByName.Tickets.Cat
+
+	}
 
 	/* 	c, err := paypal.NewClient(os.Getenv("PP_ID"), os.Getenv("PP_SECRET"), paypal.APIBaseSandBox)
 
@@ -90,59 +154,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			result1 := string(q1.UserByToken.Email)
-
-			u := r.Host
-
-			u = strings.TrimSuffix(u, "code2go.dev")
-
-			var result []struct {
-				Category graphql.String `graphql:"category"`
-				Quantity graphql.Int    `graphql:"quantity"`
-				Price    graphql.Float  `graphql:"price"`
-			}
-
-			if u != "" {
-
-				u = strings.TrimSuffix(u, ".")
-
-				var q2 struct {
-					eventByName struct {
-						ID          graphql.ID      `graphql:"_id"`
-						Name        graphql.String  `graphql:"name"`
-						Date        graphql.String  `graphql:"date"`
-						Isconfirmed graphql.Boolean `graphql:"isconfirmed"`
-						Host        struct {
-							ID       graphql.ID     `graphql:"_id"`
-							Username graphql.String `graphql:"usernamename"`
-							Email    graphql.String `graphql:"email"`
-						} `graphql:"User"`
-						Tickets struct {
-							ID    graphql.ID  `graphql:"_id"`
-							Total graphql.Int `graphql:"total"`
-							Cat   []struct {
-								Category graphql.String `graphql:"category"`
-								Quantity graphql.Int    `graphql:"quantity"`
-								Price    graphql.Float  `graphql:"price"`
-							} `graphql:"Cat"`
-						} `graphql:"Ticket"`
-					} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
-				}
-
-				v1 = map[string]interface{}{
-					"name":        graphql.String(u),
-					"isconfirmed": graphql.Boolean(true),
-				}
-
-				if err := call.Query(context.Background(), &q2, v1); err != nil {
-
-					fmt.Fprint(w, err)
-
-				}
-
-				result = q2.eventByName.Tickets.Cat
-
-			}
+			//result1 := string(q1.UserByToken.Email)
 
 			str := `
 			<!DOCTYPE html>
@@ -161,22 +173,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<div class="container" id="data" style="color:white;">
 			<br>
 			<form class="form-inline" role="form" method="POST">
-			<input type="email" class="form-control" value="` + result1 + `" aria-label="Email" id ="Email" name ="Email">
+			<input type="email" class="form-control" value="` + string(q1.UserByToken.Email) + `" aria-label="Email" id ="Email" name ="Email">
 			<br>
 			`
 
 			for i, v := range result {
 
-				integer := strconv.Itoa(i)
+				count := strconv.Itoa(i)
 
-				price := strconv.FormatFloat(float64(v.Price), 'f', 2, 32)
+				price := strconv.FormatFloat(float64(v.Price), 'f', 2, 64)
 				quant := strconv.Itoa(int(v.Quantity))
 
+				//q = append(q, int(v.Quantity))
+
 				str = str + `
+
+				<span>`
+
+				+string(v.Category) + `
+
+				</span><br>
 				
-				<input readonly="true" class="form-control-plaintext" id="Ticket` + integer + `" aria-label="Ticket` + integer + `" name ="Ticket` + integer + `" value="` + quant + ` tickets: ` + string(v.Category) + `">
-				<input class="form-control-plaintext" id="Count` + integer + `" aria-label="Count` + integer + `" name ="Count` + integer + `" placeholder="" value="0">
-				<input readonly="true" class="form-control-plaintext" id="Price` + integer + `" aria-label="Price` + integer + `" name ="Price` + integer + `" value="` + price + `">
+				<input readonly="true" class="form-control-plaintext" id="Ticket` + count + `" aria-label="Ticket` + count + `" name ="Ticket` + count + `" value="` + quant + `">
+				<input class="form-control-plaintext" id="Count` + count + `" aria-label="Count` + count + `" name ="Count` + count + `" placeholder="" value="0">
+				<input readonly="true" class="form-control-plaintext" id="Price` + count + `" aria-label="Price` + count + `" name ="Price` + count + `" value="` + price + `">
 				<br>
 				
 				`
@@ -248,48 +268,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		r.ParseForm()
-
-		u := r.Host
-
-		u = strings.TrimSuffix(u, "code2go.dev")
-
-		u = strings.TrimSuffix(u, ".")
-
 		switch u {
 
 		default:
 
-			if token != "" {
-
-				var q struct {
-					UserByToken struct {
-						ID           graphql.ID      `graphql:"_id"`
-						Username     graphql.String  `graphql:"username"`
-						Isregistered graphql.Boolean `graphql:"isregistered`
-						Email        graphql.String  `graphql:"email`
-						Token        graphql.String  `graphql:"token`
-					} `graphql:"userByToken(token: $token)"`
-				}
-
-				v1 := map[string]interface{}{
-					"token": graphql.String(token),
-				}
-
-				if err := call.Query(context.Background(), &q, v1); err != nil {
-
-					fmt.Fprintf(w, "user error: %v", err)
-
-					return
-				}
-
-				//result = string(q.UserByToken.Username)
-
-			}
-
 		case "":
 
 		}
+
+		r.ParseForm()
 
 		//result = r.Form.Get("Email")
 
