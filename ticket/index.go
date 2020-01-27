@@ -57,8 +57,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Fprintf(w, "connection error: %v\n", err)
 
-		return
-
 	}
 
 	var access *Access
@@ -106,7 +104,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if err := call.Query(context.Background(), &q2, v1); err != nil {
 
-			fmt.Fprint(w, err)
+			fmt.Fprintf(w, "%v\n", err)
 
 		}
 
@@ -149,7 +147,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if err := call.Query(context.Background(), &q1, v1); err != nil {
 
-				fmt.Fprint(w, err)
+				fmt.Fprintf(w, "%v\n", err)
 
 			}
 
@@ -284,9 +282,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 
-			fmt.Fprint(w, err)
-
-			return
+			fmt.Fprintf(w, "%v\n", err)
 
 		}
 
@@ -294,9 +290,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 
-			fmt.Fprint(w, err)
-
-			return
+			fmt.Fprintf(w, "%v\n", err)
 
 		}
 
