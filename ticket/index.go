@@ -82,7 +82,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				ID   graphql.ID     `graphql:"_id"`
 				Name graphql.String `graphql:"name"`
 				Date graphql.String `graphql:"date"`
-					Host struct {
+				Host struct {
 					ID       graphql.ID     `graphql:"_id"`
 					Username graphql.String `graphql:"username"`
 					Email    graphql.String `graphql:"email"`
@@ -90,7 +90,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Tickets struct {
 					ID    graphql.ID  `graphql:"_id"`
 					Total graphql.Int `graphql:"total"`
-					/* Cats  []struct { 
+					/* Cats  []struct {
 							Category graphql.String `graphql:"category"`
 							Quantity graphql.Int    `graphql:"quantity"`
 							Price    graphql.Float  `graphql:"price"`
@@ -108,11 +108,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			fmt.Fprint(w, err)
 
-			return
-
 		}
 
-		fmt.Fprint(w, q2.eventByName.Tickets)
+		//fmt.Fprint(w, q2.eventByName.Tickets)
 
 		//result = q2.eventByName.Tickets.Cats
 
@@ -194,7 +192,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<input class="form-control-plaintext" id="Count` + count + `" aria-label="Count` + count + `" name ="Count` + count + `" placeholder="" value="0">
 				<input readonly="true" class="form-control-plaintext" id="Price` + count + `" aria-label="Price` + count + `" name ="Price` + count + `" value="` + price + `">
 				<br>
-				
+
 				`
 
 			} */
