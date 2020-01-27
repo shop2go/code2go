@@ -177,7 +177,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			`
 
-			for i, v := range result.eventByName.Tickets.Cats {
+			for i, v := range result {
 
 				count := strconv.Itoa(i)
 
