@@ -21,7 +21,6 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var result []struct {
@@ -92,11 +91,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					ID    graphql.ID  `graphql:"_id"`
 					Total graphql.Int `graphql:"total"`
 					Cats  []struct {
-							Category graphql.String `graphql:"category"`
+						Category graphql.String `graphql:"category"`
 						Quantity graphql.Int    `graphql:"quantity"`
 						Price    graphql.Float  `graphql:"price"`
-				} `graphql:"cats"`
-				} `graphql:"t      ickets"`
+					} `graphql:"cats"`
+				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
 		}
 
