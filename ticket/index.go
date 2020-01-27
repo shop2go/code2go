@@ -97,11 +97,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						Price    graphql.Float  `graphql:"price"`
 					} `graphql:"Cat"`
 				} `graphql:"Ticket"`
-			} `graphql:"eventByName(name: $name, isconfirmed: ` + graphql.Boolean(true) + `)"`
+			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
 		}
 
 		v1 := map[string]interface{}{
 			"name": graphql.String(u),
+			"isconfirmed": graphql.Boolean(true),
 		}
 
 		if err := call.Query(context.Background(), &q2, v1); err != nil {
