@@ -113,7 +113,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		result = q2.eventByName.Tickets.Cat
+		result = q2.eventByName.Tickets.Cats
 
 	}
 
