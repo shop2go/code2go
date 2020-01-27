@@ -82,7 +82,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				ID   graphql.ID     `graphql:"_id"`
 				Name graphql.String `graphql:"name"`
 				Date graphql.String `graphql:"date"`
-				Host struct {
+					Host struct {
 					ID       graphql.ID     `graphql:"_id"`
 					Username graphql.String `graphql:"username"`
 					Email    graphql.String `graphql:"email"`
@@ -90,10 +90,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Tickets struct {
 					ID    graphql.ID  `graphql:"_id"`
 					Total graphql.Int `graphql:"total"`
-					Cats  []struct {/* 
-						Category graphql.String `graphql:"category"`
-						Quantity graphql.Int    `graphql:"quantity"`
-						Price    graphql.Float  `graphql:"price"` */
+					Cats  []struct { 
+							Category graphql.String `graphql:"category"`
+							Quantity graphql.Int    `graphql:"quantity"`
+							Price    graphql.Float  `graphql:"price"`
 					} `graphql:"cats"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
