@@ -21,7 +21,9 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type Cats []struct {
+type Cats []Cat
+
+type Cat struct {
 	Category graphql.String `graphql:"category"`
 	Quantity graphql.Int    `graphql:"quantity"`
 	Price    graphql.Float  `graphql:"price"`
