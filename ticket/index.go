@@ -112,6 +112,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		fmt.Fprint(w, q2.eventByName.Tickets)
+
 		//result = q2.eventByName.Tickets.Cats
 
 	}
