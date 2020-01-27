@@ -23,6 +23,12 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	var result []struct {
+		Category graphql.String `graphql:"category"`
+		Quantity graphql.Int    `graphql:"quantity"`
+		Price    graphql.Float  `graphql:"price"`
+	}
+
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
@@ -108,7 +114,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		result := q2.eventByName.Tickets.Cats
+		result = q2.eventByName.Tickets.Cats
 
 	}
 
