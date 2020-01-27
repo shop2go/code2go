@@ -188,7 +188,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = str + `
 
 				<span>` + string(v.Category) + `</span><br>
-				
 				<input readonly="true" class="form-control-plaintext" id="Ticket` + count + `" aria-label="Ticket` + count + `" name ="Ticket` + count + `" value="` + quant + `">
 				<input class="form-control-plaintext" id="Count` + count + `" aria-label="Count` + count + `" name ="Count` + count + `" placeholder="" value="0">
 				<input readonly="true" class="form-control-plaintext" id="Price` + count + `" aria-label="Price` + count + `" name ="Price` + count + `" value="` + price + `">
