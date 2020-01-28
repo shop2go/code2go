@@ -69,7 +69,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		u = strings.TrimSuffix(u, ".")
 
-		fmt.Fprintf(w, "%v\n", u)
+		//fmt.Fprintf(w, "%v\n", u)
 
 		var q2 struct {
 			EventByName struct {
@@ -106,7 +106,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fmt.Fprintf(w, "%v\n", q2)
+		//fmt.Fprintf(w, "%v\n", q2)
 
 		r := q2.EventByName.Tickets
 
@@ -202,18 +202,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				catprice := strings.SplitN(k, ":", -1)
 
-				//count := strconv.Itoa(i)
-
-				//price := strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)
-
-				//q = append(q, int(v.Quantity))
-
 				str = str + `
 
-				<span>Category: ` + catprice[0] + `</span><br>
-				<span>Quantity: ` + strconv.Itoa(v) + `</span><br>
-				<input readonly="true" class="form-control-plaintext" id="Ticket` + k + `" aria-label="Ticket` + k + `" name ="Ticket` + k + `" value="">
-				<input class="form-control-plaintext" id="Count` + k + `" aria-label="Count` + k + `" name ="Count` + k + `" value="1">
+				<span><br>
+				Category: ` + catprice[0] + `</span>
+				<br><br>
+				<input readonly="true" class="form-control-plaintext" id="Ticket` + k + `" aria-label="Ticket` + k + `" name ="Ticket` + k + `" value="` + strconv.Itoa(v) + `">
+				<input class="form-control-plaintext" id="Count` + k + `" aria-label="Count` + k + `" name ="Count` + k + `" value="0">
 				<input readonly="true" class="form-control-plaintext" id="Price` + k + `" aria-label="Price` + k + `" name ="Price` + k + `" value="` + catprice[1] + `">
 				<br>
 
@@ -286,43 +281,37 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		switch u {
-
-		default:
-
-		case "":
-
-		}
+		var i int
+		var j, sum float64
 
 		r.ParseForm()
 
-		//result = r.Form.Get("Email")
+		for k, v := range result {
 
-		//	http.Redirect(w, r, "/transaction", http.StatusFound)
+			//	http.Redirect(w, r, "/transaction", http.StatusFound)
 
-		//email := r.FormValue("Email")
-		count := r.Form.Get("Count")
-		price := r.Form.Get("Price")
+			count := r.Form.Get("Count" + k)
+			price := r.Form.Get("Price" + k)
 
-		if count != "" || price != "" {
-
-			i, err := strconv.Atoi(count)
+			i, err = strconv.Atoi(count)
 
 			if err != nil {
 
-				fmt.Fprintf(w, "%v\n", err)
+				i = 0
 
 			}
 
-			j, err := strconv.Atoi(price)
+			j, err = strconv.ParseFloat(price, 64)
 
-			if err != nil {
+			if i != 0 || j != 0 {
 
-				fmt.Fprintf(w, "%v\n", err)
+				sum = i * j
 
 			}
 
-			sum := i * j
+		}
+
+		if sum != 0 {
 
 			str := `
 	<!DOCTYPE html>
@@ -379,8 +368,7 @@ onApprove: function(data, actions) {
 
 		} else {
 
-			fmt.Fprintf(w, "%s", "Sorry, no offerings right now...")
-
+			fmt.Fprintf(w, "%s\n", "...sorry something went wrong... :-(")
 		}
 
 	}
