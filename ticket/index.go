@@ -305,7 +305,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			sum = i * j
+			sum := i * j
 
 			str := `
 	<!DOCTYPE html>
