@@ -253,7 +253,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<div class="container" id="data" style="color:white;">
 			<br>
 			<form class="form-inline" role="form" method="POST">
-			<input type="email" class="form-control" value="` + string(q1.UserByToken.Email) + `" aria-label="Email" id ="Email" name ="Email">
+			<input type="email" class="form-control" value="" aria-label="Email" id ="Email" name ="Email">
 			
 			`
 
