@@ -311,9 +311,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if sum != 0 {
-
-			str := `
+		str := `
 	<!DOCTYPE html>
 	<html lang="en">
 	<head>
@@ -328,7 +326,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<body style="background-color: #bcbcbc;">
 	<script
 	src="https://www.paypal.com/sdk/js?client-id=` +
-				os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
+			os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
 	  </script>
 	   <br>
 	   <br>
@@ -362,14 +360,9 @@ onApprove: function(data, actions) {
 	</html>
 	`
 
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-			w.Write([]byte(str))
-
-		} else {
-
-			fmt.Fprintf(w, "%s\n", "...sorry something went wrong... :-(")
-		}
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
 
 	}
 
