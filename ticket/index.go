@@ -303,6 +303,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			j, err = strconv.ParseFloat(price, 64)
 
+			if err != nil {
+
+				j = 0
+				
+			}
+
 			if i != 0 || j != 0 {
 
 				sum = float64(i) * j
