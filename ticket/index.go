@@ -306,7 +306,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 
 				j = 0
-				
+
 			}
 
 			if i != 0 || j != 0 {
@@ -331,11 +331,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</head>
 	<body style="background-color: #bcbcbc;">
 	<script
-	src="https://www.paypal.com/sdk/js?client-id=
-	` 
-	+ os.Getenv("PP_CLIENT_ID") + 
-			`
-		&currency=EUR">
+	src="https://www.paypal.com/sdk/js?client-id=` + os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
 	  </script>
 	   <br>
 	   <br>
