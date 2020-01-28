@@ -80,15 +80,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
 				Tickets []struct {
-					Ticket struct {
-						Total graphql.Int `graphql:"total"`
-						Cat    struct {
-							Category graphql.String `graphql:"category"`
-							Price    graphql.Float  `graphql:"price"`
-							Issued    graphql.Int    `graphql:"issued"`
-						} `graphql:"cat"`
-					} `graphql:"ticket"`
-				} `graphql:"tickets"`
+					Total graphql.Int `graphql:"total"`
+					Cat   struct {
+						Category graphql.String `graphql:"category"`
+						Price    graphql.Float  `graphql:"price"`
+						Issued   graphql.Int    `graphql:"issued"`
+					} `graphql:"cat"`
+				} `graphql:"ticketpage"`
 			} `graphql:"eventByName(name: $name)"`
 		}
 
@@ -110,7 +108,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				//if v.Event.Name == r.Name {
 
-				result[string(v.Ticket.Cat.Category)+":"+strconv.FormatFloat(float64(v.Ticket.Cat.Price), 'f', 2, 64)] = int(v.Ticket.Cat.Issued)
+				result[string(v.Cat.Category)+":"+strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)] = int(v.Cat.Issued)
 
 				//}
 
