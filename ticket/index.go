@@ -23,7 +23,7 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var result []graphql.Int = make([]graphql.Int, 0)
+	var result map[string]int = make(map[string]int, 0)
 
 	u := r.Host
 
@@ -82,7 +82,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
 				Ticket []struct {
-					ID    graphql.ID  `graphql:"_id"`
+					ID    graphql.ID `graphql:"_id"`
+					Event struct {
+						Name graphql.String `graphql:"name"`
+					} `graphql:"event"`
 					Total graphql.Int `graphql:"total"`
 					Cat   struct {
 						Category graphql.String `graphql:"category"`
@@ -102,12 +105,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//fmt.Fprint(w, q2.eventByName.Tickets)
+		r := q2.eventByName
 
-		for i := 0; i < len(q2.eventByName.Ticket); i++ {
+		if len(r.Ticket) > 0 {
 
-			result = append(result, q2.eventByName.Ticket[i].Total)
+			for _, v := range r.Ticket {
 
+				if v.Event.Name == r.Name {
+
+					result[string(v.Cat.Category)] += int(v.Total)
+
+				}
+
+			}
 		}
 
 	}
@@ -130,16 +140,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			var q1 struct {
 				UserByToken struct {
-					ID           graphql.ID      `graphql:"_id"`
-					Username     graphql.String  `graphql:"username"`
-					Isregistered graphql.Boolean `graphql:"isregistered`
-					Email        graphql.String  `graphql:"email`
-					Token        graphql.String  `graphql:"token`
+					ID         graphql.ID      `graphql:"_id"`
+					Username   graphql.String  `graphql:"username"`
+					registered graphql.Boolean `graphql:"isregistered`
+					Email      graphql.String  `graphql:"email`
+					Token      graphql.String  `graphql:"token`
 				} `graphql:"userByToken(token: $token)"`
 			}
 
 			v1 := map[string]interface{}{
-				"token":        graphql.String(token),
+				"token": graphql.String(token),
 			}
 
 			if err := call.Query(context.Background(), &q1, v1); err != nil {
@@ -171,22 +181,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			`
 
-			for i, v := range result {
+			for k, v := range result {
 
-				count := strconv.Itoa(i)
+				//count := strconv.Itoa(i)
 
 				//price := strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)
 
 				//q = append(q, int(v.Quantity))
 
-				offer := strconv.Itoa(int(v))
-
 				str = str + `
 
-				<span>` + offer + `</span><br>
-				<input readonly="true" class="form-control-plaintext" id="Ticket` + count + `" aria-label="Ticket` + count + `" name ="Ticket` + count + `" value="">
-				<input class="form-control-plaintext" id="Count` + count + `" aria-label="Count` + count + `" name ="Count` + count + `" placeholder="" value="0">
-				<input readonly="true" class="form-control-plaintext" id="Price` + count + `" aria-label="Price` + count + `" name ="Price` + count + `" value="">
+				<span>` + k + `</span><br>
+				<input readonly="true" class="form-control-plaintext" id="Ticket` + k + `" aria-label="Ticket` + k + `" name ="Ticket` + k + `" value="">
+				<input class="form-control-plaintext" id="Count` + k + `" aria-label="Count` + k + `" name ="Count` + k + `" value="` + strconv.Itoa(v) + `">
+				<input readonly="true" class="form-control-plaintext" id="Price` + k + `" aria-label="Price` + k + `" name ="Price` + k + `" value="">
 				<br>
 
 				`
