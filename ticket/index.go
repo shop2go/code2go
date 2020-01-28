@@ -104,6 +104,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		fmt.Fprintf(w, "%v\n", q2)
+
 		r := q2.EventByName.Tickets
 
 		if len(r.Data) > 0 {
