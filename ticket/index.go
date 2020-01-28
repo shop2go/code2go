@@ -43,8 +43,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	//var q []int = make([]int, 0)
-
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("tickets"), "role": "server"}))
@@ -113,7 +111,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if v.Event.Name == r.Name {
 
-					result[string(v.Cat.Category)] += int(v.Total)
+					result[string(v.Cat.Category)+":"+strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)] += int(v.Total)
 
 				}
 
@@ -183,6 +181,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for k, v := range result {
 
+				catprice := strings.SplitN(k, ":", -1)
+
 				//count := strconv.Itoa(i)
 
 				//price := strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)
@@ -191,10 +191,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 
-				<span>` + k + `</span><br>
+				<span>Category: ` + catprice[0] + `</span><br>
+				<span>Quantity: ` + strconv.Itoa(v) + `</span><br>
 				<input readonly="true" class="form-control-plaintext" id="Ticket` + k + `" aria-label="Ticket` + k + `" name ="Ticket` + k + `" value="">
-				<input class="form-control-plaintext" id="Count` + k + `" aria-label="Count` + k + `" name ="Count` + k + `" value="` + strconv.Itoa(v) + `">
-				<input readonly="true" class="form-control-plaintext" id="Price` + k + `" aria-label="Price` + k + `" name ="Price` + k + `" value="">
+				<input class="form-control-plaintext" id="Count` + k + `" aria-label="Count` + k + `" name ="Count` + k + `" value="1">
+				<input readonly="true" class="form-control-plaintext" id="Price` + k + `" aria-label="Price` + k + `" name ="Price` + k + `" value="` + catprice[1] + `">
 				<br>
 
 				`
@@ -281,28 +282,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//	http.Redirect(w, r, "/transaction", http.StatusFound)
 
 		//email := r.FormValue("Email")
-		count := r.Form.Get("Count1")
-		price := r.Form.Get("Price1")
+		count := r.Form.Get("Count")
+		price := r.Form.Get("Price")
 
-		i, err := strconv.Atoi(count)
+		if count != "" || price != "" {
 
-		if err != nil {
+			i, err := strconv.Atoi(count)
 
-			fmt.Fprintf(w, "%v\n", err)
+			if err != nil {
 
-		}
+				fmt.Fprintf(w, "%v\n", err)
 
-		j, err := strconv.Atoi(price)
+			}
 
-		if err != nil {
+			j, err := strconv.Atoi(price)
 
-			fmt.Fprintf(w, "%v\n", err)
+			if err != nil {
 
-		}
+				fmt.Fprintf(w, "%v\n", err)
 
-		sum := i * j
+			}
 
-		str := `
+			sum = i * j
+
+			str := `
 	<!DOCTYPE html>
 	<html lang="en">
 	<head>
@@ -317,7 +320,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<body style="background-color: #bcbcbc;">
 	<script
 	src="https://www.paypal.com/sdk/js?client-id=` +
-			os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
+				os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
 	  </script>
 	   <br>
 	   <br>
@@ -351,9 +354,15 @@ onApprove: function(data, actions) {
 	</html>
 	`
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+			w.Write([]byte(str))
+
+		}
+
+	} else {
+
+			fmt.Fprintf(w, "%s", "Sorry, no offerings right now...")
 
 	}
 
