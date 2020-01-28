@@ -111,6 +111,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if v.Event.Name == r.Name {
 
+					
+
 					result[string(v.Cat.Category)+":"+strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)] += int(v.Total)
 
 				}
@@ -358,11 +360,11 @@ onApprove: function(data, actions) {
 			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 			w.Write([]byte(str))
 
-		}
-
-	} else {
+		} else {
 
 			fmt.Fprintf(w, "%s", "Sorry, no offerings right now...")
+
+		}
 
 	}
 
