@@ -69,6 +69,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		u = strings.TrimSuffix(u, ".")
 
+		fmt.Fprintf(w, "%v\n", u)
+
 		var q2 struct {
 			EventByName struct {
 				ID        graphql.ID      `graphql:"_id"`
