@@ -286,7 +286,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-		for k, v := range result {
+		for k, _ := range result {
 
 			//	http.Redirect(w, r, "/transaction", http.StatusFound)
 
