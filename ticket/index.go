@@ -253,12 +253,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<div class="container" id="data" style="color:white;">
 			<br>
 			<form class="form-inline" role="form" method="POST">
-			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email">
-			<br>
-			<input readonly="true" class="form-control-plaintext" id="Ticket" aria-label="Ticket" name ="Ticket" value="Ticket">
-			<input class="form-control-plaintext" id="Count" aria-label="Count" name ="Count" placeholder="" value="1">
-			<input readonly="true" class="form-control-plaintext" id="Price" aria-label="Price" name ="Price" value="50">
-			<br>
+			<input type="email" class="form-control" value="` + string(q1.UserByToken.Email) + `" aria-label="Email" id ="Email" name ="Email">
+			
+			`
+
+			for k, v := range result {
+
+				catprice := strings.SplitN(k, ":", -1)
+
+				str = str + `
+
+				<input readonly="true" class="form-control-plaintext" id="Category` + k + `" aria-label="Category` + k + `" name ="Category` + k + `" value="` + catprice[0] + `">
+				
+				<input readonly="true" class="form-control-plaintext" id="Ticket` + k + `" aria-label="Ticket` + k + `" name ="Ticket` + k + `" value="` + strconv.Itoa(v) + `">
+				<input class="form-control-plaintext" id="Count` + k + `" aria-label="Count` + k + `" name ="Count` + k + `" value="0">
+				<input readonly="true" class="form-control-plaintext" id="Price` + k + `" aria-label="Price` + k + `" name ="Price` + k + `" value="` + catprice[1] + `">
+				<br>
+
+				`
+
+			}
+
+			str = str + `
+			
 			<button type="submit" class="btn btn-light">checkout</button>
 			</form>
 			</div>
@@ -285,7 +302,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
-		for k, _ := range result {
+		for k := range result {
 
 			//	http.Redirect(w, r, "/transaction", http.StatusFound)
 
