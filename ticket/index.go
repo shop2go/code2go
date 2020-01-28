@@ -23,11 +23,7 @@ type Access struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	/* var result []struct {
-		Category graphql.String `graphql:"category"`
-		Quantity graphql.Int    `graphql:"quantity"`
-		Price    graphql.Float  `graphql:"price"`
-	} */
+	var result []graphql.Int = make([]graphql.Int, 0)
 
 	u := r.Host
 
@@ -85,21 +81,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Username graphql.String `graphql:"username"`
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
-				Tickets struct {
+				Ticket []struct {
 					ID    graphql.ID  `graphql:"_id"`
 					Total graphql.Int `graphql:"total"`
-					/* Cats  []struct {
-							Category graphql.String `graphql:"category"`
-							Quantity graphql.Int    `graphql:"quantity"`
-							Price    graphql.Float  `graphql:"price"`
-					} `graphql:"cats"` */
-				} `graphql:"tickets"`
-			} `graphql:"eventByName(name: $name, isconfirmed: $isconfirmed)"`
+					Cat   struct {
+						Category graphql.String `graphql:"category"`
+						Price    graphql.Float  `graphql:"price"`
+					} `graphql:"cat"`
+				} `graphql:"ticket"`
+			} `graphql:"eventByName(name: $name)"`
 		}
 
 		v1 := map[string]interface{}{
-			"name":        graphql.String(u),
-			"isconfirmed": graphql.Boolean(true),
+			"name": graphql.String(u),
 		}
 
 		if err := call.Query(context.Background(), &q2, v1); err != nil {
@@ -110,7 +104,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//fmt.Fprint(w, q2.eventByName.Tickets)
 
-		//result = q2.eventByName.Tickets.Cats
+		for i := 0; i < len(q2.eventByName.Ticket); i++ {
+
+			result = append(result, q2.eventByName.Ticket[i].Total)
+
+		}
 
 	}
 
@@ -178,15 +176,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				count := strconv.Itoa(i)
 
-				price := strconv.FormatFloat(float64(v.Price), 'f', 2, 64)
-				quant := strconv.Itoa(int(v.Quantity))
+				price := strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)
 
 				//q = append(q, int(v.Quantity))
 
 				str = str + `
 
-				<span>` + string(v.Category) + `</span><br>
-				<input readonly="true" class="form-control-plaintext" id="Ticket` + count + `" aria-label="Ticket` + count + `" name ="Ticket` + count + `" value="` + quant + `">
+				<span>` + string(v.Cat.Category) + `</span><br>
+				<input readonly="true" class="form-control-plaintext" id="Ticket` + count + `" aria-label="Ticket` + count + `" name ="Ticket` + count + `" value="">
 				<input class="form-control-plaintext" id="Count` + count + `" aria-label="Count` + count + `" name ="Count` + count + `" placeholder="" value="0">
 				<input readonly="true" class="form-control-plaintext" id="Price` + count + `" aria-label="Price` + count + `" name ="Price` + count + `" value="` + price + `">
 				<br>
