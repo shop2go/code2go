@@ -108,9 +108,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, v := range r.Tickets {
 
-				for _, y := range v {
+				//for _, y := range v {
 
-					for _, x := range y.Cat {
+					for _, x := range v.Cat {
 
 						var i int
 
@@ -124,7 +124,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
 
-					}
+					//}
 
 				}
 
