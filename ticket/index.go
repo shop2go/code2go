@@ -70,24 +70,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		u = strings.TrimSuffix(u, ".")
 
 		var q2 struct {
-			eventByName struct {
-				ID   graphql.ID     `graphql:"_id"`
-				Name graphql.String `graphql:"name"`
-				Date graphql.String `graphql:"date"`
-				Host struct {
+			EventByName struct {
+				ID        graphql.ID      `graphql:"_id"`
+				Date      graphql.String  `graphql:"date"`
+				Confirmed graphql.Boolean `graphql:"confirmed"`
+				Host      struct {
 					ID       graphql.ID     `graphql:"_id"`
 					Username graphql.String `graphql:"username"`
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
-				Tickets struct {
-					Data []struct {
-						Total graphql.Int `graphql:"total"`
-						Cat   struct {
-							Category graphql.String `graphql:"category"`
-							Price    graphql.Float  `graphql:"price"`
-							Issued   graphql.Int    `graphql:"issued"`
-						} `graphql:"cat"`
-					} /* `graphql:"data"` */
+				Tickets []struct {
+					Total graphql.Int `graphql:"total"`
+					Cat   []struct {
+						Category graphql.String `graphql:"category"`
+						Price    graphql.Float  `graphql:"price"`
+						Issued   graphql.Int    `graphql:"issued"`
+					} `graphql:"cat"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
 		}
@@ -102,18 +100,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fmt.Fprintf(w, "%s\n", string(eventByName.Name))
-		r := q2.eventByName.Tickets
+		r := q2.EventByName
 
-		if len(r.Data) > 0 {
+		if len(r.Tickets) > 0 {
 
-			for _, v := range r.Data {
+			for _, v := range r.Tickets {
 
-				//if v.Event.Name == r.Name {
+				for _, x := range v.Cat {
 
-				result[string(v.Cat.Category)+":"+strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)] = int(v.Cat.Issued)
+					var i int
 
-				//}
+					if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
+
+						i = j
+
+					}
+
+					//if v.Event.Name == r.Name {
+
+					result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
+
+					//}
+
+				}
 
 			}
 		}
