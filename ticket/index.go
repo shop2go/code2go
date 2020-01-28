@@ -110,19 +110,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				//for _, y := range v {
 
-					for _, x := range v.Cat {
+				for _, x := range v.Ticket.Cat {
 
-						var i int
+					var i int
 
-						if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
+					if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
 
-							i = j
+						i = j
 
-						}
+					}
 
-						//if v.Event.Name == r.Name {
+					//if v.Event.Name == r.Name {
 
-						result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
+					result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
 
 					//}
 
