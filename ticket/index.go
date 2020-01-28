@@ -195,7 +195,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<form class="form-inline" role="form" method="POST">
 			<input type="email" class="form-control" value="` + string(q1.UserByToken.Email) + `" aria-label="Email" id ="Email" name ="Email">
-			<br>
+			
 			`
 
 			for k, v := range result {
@@ -204,9 +204,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `
 
-				<span><br>
-				Category: ` + catprice[0] + `</span>
-				<br><br>
+				<input readonly="true" class="form-control-plaintext" id="Category` + k + `" aria-label="Category` + k + `" name ="Category` + k + `" value="` + catprice[0] + `">
+				
 				<input readonly="true" class="form-control-plaintext" id="Ticket` + k + `" aria-label="Ticket` + k + `" name ="Ticket` + k + `" value="` + strconv.Itoa(v) + `">
 				<input class="form-control-plaintext" id="Count` + k + `" aria-label="Count` + k + `" name ="Count` + k + `" value="0">
 				<input readonly="true" class="form-control-plaintext" id="Price` + k + `" aria-label="Price` + k + `" name ="Price` + k + `" value="` + catprice[1] + `">
@@ -317,6 +316,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		s := strconv.FormatFloat(sum, 'f', 2, 64)
+
 		str := `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -346,7 +347,7 @@ createOrder: function(data, actions) {
 	purchase_units: [{
 	  amount: {
 		"currency_code": "EUR",
-		  value: '` + strconv.FormatFloat(sum, 'f', 2, 64) + `'
+		  value: "` + s + `"
 	  }
 	}]
   });
