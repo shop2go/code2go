@@ -327,7 +327,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if i != 0 || j != 0 {
 
-				sum = float64(i) * j
+				sum += float64(i) * j
 
 			}
 
