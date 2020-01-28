@@ -135,12 +135,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Isregistered graphql.Boolean `graphql:"isregistered`
 					Email        graphql.String  `graphql:"email`
 					Token        graphql.String  `graphql:"token`
-				} `graphql:"userByToken(token: $token, isregistered: $isregistered)"`
+				} `graphql:"userByToken(token: $token)"`
 			}
 
 			v1 := map[string]interface{}{
 				"token":        graphql.String(token),
-				"isregistered": graphql.Boolean(true),
 			}
 
 			if err := call.Query(context.Background(), &q1, v1); err != nil {
@@ -172,25 +171,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			`
 
-			/* for i, v := range result {
+			for i, v := range result {
 
 				count := strconv.Itoa(i)
 
-				price := strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)
+				//price := strconv.FormatFloat(float64(v.Cat.Price), 'f', 2, 64)
 
 				//q = append(q, int(v.Quantity))
 
+				offer := strconv.Itoa(int(v))
+
 				str = str + `
 
-				<span>` + string(v.Cat.Category) + `</span><br>
+				<span>` + offer + `</span><br>
 				<input readonly="true" class="form-control-plaintext" id="Ticket` + count + `" aria-label="Ticket` + count + `" name ="Ticket` + count + `" value="">
 				<input class="form-control-plaintext" id="Count` + count + `" aria-label="Count` + count + `" name ="Count` + count + `" placeholder="" value="0">
-				<input readonly="true" class="form-control-plaintext" id="Price` + count + `" aria-label="Price` + count + `" name ="Price` + count + `" value="` + price + `">
+				<input readonly="true" class="form-control-plaintext" id="Price` + count + `" aria-label="Price` + count + `" name ="Price` + count + `" value="">
 				<br>
 
 				`
 
-			} */
+			}
 
 			str = str + `
 			
