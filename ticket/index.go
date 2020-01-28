@@ -87,7 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 							Price    graphql.Float  `graphql:"price"`
 							Issued   graphql.Int    `graphql:"issued"`
 						} `graphql:"cat"`
-					} `graphql:"data"`
+					} /* `graphql:"data"` */
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
 		}
@@ -102,11 +102,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		r := q2.eventByName
+		r := q2.eventByName.Tickets
 
-		if len(r.Tickets) > 0 {
+		if len(r.Data) > 0 {
 
-			for _, v := range r.Tickets {
+			for _, v := range r.Data {
 
 				//if v.Event.Name == r.Name {
 
