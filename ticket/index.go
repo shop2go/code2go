@@ -79,14 +79,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Username graphql.String `graphql:"username"`
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
-				Tickets []struct {
-					Total graphql.Int `graphql:"total"`
-					Cat   struct {
-						Category graphql.String `graphql:"category"`
-						Price    graphql.Float  `graphql:"price"`
-						Issued   graphql.Int    `graphql:"issued"`
-					} `graphql:"cat"`
-				} `graphql:"ticketpage"`
+				Tickets struct {
+					Data []struct {
+						Total graphql.Int `graphql:"total"`
+						Cat   struct {
+							Category graphql.String `graphql:"category"`
+							Price    graphql.Float  `graphql:"price"`
+							Issued   graphql.Int    `graphql:"issued"`
+						} `graphql:"cat"`
+					} `graphql:"data"`
+				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
 		}
 
