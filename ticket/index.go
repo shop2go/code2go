@@ -305,7 +305,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if i != 0 || j != 0 {
 
-				sum = i * j
+				sum = float64(i) * j
 
 			}
 
@@ -343,7 +343,7 @@ createOrder: function(data, actions) {
 	purchase_units: [{
 	  amount: {
 		"currency_code": "EUR",
-		  value: '` + strconv.Itoa(sum) + `'
+		  value: '` + strconv.FormatFloat(sum, 'f', 2, 64) + `'
 	  }
 	}]
   });
