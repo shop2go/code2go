@@ -108,16 +108,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
 				Tickets []struct {
-					Ticket struct {
+					Data struct {
 						Total graphql.Int `graphql:"total"`
 						Cats  []struct {
-							Cat struct {
+							Data struct {
 								Category graphql.String `graphql:"category"`
 								Price    graphql.Float  `graphql:"price"`
 								Issued   graphql.Int    `graphql:"issued"`
-							} `graphql:"cat"`
+							} `graphql:"data"`
 						} `graphql:"cats"`
-					} `graphql:"ticket"`
+					} `graphql:"data"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
 		}
@@ -139,25 +139,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for _, tis := range r.Tickets {
 
 			//for _, y := range v {
-			ti := tis.Ticket
+			//ti := tis.Data
 
-			for _, cts := range ti.Cats {
+			for _, ti := range tis.Data {
 
-				x := cts.Cat
+				for _, cts := range ti.Cats {
 
-				var i int
+					for _, x := range cts.Data {
 
-				if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
+						var i int
 
-					i = j
+						if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
+
+							i = j
+
+						}
+
+						//if v.Event.Name == r.Name {
+
+						result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
+
+						//}
+
+					}
 
 				}
-
-				//if v.Event.Name == r.Name {
-
-				result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
-
-				//}
 
 			}
 
