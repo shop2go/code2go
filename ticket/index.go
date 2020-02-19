@@ -91,7 +91,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 								Issued   graphql.Int    `graphql:"issued"`
 							} `graphql:"data"`
 						} `graphql:"cats"`
-					} `graphql:"ticket"`
+					} `graphql:"data"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
 		}
