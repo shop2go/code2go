@@ -108,10 +108,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
 				Tickets []struct {
-					data struct {
+					Data struct {
 						Total graphql.Int `graphql:"total"`
 						Cats  []struct {
-							data struct {
+							Data struct {
 								Category graphql.String `graphql:"category"`
 								Price    graphql.Float  `graphql:"price"`
 								Issued   graphql.Int    `graphql:"issued"`
