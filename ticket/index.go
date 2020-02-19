@@ -84,8 +84,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Tickets []struct {
 					Ticket struct {
 						Total graphql.Int `graphql:"total"`
-						Cats   []struct {
-							Data struct {
+						Cats  []struct {
+							Cat struct {
 								Category graphql.String `graphql:"category"`
 								Price    graphql.Float  `graphql:"price"`
 								Issued   graphql.Int    `graphql:"issued"`
@@ -110,34 +110,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r := q2.EventByName
 
-		
+		for _, tis := range r.Tickets {
 
-			for _, tis := range r.Tickets {
+			//for _, y := range v {
+			ti := tis.Ticket
 
-				//for _, y := range v {
-					ti := tis.Ticket
+			for _, cts := range ti.Cats {
 
-				for _, cts := range ti.Cats {
+				x := cts.Cat
 
-					x = cts.Data
+				var i int
 
-					var i int
+				if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
 
-					if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
-
-						i = j
-
-					}
-
-					//if v.Event.Name == r.Name {
-
-					result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
-
-					//}
+					i = j
 
 				}
 
+				//if v.Event.Name == r.Name {
+
+				result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
+
+				//}
+
 			}
+
+		}
 
 	}
 
