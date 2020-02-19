@@ -110,11 +110,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r := q2.EventByName
 
-		for _, o := range r {
+		
 
-			for _, v := range o.Tickets {
+			for _, o := range r.Tickets {
 
 				//for _, y := range v {
+					v := o.Data
 
 				for _, w := range v.Cats {
 
@@ -137,7 +138,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 			}
-		}
 
 	}
 
