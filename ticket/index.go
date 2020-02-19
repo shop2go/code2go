@@ -81,8 +81,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Username graphql.String `graphql:"username"`
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
-				Tickets struct {
-					Data []struct {
+				Tickets []struct {
+					Data struct {
 						Total graphql.Int `graphql:"total"`
 						Cats   []struct {
 							Data struct {
@@ -108,15 +108,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//fmt.Fprintf(w, "%v\n", q2)
 
-		r := q2.EventByName.Tickets
+		r := q2.EventByName
 
-		if len(r.Data) > 0 {
+		for _, o := range r {
 
-			for _, v := range r.Data {
+			for _, v := range o.Tickets {
 
 				//for _, y := range v {
 
-				for _, x := range v.Cat.Data {
+				for _, w := range v.Cats {
+
+					x = w.Data
 
 					var i int
 
