@@ -139,13 +139,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for _, tis := range r.Tickets {
 
 			//for _, y := range v {
-			//ti := tis.Data
+			ti := tis.Data
 
-			for _, ti := range tis.Data {
+			//for _, ti := range tis.Data {
 
 				for _, cts := range ti.Cats {
 
-					for _, x := range cts.Data {
+					//for _, x := range cts.Data {
+
+						for _, x := range cts.Data {
 
 						var i int
 
@@ -159,13 +161,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
 
-						//}
+						}
 
-					}
+					//}
 
 				}
 
-			}
+			//}
 
 		}
 
