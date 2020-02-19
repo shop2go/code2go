@@ -138,11 +138,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			//for _, ti := range tis.Data {
 
-			for _, ct := range ti.Cats {
+			for _, x := range ti.Cats {
 
 				//for _, x := range cts.Data {
 
-				x := ct.Data
+				//x := ct.Data
 
 				var i int
 
