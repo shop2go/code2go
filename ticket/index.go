@@ -71,31 +71,31 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//fmt.Fprintf(w, "%v\n", u)
 		/* query {
-  eventByName(name: "bday") {
-    host {
-      username
-      tickets {
-        data {
-          total
-        }
-      }
-    }
-    name
-    confirmed
-    date
-    tickets {
-      data {
-        cats {
-          data {
-            category
-            price
-            issued
-          }
-        }
-      }
-    }
-  }
-} */
+		  eventByName(name: "bday") {
+		    host {
+		      username
+		      tickets {
+		        data {
+		          total
+		        }
+		      }
+		    }
+		    name
+		    confirmed
+		    date
+		    tickets {
+		      data {
+		        cats {
+		          data {
+		            category
+		            price
+		            issued
+		          }
+		        }
+		      }
+		    }
+		  }
+		} */
 
 		var q2 struct {
 			EventByName struct {
@@ -115,9 +115,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 								Category graphql.String `graphql:"category"`
 								Price    graphql.Float  `graphql:"price"`
 								Issued   graphql.Int    `graphql:"issued"`
-							} `graphql:"data"`
+							} `graphql:"cat"`
 						} `graphql:"cats"`
-					} `graphql:"data"`
+					} `graphql:"ticket"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
 		}
@@ -128,7 +128,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if err := call.Query(context.Background(), &q2, v1); err != nil {
 
-			fmt.Fprintf(w, "%s %v\n","query error: ", err)
+			fmt.Fprintf(w, "%s %v\n", "query error: ", err)
 
 		}
 
@@ -139,11 +139,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for _, tis := range r.Tickets {
 
 			//for _, y := range v {
-			ti := tis.Data
+			ti := tis.Ticket
 
 			for _, cts := range ti.Cats {
 
-				x := cts.Data
+				x := cts.Cat
 
 				var i int
 
