@@ -143,27 +143,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, ct := range tid.Cats {
 
-				x := ct.Data
+				ctd := ct.Data
 
-				//for _, x := range cts.Data {
+				for _, x := range ctd {
 
-				//x := ct.Data
+					//for _, x := range cts.Data {
 
-				var i int
+					//x := ct.Data
 
-				if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
+					var i int
 
-					i = j
+					if j, ok := result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)]; ok {
+
+						i = j
+
+					}
+
+					//if v.Event.Name == r.Name {
+
+					result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
 
 				}
 
-				//if v.Event.Name == r.Name {
-
-				result[string(x.Category)+":"+strconv.FormatFloat(float64(x.Price), 'f', 2, 64)] = i + int(x.Issued)
-
 			}
-
-			//}
 
 			//}
 
