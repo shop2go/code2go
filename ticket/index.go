@@ -108,12 +108,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
 				Tickets []struct {
-					Total graphql.Int `graphql:"total"`
-					Cats  []struct {
-						Category graphql.String `graphql:"category"`
-						Price    graphql.Float  `graphql:"price"`
-						Issued   graphql.Int    `graphql:"issued"`
-					} `graphql:"cats"`
+					Ticket struct {
+						Total graphql.Int `graphql:"total"`
+						Cats  []struct {
+							Cat struct {
+								Category graphql.String `graphql:"category"`
+								Price    graphql.Float  `graphql:"price"`
+								Issued   graphql.Int    `graphql:"issued"`
+							}
+						} `graphql:"cats"`
+					}
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
 		}
