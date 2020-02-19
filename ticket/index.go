@@ -84,13 +84,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Tickets struct {
 					Data []struct {
 						Total graphql.Int `graphql:"total"`
-						Cat   struct {
-							Data []struct {
+						Cats   []struct {
+							Data struct {
 								Category graphql.String `graphql:"category"`
 								Price    graphql.Float  `graphql:"price"`
 								Issued   graphql.Int    `graphql:"issued"`
 							} `graphql:"data"`
-						} `graphql:"cat"`
+						} `graphql:"cats"`
 					} `graphql:"data"`
 				} `graphql:"tickets"`
 			} `graphql:"eventByName(name: $name)"`
