@@ -70,6 +70,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		u = strings.TrimSuffix(u, ".")
 
 		//fmt.Fprintf(w, "%v\n", u)
+		/* query {
+  eventByName(name: "bday") {
+    host {
+      username
+      tickets {
+        data {
+          total
+        }
+      }
+    }
+    name
+    confirmed
+    date
+    tickets {
+      data {
+        cats {
+          data {
+            category
+            price
+            issued
+          }
+        }
+      }
+    }
+  }
+} */
 
 		var q2 struct {
 			EventByName struct {
@@ -82,10 +108,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Email    graphql.String `graphql:"email"`
 				} `graphql:"host"`
 				Tickets []struct {
-					Data struct {
+					Ticket struct {
 						Total graphql.Int `graphql:"total"`
 						Cats  []struct {
-							Data struct {
+							Cat struct {
 								Category graphql.String `graphql:"category"`
 								Price    graphql.Float  `graphql:"price"`
 								Issued   graphql.Int    `graphql:"issued"`
@@ -102,7 +128,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if err := call.Query(context.Background(), &q2, v1); err != nil {
 
-			fmt.Fprintf(w, "%v\n", err)
+			fmt.Fprintf(w, "%s %v\n","query error: ", err)
 
 		}
 
