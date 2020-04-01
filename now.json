@@ -10,7 +10,7 @@
 
       {"src": "./ticket/index.go", "use": "@now/go"},
 
-      {"src": "./transaction/index.go", "use": "@now/go"},
+      {"src": "./shop/index.go", "use": "@now/go"},
 
       { "src": "./entry/index.go", "use": "@now/go"},
       
