@@ -94,17 +94,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	})
 
-	/* 	c := make([]string, 0)
+	// 	c := make([]string, 0)
 
-	var s string */
+	var s string
 
 	switch r.Method {
 
 	case "GET":
 
-		str := `<!DOCTYPE html>
-	<html lang="en">
-		 <head>
+		str := `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
 				<meta charset="UTF-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -141,14 +142,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						</li>
 <br>
 `
-
+		s := string(products[0].Cat)
 		f := strconv.FormatFloat(float64(products[0].Price),'f',10,64)
 		
 		//c = append(c, s)
 
-		str = str + 
-		`
-		<h1>` + string(products[0].Cat) + `</h1>
+		str = str + `
+		<h1>` + s + `</h1>
 		<li class="list-group-item">
 	<div class="media">
 	<img class="mr-3" src="`+string(products[0].ImgURL) +`" width="200">
@@ -193,12 +193,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str +
 				`
-		<li class="list-group-item">
-	<div class="media">
-	<img class="mr-3" src="`+string(products[i].ImgURL) +`" width="200">
-	<div class="media-body">
-	<h2>`+string(products[i].Product)+`</h2>
-	<h4>`+ string(products[i].Info)+ `</h4>
+				
+				<li class="list-group-item">
+			<div class="media">
+			<img class="mr-3" src="`+string(products[i].ImgURL) +`" width="200">
+			<div class="media-body">
+			<h2>`+string(products[i].Product)+`</h2>
+			<h4>`+ string(products[i].Info)+ `</h4>
 	<p><h2>€ `+ f +`</h2>`+strconv.Itoa(int(products[i].Pack+` Gramm<br><br>
 		<form class="form-inline" role="form" method="POST">
 		
@@ -232,11 +233,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			} else {
 
+				s = string(products[i].Cat)
+
 				f = strconv.FormatFloat(float64(products[i].Price),'f',10,64)
 
 				str = str + 
 				`
-				<h1>` + string(products[i].Cat) + `</h1>
+				<h1>` + s + `</h1>
 				<li class="list-group-item">
 			<div class="media">
 			<img class="mr-3" src="`+string(products[i].ImgURL) +`" width="200">
