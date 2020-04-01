@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -36,14 +35,6 @@ type ProductEntry struct {
 	InfoURL graphql.String `graphql:"infoURL"`
 	LinkURL graphql.String `graphql:"linkURL"`
 	LinkDIM graphql.Int    `graphql:"linkDIM"`
-}
-
-func ID() string {
-
-	uuID := uuid.New()
-
-	return strings.TrimSuffix(base64.StdEncoding.EncodeToString(uuID[:]), "==")
-
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -191,17 +182,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</div>
 	
 	</li>
-	<br>
+	<br> 
 	`
-
-		for i := 1; i < len(products); i++ {
+	
+	     for i := 1; i < len(products); i++ {
 
 			if string(products[i].Cat) == s {
 
 				f = strconv.FormatFloat(float64(products[i].Price),'f',10,64)
 
-				str = str + 
-		`
+				str = str +
+				`
 		<li class="list-group-item">
 	<div class="media">
 	<img class="mr-3" src="`+string(products[i].ImgURL) +`" width="200">
