@@ -183,6 +183,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	</li>
 	<br> 
+
 	`
 	
 	     for i := 1; i < len(products); i++ {
@@ -191,10 +192,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				f = strconv.FormatFloat(float64(products[i].Price),'f',10,64)
 
-				str = str +
-				`
-				
-				<li class="list-group-item">
+				str = str + `
+			<li class="list-group-item">
 			<div class="media">
 			<img class="mr-3" src="`+string(products[i].ImgURL) +`" width="200">
 			<div class="media-body">
@@ -237,8 +236,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				f = strconv.FormatFloat(float64(products[i].Price),'f',10,64)
 
-				str = str + 
-				`
+				str = str + `
 				<h1>` + s + `</h1>
 				<li class="list-group-item">
 			<div class="media">
