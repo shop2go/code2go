@@ -97,11 +97,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	})
 
+	var s string
+
 	switch r.Method {
 
 	case "GET":
-
-		var s string
 
 		str :=
 			`
@@ -187,7 +187,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<option>9</option>
 		</select>
 
-		<button type="submit" class="btn btn-light">Einkaufliste</button>
+		<button type="submit" class="btn btn-light">nehmen</button>
 		  
 		</form>
 		</p>
@@ -242,7 +242,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<option>9</option>
 				</select>
 
-			  	<button type="submit" class="btn btn-light">Einkaufliste</button>
+			  	<button type="submit" class="btn btn-light">nehmen</button>
 
 				</form>
 				</p>
@@ -298,7 +298,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<option>9</option>
 				</select>
 					 
-				<button type="submit" class="btn btn-light">Einkaufliste</button>
+				<button type="submit" class="btn btn-light">nehmen	</button>
 					  
 				</form>
 				</p>
@@ -328,6 +328,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
+
 		var cart CartEntry
 		cart.Products = make([]graphql.ID, 0)
 
@@ -352,6 +353,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 			}
+
+		}
+
+		if len(cart.Products) == 0 {
+
+			http.Redirect(w, r, "https://code2go.dev/shop#" + s, http.StatusForbidden)
 
 		}
 
