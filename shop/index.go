@@ -328,7 +328,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-
 		var cart CartEntry
 		cart.Products = make([]graphql.ID, 0)
 
@@ -358,26 +357,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if len(cart.Products) == 0 {
 
-			http.RedirectHandler("https://code2go.dev/shop#" + s, 301)
+			http.RedirectHandler("https://code2go.dev/shop#"+s, 301)
+
+		} else {
+
+			var m struct {
+				CreateCart struct {
+					CartEntry
+				} `graphql:"createCart(data:{products: $Products})"`
+			}
+
+			v := map[string]interface{}{
+				"Products": cart.Products,
+			}
+
+			if err = call.Mutate(context.Background(), &m, v); err != nil {
+				fmt.Fprintf(w, "error with products: %v\n", err)
+
+			}
+
+			fmt.Fprint(w, m.CreateCart.Products)
 
 		}
-
-		var m struct {
-			CreateCart struct {
-				CartEntry
-			} `graphql:"createCart(data:{products: $Products})"`
-		}
-
-		v := map[string]interface{}{
-			"Products": cart.Products,
-		}
-
-		if err = call.Mutate(context.Background(), &m, v); err != nil {
-			fmt.Fprintf(w, "error with products: %v\n", err)
-
-		}
-
-		fmt.Fprint(w, m.CreateCart.Products)
 
 	}
 
