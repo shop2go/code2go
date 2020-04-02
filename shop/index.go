@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/shurcooL/graphql"
@@ -328,6 +329,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
+		u := r.Host
+
+		u = strings.TrimSuffix(u, "code2go.dev")
+
 		var cart CartEntry
 		cart.Products = make([]graphql.ID, 0)
 
@@ -355,9 +360,43 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if len(cart.Products) == 0 {
+		//if len(cart.Products) == 0 {
 
-			http.RedirectHandler("https://code2go.dev/shop#"+s, 301)
+		if u != "" {
+
+			u = strings.TrimSuffix(u, ".")
+
+			cart.ID = graphql.ID(u)
+
+			var q struct {
+				FindCartByID struct {
+					CartEntry
+				} `graphql:"findCartByID(id: $ID})"`
+			}
+
+			id := map[string]interface{}{
+				"ID": cart.ID,
+			}
+
+			if err = call.Query(context.Background(), &q, id); err != nil {
+				fmt.Fprintf(w, "error with products: %v\n", err)
+			}
+
+			var m struct {
+				UpdateCart struct {
+					CartEntry
+				} `graphql:"createCart(data:{id: $ID, products: $Products})"`
+			}
+
+			v := map[string]interface{}{
+				"ID":       cart.ID,
+				"Products": cart.Products,
+			}
+
+			if err = call.Mutate(context.Background(), &m, v); err != nil {
+				fmt.Fprintf(w, "error with products: %v\n", err)
+
+			}
 
 		} else {
 
