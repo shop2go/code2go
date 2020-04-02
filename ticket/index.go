@@ -324,7 +324,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var i int
 		var j, sum float64
 
-		r.ParseForm()
+			
 
 		for k := range result {
 

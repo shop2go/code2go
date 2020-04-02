@@ -34,6 +34,11 @@ type ProductEntry struct {
 	LinkDIM graphql.Int    `graphql:"linkDIM"`
 }
 
+type Cart struct {
+	ID       graphql.ID   `graphql:"_id"`
+	Products []graphql.ID `graphql:"products"`
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -128,7 +133,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<li class="list-group-item">
 
 		<div class="media">
-		<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg">
+		<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="75%">
 
 		<div class="media-body"><br><br>
 
@@ -138,23 +143,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 		</div>	
 		</li>
-		<br>
+		<br><br>
 		`
 
 		s = string(products[0].Cat)
 
-		price := strconv.FormatFloat(float64(products[0].Price), 'f', 10, 64)
+		price := strconv.FormatFloat(float64(products[0].Price), 'f', 2, 64)
 		pack := strconv.Itoa(int(products[0].Pack))
 		dim := strconv.Itoa(int(products[0].LinkDIM))
 
 		str = str + ` 
 
+		<br>
 		<h1>` + s + `</h1>
 
 		<li class="list-group-item">
 
 		<div class="media">
-		<img class="mr-3" src="` + string(products[0].ImgURL) + `" width="200">
+		<img class="mr-3" src="` + string(products[0].ImgURL) + `" width="150">
 
 		<div class="media-body">
 
@@ -166,7 +172,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<form class="form-inline" role="form" method="POST">
 				
-		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl:   _____________   +	</label>
+		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
 		
 		<select style="font-size:30px;" class="form-control" id="` + string(products[0].Product) + `">
 			<option>0</option>
@@ -192,13 +198,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</div>
 		</div>
 		</li>
-		<br>`
+		<br><br>
+		`
 
 		for k := 1; k < len(products); k++ {
 
 			if string(products[k].Cat) == s {
 
-				price := strconv.FormatFloat(float64(products[k].Price), 'f', 10, 64)
+				price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
 				pack := strconv.Itoa(int(products[k].Pack))
 				dim := strconv.Itoa(int(products[k].LinkDIM))
 
@@ -208,7 +215,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item">
 
 				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="200">
+				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="150">
 				
 				<div class="media-body">
 
@@ -220,7 +227,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 				<form class="form-inline" role="form" method="POST">
 		
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:   _____________   +	</label>
+				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
 			
 				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `">
 					<option>0</option>
@@ -245,26 +252,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				</div>
 				</li>
-				<br>
+				<br><br>
 				`
 
 			} else {
 
 				s = string(products[k].Cat)
 
-				price := strconv.FormatFloat(float64(products[k].Price), 'f', 10, 64)
+				price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
 				pack := strconv.Itoa(int(products[k].Pack))
 				dim := strconv.Itoa(int(products[k].LinkDIM))
 
 				str = str +
 					`
-
+				<br>
 				<h1>` + s + `</h1>
 
 				<li class="list-group-item">
 
 				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="200">
+				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="150">
 			
 				<div class="media-body">
 			
@@ -276,7 +283,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				
 				<form class="form-inline" role="form" method="POST">
 				
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:   _____________   +	</label>
+				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
 				
 				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `">
 					<option>0</option>
@@ -301,7 +308,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				</div>
 				</li>
-				<br>
+				<br><br>
 				`
 
 			}
@@ -318,6 +325,43 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
+
+	case "POST":
+
+		c := make([]graphql.ID, 0)
+
+		r.ParseForm()
+
+		for k := 0; k < len(products); k++ {
+
+			cnt := r.Form.Get(string(products[k].Product))
+
+			count, _ := strconv.Atoi(cnt)
+
+			if count == 0 {
+
+				continue
+
+			}
+
+			c = append(c, products[k].ID)
+
+		}
+
+		var m struct {
+			CreateCart struct {
+				Cart
+			} `graphql:"createCart(data:{products: $Products})"`
+		}
+
+		v := map[string]interface{}{
+			"Products": c,
+		}
+
+		if err = call.Mutate(context.Background(), &m, v); err != nil {
+			fmt.Fprintf(w, "error with products: %v\n", err)
+
+		}
 
 	}
 
