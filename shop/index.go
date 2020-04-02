@@ -174,7 +174,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				
 		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
 		
-		<select style="font-size:30px;" class="form-control" id="` + string(products[0].Product) + `">
+		<select style="font-size:30px;" class="form-control" id="` + string(products[0].Product) + `" name="` + string(products[0].Product) + `">
 			<option>0</option>
 			<option>1</option>
 			<option>2</option>
@@ -229,7 +229,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
 			
-				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `">
+				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
 					<option>0</option>
 					<option>1</option>
 					<option>2</option>
@@ -285,7 +285,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				
 				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
 				
-				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `">
+				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
 					<option>0</option>
 					<option>1</option>
 					<option>2</option>
