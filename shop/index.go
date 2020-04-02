@@ -34,7 +34,7 @@ type ProductEntry struct {
 	LinkDIM graphql.Int    `graphql:"linkDIM"`
 }
 
-type Cart struct {
+type CartEntry struct {
 	ID       graphql.ID   `graphql:"_id"`
 	Products []graphql.ID `graphql:"products"`
 }
@@ -328,7 +328,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		c := make([]graphql.ID, 0)
+		var cart CartEntry
+		cart.Products = make([]graphql.ID, 0)
 
 		r.ParseForm()
 
@@ -342,26 +343,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				continue
 
-			}
+			} else {
 
-			c = append(c, products[k].ID)
+				cart.Products = append(cart.Products, products[k].ID)
+
+			}
 
 		}
 
 		var m struct {
 			CreateCart struct {
-				Cart
-			} `graphql:"createCart(data:{products: $Products})"`
+				CartEntry
+			} `graphql:"createProduct(data:{products: $Products})"`
 		}
 
 		v := map[string]interface{}{
-			"Products": c,
+			"Products": cart.Products,
 		}
 
 		if err = call.Mutate(context.Background(), &m, v); err != nil {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 
 		}
+
+		fmt.Fprint(w)
 
 	}
 
