@@ -358,7 +358,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if len(cart.Products) == 0 {
 
-			http.Redirect(w, r, "https://code2go.dev/shop#" + s, http.StatusForbidden)
+			http.RedirectHandler("https://code2go.dev/shop#" + s, http.StatusForbidden)
 
 		}
 
