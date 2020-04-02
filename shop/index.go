@@ -366,7 +366,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fmt.Fprint(w)
+		fmt.Fprint(w, m.CreateCart.Products)
 
 	}
 
