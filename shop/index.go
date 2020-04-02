@@ -345,7 +345,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			} else {
 
-				cart.Products = append(cart.Products, products[k].ID)
+				for l := 0; l < count; l++ {
+
+					cart.Products = append(cart.Products, products[k].ID)
+
+				}
 
 			}
 
