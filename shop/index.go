@@ -354,7 +354,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var m struct {
 			CreateCart struct {
 				CartEntry
-			} `graphql:"createProduct(data:{products: $Products})"`
+			} `graphql:"createCart(data:{products: $Products})"`
 		}
 
 		v := map[string]interface{}{
