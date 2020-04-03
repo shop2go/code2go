@@ -371,7 +371,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var q struct {
 				FindCartByID struct {
 					CartEntry
-				} `graphql:"findCartByID(id: $ID)}"`
+				} `graphql:"findCartByID(id: $ID)"`
 			}
 
 			doc := map[string]interface{}{
