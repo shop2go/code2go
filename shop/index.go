@@ -327,7 +327,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	case "POST":
+	case "POST": 
 
 		u := r.Host
 
@@ -382,6 +382,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "error with products: %v\n", err)
 			}
 
+			for _, p := range q.FindCartByID.Products {
+
+				cart.Products = append(cart.Products, p)
+
+			}
+
 			var m struct {
 				UpdateCart struct {
 					CartEntry
@@ -415,7 +421,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			fmt.Fprint(w, m.CreateCart.Products)
+			fmt.Fprint(w, m.CreateCart.ID)
 
 		}
 
