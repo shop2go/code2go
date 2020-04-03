@@ -282,7 +282,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 				<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
 				
-				<form class="form-inline" role="form" method="POST">
+				//<form class="form-inline" role="form" method="POST">
 				
 				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
 				
@@ -299,9 +299,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<option>9</option>
 				</select>
 					 
-				<button type="submit" class="btn btn-light">nehmen	</button>
+				<button type="submit" class="btn btn-light">nehmen</button>
 					  
-				</form>
+				<!/form>
 				</p>
 			
 				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
@@ -374,11 +374,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} `graphql:"findCartByID(id: $ID})"`
 			}
 
-			id := map[string]interface{}{
+			doc := map[string]interface{}{
 				"ID": cart.ID,
 			}
 
-			if err = call.Query(context.Background(), &q, id); err != nil {
+			if err = call.Query(context.Background(), &q, doc); err != nil {
 				fmt.Fprintf(w, "error with products: %v\n", err)
 			}
 
