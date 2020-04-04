@@ -187,14 +187,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if u != "" {
 
-			s = "https://" + u + ".code2go.dev/order"
-
 			str = str +
 
 				`
-			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='"` + s + `'">
-			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="60%" >
-			</button>
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='order#` + u + `'">Auswahl bestellen</button>
 			
 			<div class="media-body"><br><br>
 			
