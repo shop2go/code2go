@@ -208,15 +208,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if Total >= 14 {
 
-				price := strconv.FormatFloat(Total, 'f', 2, 64)
+				price := strconv.FormatFloat(Total, 'f', 2, 64) 
 
 				str = str +
 
 					`				
-				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='order'">Waren jetzt bestellen</button>
+				<button type="button" class="btn btn-light" onclick="window.location.href='order'">Waren jetzt bestellen</button>
 				<br>				
 				<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
-				<p><h2>€ 5</h2>Pauschal<br> + Bestellsumme: € ` + price + `</p>				
+				<p><h2>€ 5</h2>Pauschal<br> + Bestellsumme: <h2>€ ` + price + `</h2></p>				
 				</li>
 				<br><br>
 				`
@@ -423,7 +423,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					 
 				<button type="submit" class="btn btn-light">nehmen</button>
 					  
-				<!/form>
+				</form>
 				</p>
 				<br>
 				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
