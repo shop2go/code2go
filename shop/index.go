@@ -114,11 +114,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} `graphql:"findCartByID(id: $ID)"`
 		}
 
-		v := map[string]interface{}{
+		v1 := map[string]interface{}{
 			"ID": graphql.ID(u),
 		}
 
-		if err = call.Query(context.Background(), &q, v); err != nil {
+		if err = call.Query(context.Background(), &q, v1); err != nil {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
@@ -134,11 +134,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					} `graphql:"findProductByID(id: $ID)"`
 				}
 
-				v := map[string]interface{}{
+				v2 := map[string]interface{}{
 					"ID": id,
 				}
 
-				if err = call.Query(context.Background(), &q, v); err != nil {
+				if err = call.Query(context.Background(), &p, v2); err != nil {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
@@ -173,6 +173,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 
 		str :=
+
 			`
 		<!DOCTYPE html>
 		<html lang="en">
@@ -201,7 +202,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<li class="list-group-item">
 
-`
+		`
 
 		if u != "" {
 
@@ -211,18 +212,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str +
 
+					`				
+				<button type="button" class="btn btn-light btn-link" onclick="window.location.href='order'">Waren jetzt bestellen</button>
+				<br>				
+				<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
+				<p><h2>€ 5</h2>Pauschal<br> + Bestellsumme: € ` + price + `</p>				
+				</li>
+				<br><br>
 				`
-
-			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='order'">Waren jetzt bestellen</button>
-			<br>
-			
-			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
-			
-			<p><h2>€ 5</h2>Pauschal<br> + Bestellsumme: € ` + price+ `</p>
-	
-			</li>
-			<br><br>
-			`
 
 			} else {
 
