@@ -213,10 +213,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = str +
 
 					`				
-				<button type="button" class="btn btn-light" onclick="window.location.href='order'">Waren jetzt bestellen</button>
-				<br>				
+							
 				<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
-				<p><h2>€ 5</h2>Pauschal<br> + Bestellsumme: <h2>€ ` + price + `</h2></p>				
+				<p>Pauschal<br><h2>€ 5</h2> + Bestellsumme: <h2>€ ` + price + `</h2></p>
+				<button type="button" class="btn btn-light" onclick="window.location.href='order'">Ware jetzt bestellen</button>
+						
 				</li>
 				<br><br>
 				`
@@ -227,7 +228,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					`
 			<div class="media">
-			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="60%" >
+			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 					
 			<div class="media-body"><br><br>
 					
@@ -248,7 +249,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				`
 			<div class="media">
-			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="60%" >
+			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 					
 			<div class="media-body"><br><br>
 					
@@ -279,7 +280,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<li class="list-group-item">
 
 		<div class="media">
-		<img class="mr-3" src="` + string(products[0].ImgURL) + `" width="150">
+		<img class="mr-3" src="` + string(products[0].ImgURL) + `" width="100">
 
 		<div class="media-body">
 
@@ -338,7 +339,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item">
 
 				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="150">
+				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="100">
 				
 				<div class="media-body">
 
@@ -394,7 +395,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<li class="list-group-item">
 
 				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="150">
+				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="100">
 			
 				<div class="media-body">
 			
