@@ -184,7 +184,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<li class="list-group-item">
 
 		<div class="media">
-		<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="75%">
+		<button type="button" class="btn btn-light btn-link" onclick="window.location.href='"https://` + u + `.code2go.dev/order'">
+		<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="50%" >
+		</button>
 
 		<div class="media-body"><br><br>
 
@@ -227,7 +229,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
 		
 		<select style="font-size:30px;" class="form-control" id="` + string(products[0].Product) + `" name="` + string(products[0].Product) + `">
-			<option>0</option>
+
 			<option>1</option>
 			<option>2</option>
 			<option>3</option>
@@ -286,7 +288,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
 			
 				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
-					<option>0</option>
+
 					<option>1</option>
 					<option>2</option>
 					<option>3</option>
@@ -342,7 +344,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
 				
 				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
-					<option>0</option>
+
 					<option>1</option>
 					<option>2</option>
 					<option>3</option>
