@@ -42,6 +42,8 @@ type CartEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	var Total float64
+
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
@@ -112,11 +114,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} `graphql:"findCartByID(id: $ID)"`
 		}
 
-		doc := map[string]interface{}{
+		v := map[string]interface{}{
 			"ID": graphql.ID(u),
 		}
 
-		if err = call.Query(context.Background(), &q, doc); err != nil {
+		if err = call.Query(context.Background(), &q, v); err != nil {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
@@ -125,6 +127,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			m := make(map[graphql.ID]struct{}, 0)
 
 			for _, id := range q.FindCartByID.Products {
+
+				var p struct {
+					ProductByID struct {
+						ProductEntry
+					} `graphql:"findCartByID(id: $ID)"`
+				}
+
+				v := map[string]interface{}{
+					"ID": graphql.ID(u),
+				}
+
+				if err = call.Query(context.Background(), &q, v); err != nil {
+					fmt.Fprintf(w, "error with products: %v\n", err)
+				}
+
+				Total = Total + float64(p.ProductByID.Price)
 
 				m[id] = struct{}{}
 
@@ -183,32 +201,56 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<li class="list-group-item">
 
-		<div class="media">`
+`
 
 		if u != "" {
 
-			str = str +
+			if Total >= 14 {
+
+				price := strconv.FormatFloat(Total, 'f', 2, 64)
+
+				str = str +
 
 				`
-			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='order#` + u + `'">Auswahl bestellen</button>
-			
-			<div class="media-body"><br><br>
+
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='order'">Waren jetzt bestellen</button>
+			<br>
 			
 			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
 			
-			<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
+			<p><h2>€ 5</h2>Pauschal<br> + Bestellsumme: € ` + price+ `</p>
+	
+			</li>
+			<br><br>
+			`
+
+			} else {
+
+				str = str +
+
+					`
+			<div class="media">
+			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="60%" >
+					
+			<div class="media-body"><br><br>
+					
+			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
+					
+			<p><h2>€ 5</h2>Pauschal<br><h2>Mindesteinkaufsumme: € 14<h2></p>
 			</div>
 			</div>	
 			</li>
 			<br><br>
 			`
 
+			}
+
 		} else {
 
 			str = str +
 
-			`
-					
+				`
+			<div class="media">
 			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="60%" >
 					
 			<div class="media-body"><br><br>
@@ -223,7 +265,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 
 		}
-
 
 		if products[0].ID != nil {
 
