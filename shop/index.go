@@ -393,7 +393,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var m struct {
 				UpdateCart struct {
 					CartEntry
-				} `graphql:"updateCart(data:{id: $ID, products: $Products})"`
+				} `graphql:"updateCart(id: $ID, data:{products: $Products})"`
 			}
 
 			v := map[string]interface{}{
