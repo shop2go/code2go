@@ -327,7 +327,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	case "POST": 
+	case "POST":
 
 		u := r.Host
 
@@ -421,9 +421,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			fmt.Fprint(w, m.CreateCart.ID)
+			cart.ID = m.CreateCart.ID
 
 		}
+
+		s = fmt.Sprintf("%s", cart.ID)
+
+		http.Redirect(w, r, "https://"+s+".code2go.dev/shop", http.StatusSeeOther)
 
 	}
 
