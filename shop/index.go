@@ -183,21 +183,52 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<li class="list-group-item">
 
-		<div class="media">
-		<button type="button" class="btn btn-light btn-link" onclick="window.location.href='"https://` + u + `.code2go.dev/order'">
-		<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="50%" >
-		</button>
+		<div class="media">`
 
-		<div class="media-body"><br><br>
+		if u != "" {
 
-		<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
+			s = "https://" + u + ".code2go.dev/order"
 
-		<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
-		</div>
-		</div>	
-		</li>
-		<br><br>
-		`
+			str = str +
+
+				`
+			<button type="button" class="btn btn-light btn-link" onclick="window.location.href='"` + s + `'">
+			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="60%" >
+			</button>
+			
+			<div class="media-body"><br><br>
+			
+			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
+			
+			<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
+			</div>
+			</div>	
+			</li>
+			<br><br>
+			`
+
+		} else {
+
+			str = str +
+
+			`
+					
+			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="60%" >
+					
+			<div class="media-body"><br><br>
+					
+			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
+					
+			<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
+			</div>
+			</div>	
+			</li>
+			<br><br>
+			`
+
+		}
+
+
 		if products[0].ID != nil {
 
 			s = string(products[0].Cat)
