@@ -120,21 +120,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
-		m := make(map[graphql.ID]struct{}, 0)
+		if q.FindCartByID.Products != nil {
 
-		for _, id := range q.FindCartByID.Products {
+			m := make(map[graphql.ID]struct{}, 0)
 
-			m[id] = struct{}{}
+			for _, id := range q.FindCartByID.Products {
 
-		}
-
-		for i := 0; i < len(products); i++ {
-
-			if _, ok := m[products[i].ID]; ok {
-
-				products[i] = ProductEntry{}
+				m[id] = struct{}{}
 
 			}
+
+			for i := 0; i < len(products); i++ {
+
+				if _, ok := m[products[i].ID]; ok {
+
+					products[i] = ProductEntry{}
+
+				}
+
+			}
+
+		} else {
+
+			http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
 
 		}
 
@@ -216,7 +224,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<form class="form-inline" role="form" method="POST">
 				
-		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
+		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
 		
 		<select style="font-size:30px;" class="form-control" id="` + string(products[0].Product) + `" name="` + string(products[0].Product) + `">
 			<option>0</option>
@@ -235,7 +243,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		  
 		</form>
 		</p>
-
+		<br>
 		<a href="` + string(products[0].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[0].LinkURL) + `" width="` + dim + `">
 		</a>
 		
@@ -275,7 +283,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 				<form class="form-inline" role="form" method="POST">
 		
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
+				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
 			
 				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
 					<option>0</option>
@@ -294,7 +302,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				</form>
 				</p>
-	
+				<br>
 				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
 	
 				</div>
@@ -329,9 +337,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 				<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
 				
-				//<form class="form-inline" role="form" method="POST">
+				<form class="form-inline" role="form" method="POST">
 				
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl: </label>
+				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
 				
 				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
 					<option>0</option>
@@ -350,7 +358,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					  
 				<!/form>
 				</p>
-			
+				<br>
 				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
 			
 				</div>
