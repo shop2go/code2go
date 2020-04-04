@@ -42,6 +42,10 @@ type CartEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	u := r.Host
+
+	u = strings.TrimSuffix(u, "code2go.dev")
+
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("shop"), "role": "server"}))
@@ -97,6 +101,44 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return products[i].Product < products[j].Product
 
 	})
+
+	if u != "" {
+
+		u = strings.TrimSuffix(u, ".")
+
+		var q struct {
+			FindCartByID struct {
+				CartEntry
+			} `graphql:"findCartByID(id: $ID)"`
+		}
+
+		doc := map[string]interface{}{
+			"ID": graphql.ID(u),
+		}
+
+		if err = call.Query(context.Background(), &q, doc); err != nil {
+			fmt.Fprintf(w, "error with products: %v\n", err)
+		}
+
+		m := make(map[graphql.ID]struct{}, 0)
+
+		for _, id := range q.FindCartByID.Products {
+
+			m[id] = struct{}{}
+
+		}
+
+		for i := 0; i < len(products); i++ {
+
+			if _, ok := m[products[i].ID]; !ok {
+
+				products[i] = ProductEntry{}
+
+			}
+		
+		}
+	
+	}
 
 	var s string
 
@@ -329,11 +371,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		u := r.Host
-
-		u = strings.TrimSuffix(u, "code2go.dev")
-
 		var cart CartEntry
+
 		cart.Products = make([]graphql.ID, 0)
 
 		r.ParseForm()
