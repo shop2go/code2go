@@ -130,14 +130,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for i := 0; i < len(products); i++ {
 
-			if _, ok := m[products[i].ID]; !ok {
+			if _, ok := m[products[i].ID]; ok {
 
 				products[i] = ProductEntry{}
 
 			}
-		
+
 		}
-	
+
 	}
 
 	var s string
@@ -188,14 +188,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</li>
 		<br><br>
 		`
+		if products[0].ID != nil {
 
-		s = string(products[0].Cat)
+			s = string(products[0].Cat)
 
-		price := strconv.FormatFloat(float64(products[0].Price), 'f', 2, 64)
-		pack := strconv.Itoa(int(products[0].Pack))
-		dim := strconv.Itoa(int(products[0].LinkDIM))
+			price := strconv.FormatFloat(float64(products[0].Price), 'f', 2, 64)
+			pack := strconv.Itoa(int(products[0].Pack))
+			dim := strconv.Itoa(int(products[0].LinkDIM))
 
-		str = str + ` 
+			str = str + ` 
 
 		<br>
 		<h1>` + s + `</h1>
@@ -244,16 +245,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br><br>
 		`
 
+		}
+
 		for k := 1; k < len(products); k++ {
 
-			if string(products[k].Cat) == s {
+			if products[k].ID != nil {
 
-				price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
-				pack := strconv.Itoa(int(products[k].Pack))
-				dim := strconv.Itoa(int(products[k].LinkDIM))
+				if string(products[k].Cat) == s {
 
-				str = str +
-					`
+					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
+					pack := strconv.Itoa(int(products[k].Pack))
+					dim := strconv.Itoa(int(products[k].LinkDIM))
+
+					str = str +
+						`
 				
 				<li class="list-group-item">
 
@@ -298,16 +303,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br><br>
 				`
 
-			} else {
+				} else {
 
-				s = string(products[k].Cat)
+					s = string(products[k].Cat)
 
-				price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
-				pack := strconv.Itoa(int(products[k].Pack))
-				dim := strconv.Itoa(int(products[k].LinkDIM))
+					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
+					pack := strconv.Itoa(int(products[k].Pack))
+					dim := strconv.Itoa(int(products[k].LinkDIM))
 
-				str = str +
-					`
+					str = str +
+						`
 				<br>
 				<h1>` + s + `</h1>
 
@@ -353,6 +358,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</li>
 				<br><br>
 				`
+
+				}
 
 			}
 
