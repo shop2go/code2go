@@ -129,9 +129,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for _, id := range q.FindCartByID.Products {
 
 				var p struct {
-					ProductByID struct {
+					FindProductByID struct {
 						ProductEntry
-					} `graphql:"findCartByID(id: $ID)"`
+					} `graphql:"findProductByID(id: $ID)"`
 				}
 
 				v := map[string]interface{}{
@@ -142,7 +142,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
-				Total = Total + float64(p.ProductByID.Price)
+				Total = Total + float64(p.FindProductByID.Price)
 
 				m[id] = struct{}{}
 
