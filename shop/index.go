@@ -338,6 +338,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
 
+		//form parsing
 		for k := 0; k < len(products); k++ {
 
 			cnt := r.Form.Get(string(products[k].Product))
@@ -382,6 +383,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "error with products: %v\n", err)
 			}
 
+			// appending additional products
 			for _, p := range q.FindCartByID.Products {
 
 				cart.Products = append(cart.Products, p)
@@ -391,7 +393,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var m struct {
 				UpdateCart struct {
 					CartEntry
-				} `graphql:"createCart(data:{id: $ID, products: $Products})"`
+				} `graphql:"updateCart(data:{id: $ID, products: $Products})"`
 			}
 
 			v := map[string]interface{}{
