@@ -135,7 +135,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 				v := map[string]interface{}{
-					"ID": graphql.ID(u),
+					"ID": id,
 				}
 
 				if err = call.Query(context.Background(), &q, v); err != nil {
