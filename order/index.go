@@ -133,8 +133,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var s string
-
 	switch r.Method {
 
 	case "GET":
