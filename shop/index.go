@@ -37,8 +37,18 @@ type ProductEntry struct {
 }
 
 type CartEntry struct {
-	ID       graphql.ID   `graphql:"_id"`
+	ID       graphql.ID `graphql:"_id"`
+	Order    OrderEntry
 	Products []graphql.ID `graphql:"products"`
+}
+
+type OrderEntry struct {
+	ID   graphql.ID     `graphql:"_id"`
+	Date graphql.String `graphql:"date"`
+	//Costumer CostumerEntry
+	//Cart     CartEntry
+	Amount graphql.Float `graphql:"amount"`
+	//Status   StatusEntry
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
