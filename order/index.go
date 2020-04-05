@@ -23,39 +23,38 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-/* type CostumerEntry struct {
+type CostumerEntry struct {
 	ID         graphql.ID     `graphql:"_id"`
 	First      graphql.String `graphql:"first"`
 	Last       graphql.String `graphql:"last"`
 	Email      graphql.String `graphql:"email"`
 	Phone      graphql.String `graphql:"phone"`
-	Address    AddressEntry
-	Orders     []OrderEntry
+	Address    graphql.ID     `graphql:"_address"`
+	Orders     []graphql.ID     `graphql:"orders"`
 	Registered graphql.Boolean `graphql:"registered"`
-} */
+}
 
-/* type AddressEntry struct {
+type AddressEntry struct {
 	ID       graphql.ID `graphql:"_id"`
-	Costumer CostumerEntry
+	Costumer graphql.ID     `graphql:"cotsumer"`
 	Street   graphql.String `graphql:"street"`
 	Number   graphql.String `graphql:"number"`
 	Door     graphql.String `graphql:"door"`
 	City     graphql.String `graphql:"city"`
 	Zip      graphql.String `graphql:"zip"`
-} */
+}
 
 type OrderEntry struct {
 	ID       graphql.ID     `graphql:"_id"`
 	Date     graphql.String `graphql:"date"`
-	//Costumer CostumerEntry
-	Cart     CartEntry
+	Costumer graphql.ID     `graphql:"costumer"`
+	Cart     graphql.ID     `graphql:"cart"`
 	Amount   graphql.Float `graphql:"amount"`
-	//Status   StatusEntry
+	Status   graphql.ID     `graphql:"status"`
 }
 
 type StatusEntry struct {
 	ID       graphql.ID `graphql:"_id"`
-	Order    OrderEntry
 	Datetime graphql.Int     `graphql:"datetime"`
 	Payment  graphql.Boolean `graphql:"payment"`
 	Delivery graphql.Boolean `graphql:"delivery"`
@@ -76,7 +75,6 @@ type ProductEntry struct {
 
 type CartEntry struct {
 	ID       graphql.ID   `graphql:"_id"`
-	//Order	 OrderEntry
 	Products []graphql.ID `graphql:"products"`
 }
 
