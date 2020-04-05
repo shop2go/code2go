@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -41,7 +42,9 @@ type CartEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var Total float64
+	var total float64
+
+	var ID []byte
 
 	m := make(map[string]float64, 0)
 
@@ -75,6 +78,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		u = strings.TrimSuffix(u, ".")
 
+		ID, _ := base64.StdEncoding.DecodeString(u)
+
 		var q struct {
 			FindCartByID struct {
 				CartEntry
@@ -82,7 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v1 := map[string]interface{}{
-			"ID": graphql.ID(u),
+			"ID": graphql.ID(string(ID)),
 		}
 
 		if err = call.Query(context.Background(), &q, v1); err != nil {
@@ -107,7 +112,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
-				Total = Total + float64(p.FindProductByID.Price)
+				total = total + float64(p.FindProductByID.Price)
 
 				if l, ok := m[string(p.FindProductByID.Product)]; ok {
 
@@ -137,6 +142,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
+		total := strconv.FormatFloat(total + 5.00, 'f', 2, 64) 
+
 		str :=
 
 			`
@@ -161,7 +168,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<ul class="list-group">
 
-		`
+		<br>
+		<br>
+
+		<h1>Bestellung</h1>
+		
+		<li class="list-group-item">
+
+			<p><h2>€ ` + total + `</h2>Total<p>
+
+			</li><br><br>` 
+
+
 
 		for pro, flo := range m {
 

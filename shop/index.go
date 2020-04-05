@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -43,6 +44,8 @@ type CartEntry struct {
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var Total float64
+
+	var ID []byte
 
 	u := r.Host
 
@@ -108,6 +111,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		u = strings.TrimSuffix(u, ".")
 
+		ID, _ := base64.StdEncoding.DecodeString(u)
+
 		var q struct {
 			FindCartByID struct {
 				CartEntry
@@ -115,7 +120,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v1 := map[string]interface{}{
-			"ID": graphql.ID(u),
+			"ID": graphql.ID(string(ID)),
 		}
 
 		if err = call.Query(context.Background(), &q, v1); err != nil {
@@ -208,7 +213,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if Total >= 14 {
 
-				price := strconv.FormatFloat(Total, 'f', 2, 64) 
+				price := strconv.FormatFloat(Total, 'f', 2, 64)
 
 				str = str +
 
@@ -487,9 +492,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if u != "" {
 
-			u = strings.TrimSuffix(u, ".")
-
-			cart.ID = graphql.ID(u)
+			cart.ID = graphql.ID(string(ID))
 
 			var q struct {
 				FindCartByID struct {
@@ -549,9 +552,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		s = fmt.Sprintf("%s", cart.ID)
+		//s = fmt.Sprintf("%s", cart.ID)
 
-		http.Redirect(w, r, "https://"+s+".code2go.dev/shop", http.StatusSeeOther)
+		code := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s", cart.ID)))
+
+		http.Redirect(w, r, "https://"+code+".code2go.dev/shop", http.StatusSeeOther)
 
 	}
 
