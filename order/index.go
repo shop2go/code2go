@@ -44,8 +44,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
 
-	var ID []byte
-
 	m := make(map[string]float64, 0)
 
 	u := r.Host
