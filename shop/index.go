@@ -552,9 +552,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//s = fmt.Sprintf("%s", cart.ID)
+		s = fmt.Sprintf("%s", cart.ID)
 
-		code := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s", cart.ID)))
+		code := base64.StdEncoding.EncodeToString([]byte(s))
 
 		http.Redirect(w, r, "https://"+code+".code2go.dev/shop", http.StatusSeeOther)
 
