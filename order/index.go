@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
+	//"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	//"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/shurcooL/graphql"
@@ -20,6 +21,44 @@ type Access struct {
 	Timestamp int    `fauna:"ts"`
 	Secret    string `fauna:"secret"`
 	Role      string `fauna:"role"`
+}
+
+type CostumerEntry struct {
+	ID         graphql.ID     `graphql:"_id"`
+	First      graphql.String `graphql:"first"`
+	Last       graphql.String `graphql:"last"`
+	Email      graphql.String `graphql:"email"`
+	Phone      graphql.String `graphql:"phone"`
+	Address    AddressEntry
+	Orders     []OrderEntry
+	Registered graphql.Boolean `graphql:"registered"`
+}
+
+type AddressEntry struct {
+	ID       graphql.ID `graphql:"_id"`
+	Costumer CostumerEntry
+	Street   graphql.String `graphql:"street"`
+	Number   graphql.String `graphql:"number"`
+	Door     graphql.String `graphql:"door"`
+	City     graphql.String `graphql:"city"`
+	Zip      graphql.String `graphql:"zip"`
+}
+
+type OrderEntry struct {
+	ID       graphql.ID     `graphql:"_id"`
+	Date     graphql.String `graphql:"date"`
+	Costumer CostumerEntry
+	Cart     CartEntry
+	Amount   graphql.Float `graphql:"amount"`
+	//Status   StatusEntry
+}
+
+type StatusEntry struct {
+	ID       graphql.ID `graphql:"_id"`
+	Order    OrderEntry
+	Datetime graphql.Int     `graphql:"datetime"`
+	Payment  graphql.Boolean `graphql:"payment"`
+	Delivery graphql.Boolean `graphql:"delivery"`
 }
 
 type ProductEntry struct {
@@ -37,6 +76,7 @@ type ProductEntry struct {
 
 type CartEntry struct {
 	ID       graphql.ID   `graphql:"_id"`
+	//Order	 OrderEntry
 	Products []graphql.ID `graphql:"products"`
 }
 
@@ -76,7 +116,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		u = strings.TrimSuffix(u, ".")
 
-		ID, _ := base64.StdEncoding.DecodeString(u)
+		//ID, _ := base64.StdEncoding.DecodeString(u)
 
 		var q struct {
 			FindCartByID struct {
@@ -85,14 +125,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v1 := map[string]interface{}{
-			"ID": graphql.ID(string(ID)),
+			"ID": graphql.ID(u),
 		}
 
 		if err = call.Query(context.Background(), &q, v1); err != nil {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
-		if len(q.FindCartByID.Products) != 0 {
+		if len(q.FindCartByID.Products) > 0 {
 
 			for _, id := range q.FindCartByID.Products {
 
@@ -140,7 +180,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		total := strconv.FormatFloat(total + 5.00, 'f', 2, 64) 
+		total := strconv.FormatFloat(total+5.00, 'f', 2, 64)
 
 		str :=
 
@@ -164,20 +204,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<div class="container" id="order" style="color:rgb(255, 255, 255); font-size:30px;">
 
-		<ul class="list-group">
-
 		<br>
 		<br>
 
 		<h1>Bestellung</h1>
+
+		<form class="form-inline" role="form" method="POST">
+
+		<ul class="list-group">
 		
 		<li class="list-group-item">
 
-			<p><h2>€ ` + total + `</h2>Total<p>
+			<p><h2>€ ` + total + `</h2>Einkaufsumme<p>
 
-			</li><br><br>` 
-
-
+			</li><br><br>`
 
 		for pro, flo := range m {
 
@@ -185,30 +225,51 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			str = str +
 
-			`
+				`
 
 			<li class="list-group-item">
 
-			<p><h2>€ ` + price + `</h2>` + pro + ` <p>
+			<label class="form-check-label" for="` + pro + `" style="font-size:25px;">`+pro+`</label>
 
-			</li>
+			<p><h2>€ <input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="` + price + `"></h2></p>
+
+			</li><br>
 
 			`
 
 		}
 
 		str = str + `
-		</div>			   
-		<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-		</body>
-		</html>
-		`
+			
+			<button type="submit" class="btn btn-light">Bezahlen</button>
+			</ul>
+			</form>
+			</div>
+			<br>
+			<br>
+	
+			   
+			<script src="https://assets.medienwerk.now.sh/material.min.js">
+			</script>
+			</body>
+			</html>
+			`
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+			w.Write([]byte(str))
 
 	case "POST":
+
+		/* var m struct {
+			CreateOrder struct {
+				OrderEntry
+			} `graphql:"createOrder(data:{date: $Date})"`
+		}
+
+		v := map[string]interface{}{
+			"Date": time.Now().UTC().Format("2006-01-02"),
+		} */
 
 		/* var cart CartEntry
 
@@ -308,7 +369,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		s = fmt.Sprintf("%s", cart.ID)
 
 		http.Redirect(w, r, "https://"+s+".code2go.dev/shop", http.StatusSeeOther)
- */
+		*/
 	}
 
 }

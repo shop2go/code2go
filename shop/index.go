@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
+	//"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -43,9 +43,9 @@ type CartEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var Total float64
+	var total float64
 
-	var ID []byte
+	//var ID []byte
 
 	u := r.Host
 
@@ -111,7 +111,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		u = strings.TrimSuffix(u, ".")
 
-		ID, _ := base64.StdEncoding.DecodeString(u)
+		//ID, _ := base64.StdEncoding.DecodeString(u)
 
 		var q struct {
 			FindCartByID struct {
@@ -120,7 +120,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v1 := map[string]interface{}{
-			"ID": graphql.ID(string(ID)),
+			"ID": graphql.ID(u),
 		}
 
 		if err = call.Query(context.Background(), &q, v1); err != nil {
@@ -147,7 +147,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
-				Total = Total + float64(p.FindProductByID.Price)
+				total = total + float64(p.FindProductByID.Price)
 
 				m[id] = struct{}{}
 
@@ -211,9 +211,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if u != "" {
 
-			if Total >= 14 {
+			if total >= 14 {
 
-				price := strconv.FormatFloat(Total, 'f', 2, 64)
+				price := strconv.FormatFloat(total, 'f', 2, 64)
 
 				str = str +
 
@@ -437,6 +437,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				</div>
 				</li>
+				</ul>
 				<br><br>
 				`
 
@@ -492,7 +493,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if u != "" {
 
-			cart.ID = graphql.ID(string(ID))
+			cart.ID = graphql.ID(u)
 
 			var q struct {
 				FindCartByID struct {
@@ -554,9 +555,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		s = fmt.Sprintf("%s", cart.ID)
 
-		code := base64.StdEncoding.EncodeToString([]byte(s))
+		//code := base64.StdEncoding.EncodeToString([]byte(s))
 
-		http.Redirect(w, r, "https://"+code+".code2go.dev/shop", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+s+".code2go.dev/shop", http.StatusSeeOther)
 
 	}
 
