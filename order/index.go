@@ -23,7 +23,7 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type CostumerEntry struct {
+/* type CostumerEntry struct {
 	ID         graphql.ID     `graphql:"_id"`
 	First      graphql.String `graphql:"first"`
 	Last       graphql.String `graphql:"last"`
@@ -32,9 +32,9 @@ type CostumerEntry struct {
 	Address    AddressEntry
 	Orders     []OrderEntry
 	Registered graphql.Boolean `graphql:"registered"`
-}
+} */
 
-type AddressEntry struct {
+/* type AddressEntry struct {
 	ID       graphql.ID `graphql:"_id"`
 	Costumer CostumerEntry
 	Street   graphql.String `graphql:"street"`
@@ -42,12 +42,12 @@ type AddressEntry struct {
 	Door     graphql.String `graphql:"door"`
 	City     graphql.String `graphql:"city"`
 	Zip      graphql.String `graphql:"zip"`
-}
+} */
 
 type OrderEntry struct {
 	ID       graphql.ID     `graphql:"_id"`
 	Date     graphql.String `graphql:"date"`
-	Costumer CostumerEntry
+	//Costumer CostumerEntry
 	Cart     CartEntry
 	Amount   graphql.Float `graphql:"amount"`
 	//Status   StatusEntry
