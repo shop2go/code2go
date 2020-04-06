@@ -299,11 +299,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var q struct {
 			CostumerByName struct {
 				Data []CostumerEntry
-			} `graphql:"costumerByName(name: $Name)"`
+			} `graphql:"costumerByName(last: $Last	)"`
 		}
 
 		v := map[string]interface{}{
-			"Name": graphql.String(last),
+			"Last": graphql.String(last),
 		}
 
 		if err := call.Query(context.Background(), &q, v); err != nil {
@@ -396,8 +396,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		x2 := map[string]interface{}{
 			"Order":    m1.CreateOrder.ID,
-			"payment":  graphql.Boolean(false),
-			"delivery": graphql.Boolean(false),
+			"Payment":  graphql.Boolean(false),
+			"Delivery": graphql.Boolean(false),
 		}
 
 		if err := call.Mutate(context.Background(), &m2, x2); err != nil {
@@ -405,7 +405,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		sum := strconv.FormatFloat(total, 'f', 2, 64)
+		sum := strconv.FormatFloat(total + 5.00, 'f', 2, 64)
 
 		str := `
 	<!DOCTYPE html>
@@ -420,6 +420,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	   <link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 	</head>
 	<body style="background-color: #bcbcbc;">
+
+	<div class="container" id="order" style="color:rgb(255, 255, 255); font-size:30px;">
+
+	<br>
+	<br>
+
+	<h1>Einkauf</h1>
+	<br>
+	
+		<p><h2>€ ` + sum + `</h2>Einkaufsumme<p>
+		<br>
+
+	</div>
+
 	<script
 	src="https://www.paypal.com/sdk/js?client-id=` + os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
 	  </script>
