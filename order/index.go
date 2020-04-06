@@ -175,19 +175,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<form class="form-inline" role="form" method="POST">
 		<input type="text" class="form-control" value="" aria-label="first" id ="first" name ="first" placeholder="Vorname" required>
 		<input type="text" class="form-control" value="" aria-label="last" id ="last" name ="last" placeholder="Nachname" required>
-		<input type="email" class="form-control" value="" aria-label="email" id ="email" name ="email" placeholder="Email" required>
+		<input type="email" class="form-control" value="" aria-label="email" id ="email" name ="email" placeholder="Email">
 		<input type="number" class="form-control" value="" aria-label="phone" id ="phone" name ="phone" placeholder="Telefon" required>
 		<input type="text" class="form-control" value="" aria-label="street" id ="street" name ="street" placeholder="Straße" required>
 		<input type="text" class="form-control" value="" aria-label="number" id ="number" name ="number" placeholder="Hausnummer" required>
 		<input type="text" class="form-control" value="" aria-label="door" id ="Email" door ="door" placeholder="Türnummer"required>
 		<input readonly="true" type="text" class="form-control" value="Salzburg" aria-label="city" id ="city" name ="city">
 		<input readonly="true" type="text" class="form-control" value="5020" aria-label="zip" id ="zip" name ="zip">
-		</form>
+		
 		<br>
 		
-		<ul class="list-group-item>
+		<ul class="list-group">
 
-		<form role="form" method"POST>
 		<li class="list-group-item>
 			<p><h2>€ ` + total + `</h2>Einkaufsumme<p>
 			<br>
@@ -238,27 +237,118 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
+		var registered bool
+		var costumerID graphql.ID
+
+		r.ParseForm()
+
+		first := r.Form.Get("first")
+		last := r.Form.Get("last")
+		email := r.Form.Get("email")
+		phone := r.Form.Get("phone")
+		street := r.Form.Get("street")
+		number := r.Form.Get("number")
+		door := r.Form.Get("door")
+
+		if email != "" {
+
+			registered = true
+
+		}
+
+		var q struct {
+			CostumerByName struct {
+				ID    graphql.ID     `graphql:"_id"`
+				Phone graphql.String `graphql:"phone"`
+			} `graphql:"costumerByName(name: $Name})"`
+		}
+
+		z := map[string]interface{}{
+			"Name": graphql.String(last),
+		}
+
+		if err := call.Mutate(context.Background(), &q, z); err != nil {
+			fmt.Fprintf(w, "error with costumer: %v\n", err)
+
+		}
+
+		if phone != string(q.CostumerByName.Phone) {
+
+			var a struct {
+				CreateAddress struct {
+					ID     graphql.ID     `graphql:"_id"`
+					Street graphql.String `graphql:"street"`
+					Number graphql.String `graphql:"number"`
+					Door   graphql.String `graphql:"door"`
+				} `graphql:"createAddress(data:{street: $Street, number: $Number, door: $Door})"`
+			}
+
+			y := map[string]interface{}{
+				"Street": graphql.String(street),
+				"Number": graphql.String(number),
+				"Door":   graphql.String(door),
+			}
+
+			if err := call.Mutate(context.Background(), &a, y); err != nil {
+				fmt.Fprintf(w, "error with address: %v\n", err)
+
+			}
+
+			var m struct {
+				CreateCostumer struct {
+					ID         graphql.ID      `graphql:"_id"`
+					First      graphql.String  `graphql:"first"`
+					Last       graphql.String  `graphql:"last"`
+					Email      graphql.String  `graphql:"email"`
+					Phone      graphql.String  `graphql:"phone"`
+					Address    graphql.ID      `graphql:"address"`
+					Registered graphql.Boolean `graphql:"registered"`
+				} `graphql:"createOrder(data:{first: $First, last: $Last, email: $Email, phone: $Phone, address: $Address, registered: $Registered})"`
+			}
+
+			v := map[string]interface{}{
+				"First":      graphql.String(first),
+				"Last":       graphql.String(last),
+				"Email":      graphql.String(email),
+				"Phone":      graphql.String(phone),
+				"Address":    a.CreateAddress.ID,
+				"Registered": graphql.Boolean(registered),
+			}
+
+			if err := call.Mutate(context.Background(), &m, v); err != nil {
+				fmt.Fprintf(w, "error with costumer: %v\n", err)
+
+			}
+
+			costumerID = m.CreateCostumer.ID
+
+		} else {
+
+			costumerID = q.CostumerByName.ID
+
+		}
+
 		var m1 struct {
 			CreateOrder struct {
-				ID     graphql.ID     `graphql:"_id"`
-				Date   graphql.String `graphql:"date"`
-				Cart   graphql.ID     `graphql:"cart"`
-				Amount graphql.Float  `graphql:"amount"`
+				ID       graphql.ID     `graphql:"_id"`
+				Date     graphql.String `graphql:"date"`
+				Costumer graphql.ID     `graphql:"costumer"`
+				Cart     graphql.ID     `graphql:"cart"`
+				Amount   graphql.Float  `graphql:"amount"`
 			} `graphql:"createOrder(data:{date: $Date, cart: $Cart, amount: $Amount})"`
 		}
 
 		v1 := map[string]interface{}{
-			"Date":   graphql.String(time.Now().UTC().Format("2006-01-02")),
-			"Cart":   graphql.ID(u),
-			"Amount": graphql.Float(total),
+			"Date":     graphql.String(time.Now().UTC().Format("2006-01-02")),
+			"Costumer": costumerID,
+			"Cart":     graphql.ID(u),
+			"Amount":   graphql.Float(total),
 		}
 
 		if err := call.Mutate(context.Background(), &m1, v1); err != nil {
 			fmt.Fprintf(w, "error with order: %v\n", err)
 
 		}
-
-		//fmt.Fprintf(w, "%+v", m1.CreateOrder)
 
 		var m2 struct {
 			CreateStatus struct {
@@ -280,105 +370,60 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		/* var cart CartEntry
+		sum := strconv.FormatFloat(total, 'f', 2, 64)
 
-		cart.Products = make([]graphql.ID, 0)
+		str := `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>CODE2GO</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	   <link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+	</head>
+	<body style="background-color: #bcbcbc;">
+	<script
+	src="https://www.paypal.com/sdk/js?client-id=` + os.Getenv("PP_CLIENT_ID") + `&currency=EUR">
+	  </script>
+	   <br>
+	   <br>
+	<div class="container" id="paypal-button-container">
+	</div>
 
-		r.ParseForm()
+	<script>
+paypal.Buttons({
+createOrder: function(data, actions) {
+  return actions.order.create({
+	"intent": "CAPTURE", 
+	purchase_units: [{
+	  amount: {
+		"currency_code": "EUR",
+		  value: "` + sum + `"
+	  }
+	}]
+  });
+},
+onApprove: function(data, actions) {
+  return actions.order.capture().then(function(details) {
+	alert('Transaction completed by ' + details.payer.name.given_name);
+  });
+}
+}).render('#paypal-button-container');
+</script>
+	   
+	<script src="https://assets.medienwerk.now.sh/material.min.js">
+	</script>
+	</body>
+	</html>
+	`
 
-		//form parsing
-		for k := 0; k < len(products); k++ {
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
 
-			cnt := r.Form.Get(string(products[k].Product))
-
-			count, _ := strconv.Atoi(cnt)
-
-			if count == 0 {
-
-				continue
-
-			} else {
-
-				for l := 0; l < count; l++ {
-
-					cart.Products = append(cart.Products, products[k].ID)
-
-				}
-
-			}
-
-		}
-
-		//if len(cart.Products) == 0 {
-
-		if u != "" {
-
-			u = strings.TrimSuffix(u, ".")
-
-			cart.ID = graphql.ID(u)
-
-			var q struct {
-				FindCartByID struct {
-					CartEntry
-				} `graphql:"findCartByID(id: $ID)"`
-			}
-
-			doc := map[string]interface{}{
-				"ID": cart.ID,
-			}
-
-			if err = call.Query(context.Background(), &q, doc); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
-			}
-
-			// appending additional products
-			for _, p := range q.FindCartByID.Products {
-
-				cart.Products = append(cart.Products, p)
-
-			}
-
-			var m struct {
-				UpdateCart struct {
-					CartEntry
-				} `graphql:"updateCart(id: $ID, data:{products: $Products})"`
-			}
-
-			v := map[string]interface{}{
-				"ID":       cart.ID,
-				"Products": cart.Products,
-			}
-
-			if err = call.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
-
-			}
-
-		} else {
-
-			var m struct {
-				CreateCart struct {
-					CartEntry
-				} `graphql:"createCart(data:{products: $Products})"`
-			}
-
-			v := map[string]interface{}{
-				"Products": cart.Products,
-			}
-
-			if err = call.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
-
-			}
-
-			cart.ID = m.CreateCart.ID
-
-		}
-
-		s = fmt.Sprintf("%s", cart.ID)
-
-		http.Redirect(w, r, "https://"+s+".code2go.dev/shop", http.StatusSeeOther)
-		*/
 	}
 
 }
