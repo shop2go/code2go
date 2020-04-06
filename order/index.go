@@ -143,7 +143,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		total := strconv.FormatFloat(total+5.00, 'f', 2, 64)
+		sum := strconv.FormatFloat(total+5.00, 'f', 2, 64)
 
 		str :=
 
@@ -172,14 +172,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<h1>Einkauf</h1>
 		<br>
-		<ul class="list-group">
-
-		<li class="list-group-item>
-			<p><h2>€ ` + total + `</h2>Einkaufsumme<p>
+		
+			<p><h2>€ ` + sum + `</h2>Einkaufsumme<p>
 			<br>
 			<button type="button" class="btn btn-light" onclick="window.location.href='shop'">Mit dem Einkauf fortfahren</button>
 
-			</li></ul><br><br>
+			<br><br>
 
 		<form class="form-inline" role="form" method="POST">
 		<input type="text" class="form-control" value="" aria-label="first" id ="first" name ="first" placeholder="Vorname" required>
@@ -192,6 +190,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input readonly="true" type="text" class="form-control" value="Salzburg" aria-label="city" id ="city" name ="city">
 		<input readonly="true" type="text" class="form-control" value="5020" aria-label="zip" id ="zip" name ="zip">
 		
+		<br>
 		<br>
 		
 		<ul class="list-group">
@@ -338,7 +337,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Costumer graphql.ID     `graphql:"costumer"`
 				Cart     graphql.ID     `graphql:"cart"`
 				Amount   graphql.Float  `graphql:"amount"`
-			} `graphql:"createOrder(data:{date: $Date, cart: $Cart, amount: $Amount})"`
+			} `graphql:"createOrder(data:{date: $Date, costumer: $Costumer, cart: $Cart, amount: $Amount})"`
 		}
 
 		v1 := map[string]interface{}{
