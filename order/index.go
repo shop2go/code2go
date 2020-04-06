@@ -75,7 +75,6 @@ type ProductEntry struct {
 
 type CartEntry struct {
 	ID       graphql.ID   `graphql:"_id"`
-	Order    OrderEntry   `graphql:"order"`
 	Products []graphql.ID `graphql:"products"`
 }
 
