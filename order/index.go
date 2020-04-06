@@ -23,6 +23,31 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
+type CostumerEntry struct {
+	ID         graphql.ID      `graphql:"_id"`
+	First      graphql.String  `graphql:"first"`
+	Last       graphql.String  `graphql:"last"`
+	Email      graphql.String  `graphql:"email"`
+	Phone      graphql.String  `graphql:"phone"`
+	Registered graphql.Boolean `graphql:"registered"`
+}
+
+type AddressEntry struct {
+	ID     graphql.ID     `graphql:"_id"`
+	Street graphql.String `graphql:"street"`
+	Number graphql.String `graphql:"number"`
+	Door   graphql.String `graphql:"door"`
+	City   graphql.String `graphql:"city"`
+	Zip    graphql.String `graphql:"zip"`
+}
+
+type StatusEntry struct {
+	ID       graphql.ID      `graphql:"_id"`
+	Order    graphql.ID      `graphql:"order"`
+	Payment  graphql.Boolean `graphql:"payment"`
+	Delivery graphql.Boolean `graphql:"delivery"`
+}
+
 type ProductEntry struct {
 	ID      graphql.ID     `graphql:"_id"`
 	ImgURL  graphql.String `graphql:"imgURL"`
@@ -38,7 +63,17 @@ type ProductEntry struct {
 
 type CartEntry struct {
 	ID       graphql.ID   `graphql:"_id"`
+	Order    graphql.ID   `graphql:"order"`
 	Products []graphql.ID `graphql:"products"`
+}
+
+type OrderEntry struct {
+	ID       graphql.ID     `graphql:"_id"`
+	Date     graphql.String `graphql:"date"`
+	Costumer graphql.ID     `graphql:"costumer"`
+	Cart     graphql.ID     `graphql:"cart"`
+	Amount   graphql.Float  `graphql:"amount"`
+	Status   graphql.ID     `graphql:"status"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -48,6 +83,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	m := make(map[string]float64, 0)
 
 	var call *graphql.Client
+
+	var ids graphql.ID
 
 	u := r.Host
 
@@ -99,9 +136,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
-		if len(q.FindCartByID.Products) > 0 {
+		if q.FindCartByID.Products != nil {
 
-			for _, id := range q.FindCartByID.Products {
+			for _, ids = range q.FindCartByID.Products {
 
 				var p struct {
 					FindProductByID struct {
@@ -109,11 +146,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					} `graphql:"findProductByID(id: $ID)"`
 				}
 
-				v2 := map[string]interface{}{
-					"ID": id,
+				v := map[string]interface{}{
+					"ID": ids,
 				}
 
-				if err = call.Query(context.Background(), &p, v2); err != nil {
+				if err = call.Query(context.Background(), &p, v); err != nil {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
@@ -240,7 +277,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 
 		var registered bool
-		var costumerID graphql.ID
+
+		var c CostumerEntry
 
 		r.ParseForm()
 
@@ -258,57 +296,63 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-/* 		var q struct {
+		var q struct {
 			CostumerByName struct {
-				ID    graphql.ID     `graphql:"_id"`
-				Phone graphql.String `graphql:"phone"`
-			} `graphql:"costumerByName(name: $Name})"`
+				Data []CostumerEntry
+			} `graphql:"costumerByName(name: $Name)"`
 		}
 
-		z := map[string]interface{}{
+		v := map[string]interface{}{
 			"Name": graphql.String(last),
 		}
 
-		if err := call.Query(context.Background(), &q, z); err != nil {
+		if err := call.Query(context.Background(), &q, v); err != nil {
 			fmt.Fprintf(w, "error with costumer: %v\n", err)
 
 		}
 
-		if phone != string(q.CostumerByName.Phone) || q.CostumerByName.ID == nil {
- */
+		if q.CostumerByName.Data != nil {
+
+			for _, c = range q.CostumerByName.Data {
+
+				if string(c.Phone) == phone {
+
+					break
+
+				}
+
+			}
+
+			ids = c.ID
+
+		} else {
+
+			//if phone != string(q.CostumerByName.Phone) || q.CostumerByName.ID == nil {
+
 			var a struct {
 				CreateAddress struct {
-					ID     graphql.ID     `graphql:"_id"`
-					Street graphql.String `graphql:"street"`
-					Number graphql.String `graphql:"number"`
-					Door   graphql.String `graphql:"door"`
+					AddressEntry
 				} `graphql:"createAddress(data:{street: $Street, number: $Number, door: $Door})"`
 			}
 
-			y := map[string]interface{}{
+			x := map[string]interface{}{
 				"Street": graphql.String(street),
 				"Number": graphql.String(number),
 				"Door":   graphql.String(door),
 			}
 
-			if err := call.Mutate(context.Background(), &a, y); err != nil {
+			if err := call.Mutate(context.Background(), &a, x); err != nil {
 				fmt.Fprintf(w, "error with address: %v\n", err)
 
 			}
 
 			var m struct {
 				CreateCostumer struct {
-					ID         graphql.ID      `graphql:"_id"`
-					First      graphql.String  `graphql:"first"`
-					Last       graphql.String  `graphql:"last"`
-					Email      graphql.String  `graphql:"email"`
-					Phone      graphql.String  `graphql:"phone"`
-					Address    graphql.ID      `graphql:"address"`
-					Registered graphql.Boolean `graphql:"registered"`
-				} `graphql:"createOrder(data:{first: $First, last: $Last, email: $Email, phone: $Phone, address: $Address, registered: $Registered})"`
+					CostumerEntry
+				} `graphql:"createCostumer(data:{first: $First, last: $Last, email: $Email, phone: $Phone, address: $Address, registered: $Registered})"`
 			}
 
-			v := map[string]interface{}{
+			z := map[string]interface{}{
 				"First":      graphql.String(first),
 				"Last":       graphql.String(last),
 				"Email":      graphql.String(email),
@@ -317,57 +361,46 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				"Registered": graphql.Boolean(registered),
 			}
 
-			if err := call.Mutate(context.Background(), &m, v); err != nil {
+			if err := call.Mutate(context.Background(), &m, z); err != nil {
 				fmt.Fprintf(w, "error with costumer: %v\n", err)
 
 			}
 
-			costumerID = m.CreateCostumer.ID
+			ids = m.CreateCostumer.ID
 
-		/* } else {
-
-			costumerID = q.CostumerByName.ID
-
-		} */
+		}
 
 		var m1 struct {
 			CreateOrder struct {
-				ID       graphql.ID     `graphql:"_id"`
-				Date     graphql.String `graphql:"date"`
-				Costumer graphql.ID     `graphql:"costumer"`
-				Cart     graphql.ID     `graphql:"cart"`
-				Amount   graphql.Float  `graphql:"amount"`
+				OrderEntry
 			} `graphql:"createOrder(data:{date: $Date, costumer: $Costumer, cart: $Cart, amount: $Amount})"`
 		}
 
-		v1 := map[string]interface{}{
+		x1 := map[string]interface{}{
 			"Date":     graphql.String(time.Now().UTC().Format("2006-01-02")),
-			"Costumer": costumerID,
+			"Costumer": ids,
 			"Cart":     graphql.ID(u),
 			"Amount":   graphql.Float(total),
 		}
 
-		if err := call.Mutate(context.Background(), &m1, v1); err != nil {
+		if err := call.Mutate(context.Background(), &m1, x1); err != nil {
 			fmt.Fprintf(w, "error with order: %v\n", err)
 
 		}
 
 		var m2 struct {
 			CreateStatus struct {
-				ID       graphql.ID      `graphql:"_id"`
-				Order    graphql.ID      `graphql:"order"`
-				Payment  graphql.Boolean `graphql:"payment"`
-				Delivery graphql.Boolean `graphql:"delivery"`
+				StatusEntry
 			} `graphql:"createStatus(data:{order: $Order, payment: $Payment, delivery: $Delivery})"`
 		}
 
-		v2 := map[string]interface{}{
+		x2 := map[string]interface{}{
 			"Order":    m1.CreateOrder.ID,
 			"payment":  graphql.Boolean(false),
 			"delivery": graphql.Boolean(false),
 		}
 
-		if err := call.Mutate(context.Background(), &m2, v2); err != nil {
+		if err := call.Mutate(context.Background(), &m2, x2); err != nil {
 			fmt.Fprintf(w, "error with status: %v\n", err)
 
 		}
