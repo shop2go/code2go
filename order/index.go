@@ -274,7 +274,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if phone != string(q.CostumerByName.Phone) {
+		if phone != string(q.CostumerByName.Phone) || q.CostumerByName.ID == nil {
 
 			var a struct {
 				CreateAddress struct {
