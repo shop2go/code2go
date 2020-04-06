@@ -14,6 +14,8 @@
 
       {"src": "./order/index.go", "use": "@now/go"},
 
+      {"src": "./product/index.go", "use": "@now/go"},
+
       { "src": "./entry/index.go", "use": "@now/go"},
       
       {"src": "./0/index.go", "use": "@now/go"},

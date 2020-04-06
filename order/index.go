@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	//"time"
+	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/shurcooL/graphql"
@@ -29,14 +29,14 @@ type CostumerEntry struct {
 	Last       graphql.String  `graphql:"last"`
 	Email      graphql.String  `graphql:"email"`
 	Phone      graphql.String  `graphql:"phone"`
-	Address    graphql.ID      `graphql:"_address"`
+	Address    AddressEntry    `graphql:"address"`
 	Orders     []graphql.ID    `graphql:"orders"`
 	Registered graphql.Boolean `graphql:"registered"`
 }
 
 type AddressEntry struct {
 	ID       graphql.ID     `graphql:"_id"`
-	Costumer graphql.ID     `graphql:"cotsumer"`
+	Costumer graphql.ID     `graphql:"costumer"`
 	Street   graphql.String `graphql:"street"`
 	Number   graphql.String `graphql:"number"`
 	Door     graphql.String `graphql:"door"`
@@ -47,10 +47,10 @@ type AddressEntry struct {
 type OrderEntry struct {
 	ID       graphql.ID     `graphql:"_id"`
 	Date     graphql.String `graphql:"date"`
-	Costumer graphql.ID     `graphql:"costumer"`
-	Cart     graphql.ID     `graphql:"cart"`
+	Costumer CostumerEntry  `graphql:"costumer"`
+	Cart     CartEntry      `graphql:"cart"`
 	Amount   graphql.Float  `graphql:"amount"`
-	Status   graphql.ID     `graphql:"status"`
+	Status   StatusEntry    `graphql:"status"`
 }
 
 type StatusEntry struct {
@@ -84,6 +84,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	m := make(map[string]float64, 0)
 
+	var call *graphql.Client
+
+	var cart CartEntry
+
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
@@ -116,7 +120,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		httpClient := oauth2.NewClient(context.Background(), src)
 
-		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+		call = graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		//ID, _ := base64.StdEncoding.DecodeString(u)
 
@@ -135,6 +139,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if len(q.FindCartByID.Products) > 0 {
+
+			cart = q.FindCartByID.CartEntry
 
 			for _, id := range q.FindCartByID.Products {
 
@@ -205,7 +211,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		<br>
 
-		<h1>Bestellung</h1>
+		<h1>Einkauf</h1>
 
 		
 
@@ -235,7 +241,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="€ ` + price + `" style="font-size:30px;">
 			<br>
-			<button type="button" class="btn btn-light" onclick="window.location.href='produkt#`+pro+`">Produkt ändern</button>
+			<button type="button" class="btn btn-light" onclick="window.location.href='produkt#` + pro + `">Produkt ändern</button>
 			</li><br>
 
 			`
@@ -264,15 +270,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		/* var m struct {
+		var m struct {
 			CreateOrder struct {
 				OrderEntry
 			} `graphql:"createOrder(data:{date: $Date})"`
 		}
 
 		v := map[string]interface{}{
-			"Date": time.Now().UTC().Format("2006-01-02"),
-		} */
+			"Date":     time.Now().UTC().Format("2006-01-02"),
+			"Costumer": CostumerEntry{},
+			"Cart":     cart,
+			"Amount":   graphql.Float(total),
+			"Status":	StatusEntry{Datetime: graphql.Int(int(time.Now().UTC().Unix())), Payment: graphql.Boolean(false), Delivery: graphql.Boolean(false)},
+		}
+
+		if err := call.Mutate(context.Background(), &m, v); err != nil {
+			fmt.Fprintf(w, "error with products: %v\n", err)
+
+		}
+
+		order := m.CreateOrder.OrderEntry
+
+		fmt.Fprintf(w, "%+v", order)
 
 		/* var cart CartEntry
 
