@@ -179,7 +179,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<br><br>
 
-		<form class="form-inline" role="form" method="POST">
+		<form role="form" method="POST">
 		<input type="text" class="form-control" value="" aria-label="first" id ="first" name ="first" placeholder="Vorname" required>
 		<input type="text" class="form-control" value="" aria-label="last" id ="last" name ="last" placeholder="Nachname" required>
 		<input type="email" class="form-control" value="" aria-label="email" id ="email" name ="email" placeholder="Email">
@@ -269,7 +269,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			"Name": graphql.String(last),
 		}
 
-		if err := call.Mutate(context.Background(), &q, z); err != nil {
+		if err := call.Query(context.Background(), &q, z); err != nil {
 			fmt.Fprintf(w, "error with costumer: %v\n", err)
 
 		}
