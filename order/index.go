@@ -230,24 +230,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 
 		var m1 struct {
-			CreateStatus struct {
-				Datetime graphql.Int
-				Payment  graphql.Boolean
-				Delivery graphql.Boolean
-			} `graphql:"createStatus(data:{datetime: $Datetime,})"`
+			CreateOrder struct {
+				Date     graphql.String
+				Cart  graphql.ID
+				Amount graphql.Float
+			} `graphql:"createOrder(data:{date: $Date, cart: $Cart, amount: $Amount})"`
 		}
 
 		v1 := map[string]interface{}{
-			"Datetime": graphql.Int(int(time.Now().UTC().Unix())),
-			"Payment":  graphql.Boolean(false),
-			"Delivery": graphql.Boolean(false),
+			"Date":  graphql.String(time.Now().UTC().Format("2006-01-02")),
+			"Cart": graphql.ID(u),
+			"Amount": graphql.Float(total),
 		}
+		
 		if err := call.Mutate(context.Background(), &m1, v1); err != nil {
-			fmt.Fprintf(w, "error with products: %v\n", err)
+			fmt.Fprintf(w, "error with order: %v\n", err)
 
 		}
 
-		fmt.Fprintf(w, "%+v", m1.CreateStatus)
+		fmt.Fprintf(w, "%+v", m1.CreateOrder)
 
 		/* var cart CartEntry
 
