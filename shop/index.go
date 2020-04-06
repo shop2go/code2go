@@ -209,7 +209,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		`
 
-		if u != "" {
+		if u == "" {
+
+			str = str +
+
+				`
+			<div class="media">
+			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
+					
+			<div class="media-body"><br><br>
+					
+			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
+					
+			<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
+			</div>
+			</div>	
+			</li>
+			<br><br>
+			`
+
+		} else {
 
 			if total >= 14 {
 
@@ -247,25 +266,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 
 			}
-
-		} else {
-
-			str = str +
-
-				`
-			<div class="media">
-			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
-					
-			<div class="media-body"><br><br>
-					
-			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
-					
-			<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
-			</div>
-			</div>	
-			</li>
-			<br><br>
-			`
 
 		}
 
