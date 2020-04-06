@@ -86,8 +86,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var call *graphql.Client
 
-	var cart CartEntry
-
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
@@ -139,8 +137,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if len(q.FindCartByID.Products) > 0 {
-
-			cart = q.FindCartByID.CartEntry
 
 			for _, id := range q.FindCartByID.Products {
 
@@ -279,7 +275,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		v := map[string]interface{}{
 			"Date":     time.Now().UTC().Format("2006-01-02"),
 			"Costumer": CostumerEntry{},
-			"Cart":     CartEntry{Products: cart.Products},
+			"Cart":     graphql.ID(u),
 			"Amount":   graphql.Float(total),
 			"Status":   StatusEntry{Datetime: graphql.Int(int(time.Now().UTC().Unix())), Payment: graphql.Boolean(false), Delivery: graphql.Boolean(false)},
 		}
