@@ -127,7 +127,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
-		if q.FindCartByID.Products != nil {
+		if len(q.FindCartByID.Products) > 0 {
 
 			m := make(map[graphql.ID]struct{}, 0)
 
@@ -437,13 +437,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</div>
 				</div>
 				</li>
-				</ul>
 				<br><br>
 				`
 
 				}
 
 			}
+
+		str = str + `
+
+		</ul>
+
+		`
 
 		}
 

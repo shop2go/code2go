@@ -207,9 +207,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<h1>Bestellung</h1>
 
-		<form class="form-inline" role="form" method="POST">
+		
 
 		<ul class="list-group">
+
+		<form class="form-inline" role="form" method="POST">
 		
 		<li class="list-group-item">
 
