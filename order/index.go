@@ -424,7 +424,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<br>
 	<br>
 
-	<h1>Einkauf</h1>
+	<h1>Einkauf</h1>für<br>` + c.First +`<br>` +  c.Last + 
+
+	`
+
 	<br>
 	
 		<p><h2>€ ` + sum + `</h2>Einkaufsumme<p>
