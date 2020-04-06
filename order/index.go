@@ -75,6 +75,7 @@ type ProductEntry struct {
 
 type CartEntry struct {
 	ID       graphql.ID   `graphql:"_id"`
+	Order    OrderEntry   `graphql:"order"`
 	Products []graphql.ID `graphql:"products"`
 }
 
@@ -241,7 +242,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="€ ` + price + `" style="font-size:30px;">
 			<br>
-			<button type="button" class="btn btn-light" onclick="window.location.href='produkt#` + pro + `">Produkt ändern</button>
+			<button type="button" class="btn btn-light" onclick="window.location.href='product` + pro + `">Produkt ändern</button>
 			</li><br>
 
 			`
@@ -273,15 +274,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var m struct {
 			CreateOrder struct {
 				OrderEntry
-			} `graphql:"createOrder(data:{date: $Date})"`
+			} `graphql:"createOrder(data:{date: $Date, costumer: $Costumer, cart: $Cart, amount: $Amount, status: $Status})"`
 		}
 
 		v := map[string]interface{}{
 			"Date":     time.Now().UTC().Format("2006-01-02"),
 			"Costumer": CostumerEntry{},
-			"Cart":     cart,
+			"Cart":     CartEntry{Products: cart.Products},
 			"Amount":   graphql.Float(total),
-			"Status":	StatusEntry{Datetime: graphql.Int(int(time.Now().UTC().Unix())), Payment: graphql.Boolean(false), Delivery: graphql.Boolean(false)},
+			"Status":   StatusEntry{Datetime: graphql.Int(int(time.Now().UTC().Unix())), Payment: graphql.Boolean(false), Delivery: graphql.Boolean(false)},
 		}
 
 		if err := call.Mutate(context.Background(), &m, v); err != nil {
