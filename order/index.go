@@ -23,43 +23,6 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type CostumerEntry struct {
-	ID         graphql.ID      `graphql:"_id"`
-	First      graphql.String  `graphql:"first"`
-	Last       graphql.String  `graphql:"last"`
-	Email      graphql.String  `graphql:"email"`
-	Phone      graphql.String  `graphql:"phone"`
-	Address    AddressEntry    `graphql:"address"`
-	Orders     []graphql.ID    `graphql:"orders"`
-	Registered graphql.Boolean `graphql:"registered"`
-}
-
-type AddressEntry struct {
-	ID       graphql.ID     `graphql:"_id"`
-	Costumer graphql.ID     `graphql:"costumer"`
-	Street   graphql.String `graphql:"street"`
-	Number   graphql.String `graphql:"number"`
-	Door     graphql.String `graphql:"door"`
-	City     graphql.String `graphql:"city"`
-	Zip      graphql.String `graphql:"zip"`
-}
-
-type OrderEntry struct {
-	ID       graphql.ID     `graphql:"_id"`
-	Date     graphql.String `graphql:"date"`
-	Costumer CostumerEntry  `graphql:"costumer"`
-	Cart     CartEntry      `graphql:"cart"`
-	Amount   graphql.Float  `graphql:"amount"`
-	Status   StatusEntry    `graphql:"status"`
-}
-
-type StatusEntry struct {
-	ID       graphql.ID      `graphql:"_id"`
-	Datetime graphql.Int     `graphql:"datetime"`
-	Payment  graphql.Boolean `graphql:"payment"`
-	Delivery graphql.Boolean `graphql:"delivery"`
-}
-
 type ProductEntry struct {
 	ID      graphql.ID     `graphql:"_id"`
 	ImgURL  graphql.String `graphql:"imgURL"`
@@ -266,28 +229,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		var m struct {
-			CreateOrder struct {
-				OrderEntry
-			} `graphql:"createOrder(data:{date: $Date, costumer: $Costumer, cart: $Cart, amount: $Amount, status: $Status})"`
+		var m1 struct {
+			CreateStatus struct {
+				Datetime graphql.Int
+				Payment  graphql.Boolean
+				Delivery graphql.Boolean
+			} `graphql:"createStatus(data:{datetime: $Datetime,})"`
 		}
 
-		v := map[string]interface{}{
-			"Date":     time.Now().UTC().Format("2006-01-02"),
-			"Costumer": CostumerEntry{},
-			"Cart":     graphql.ID(u),
-			"Amount":   graphql.Float(total),
-			"Status":   StatusEntry{Datetime: graphql.Int(int(time.Now().UTC().Unix())), Payment: graphql.Boolean(false), Delivery: graphql.Boolean(false)},
+		v1 := map[string]interface{}{
+			"Datetime": graphql.Int(int(time.Now().UTC().Unix())),
+			"Payment":  graphql.Boolean(false),
+			"Delivery": graphql.Boolean(false),
 		}
-
-		if err := call.Mutate(context.Background(), &m, v); err != nil {
+		if err := call.Mutate(context.Background(), &m1, v1); err != nil {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 
 		}
 
-		order := m.CreateOrder.OrderEntry
-
-		fmt.Fprintf(w, "%+v", order)
+		fmt.Fprintf(w, "%+v", m1.CreateStatus)
 
 		/* var cart CartEntry
 
