@@ -211,7 +211,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<ul class="list-group">
 
-		<form class="form-inline" role="form" method="POST">
+		<form role="form" method="POST">
 		
 		<li class="list-group-item">
 
@@ -231,7 +231,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<label class="form-check-label" for="` + pro + `" style="font-size:25px;">` + pro + `</label>
 
-			<p><h2>€ <input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="` + price + `"></h2></p>
+			<p><h2>€ </h2><input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="` + price + `" style="font-size:30px;"></p>
 
 			</li><br>
 
@@ -241,7 +241,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		str = str + `
 			
-			<button type="submit" class="btn btn-light">Bezahlen</button>
+			<button type="submit" class="btn btn-light" style="font-size:30px;">Bezahlen</button>
 			</ul>
 			</form>
 			</div>
