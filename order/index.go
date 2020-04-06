@@ -172,14 +172,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<h1>Einkauf</h1>
 
+		<form class="form-inline" role="form" method="POST">
+		<input type="text" class="form-control" value="" aria-label="first" id ="first" name ="first" placeholder="Vorname" required>
+		<input type="text" class="form-control" value="" aria-label="last" id ="last" name ="last" placeholder="Nachname" required>
+		<input type="email" class="form-control" value="" aria-label="email" id ="email" name ="email" placeholder="Email" required>
+		<input type="number" class="form-control" value="" aria-label="phone" id ="phone" name ="phone" placeholder="Telefon" required>
+		<input type="text" class="form-control" value="" aria-label="street" id ="street" name ="street" placeholder="Straße" required>
+		<input type="text" class="form-control" value="" aria-label="number" id ="number" name ="number" placeholder="Hausnummer" required>
+		<input type="text" class="form-control" value="" aria-label="door" id ="Email" door ="door" placeholder="Türnummer"required>
+		<input readonly="true" type="text" class="form-control" value="Salzburg" aria-label="city" id ="city" name ="city">
+		<input readonly="true" type="text" class="form-control" value="5020" aria-label="zip" id ="zip" name ="zip">
+		</form>
+		<br>
 		
+		<ul class="list-group-item>
 
-		<ul class="list-group">
-
-		<form role="form" method="POST">
-		
-		<li class="list-group-item">
-
+		<form role="form" method"POST>
+		<li class="list-group-item>
 			<p><h2>€ ` + total + `</h2>Einkaufsumme<p>
 			<br>
 			<button type="button" class="btn btn-light" onclick="window.location.href='shop'">Mit dem Einkauf fortfahren</button>
@@ -200,7 +209,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="€ ` + price + `" style="font-size:30px;">
 			<br>
-			<button type="button" class="btn btn-light" onclick="window.location.href='product` + pro + `">Produkt ändern</button>
+			<button type="button" class="btn btn-light" onclick="window.location.href='product'">Produkt ändern</button>
 			</li><br>
 
 			`
@@ -231,24 +240,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var m1 struct {
 			CreateOrder struct {
-				Date     graphql.String
-				Cart  graphql.ID
-				Amount graphql.Float
+				ID     graphql.ID     `graphql:"_id"`
+				Date   graphql.String `graphql:"date"`
+				Cart   graphql.ID     `graphql:"cart"`
+				Amount graphql.Float  `graphql:"amount"`
 			} `graphql:"createOrder(data:{date: $Date, cart: $Cart, amount: $Amount})"`
 		}
 
 		v1 := map[string]interface{}{
-			"Date":  graphql.String(time.Now().UTC().Format("2006-01-02")),
-			"Cart": graphql.ID(u),
+			"Date":   graphql.String(time.Now().UTC().Format("2006-01-02")),
+			"Cart":   graphql.ID(u),
 			"Amount": graphql.Float(total),
 		}
-		
+
 		if err := call.Mutate(context.Background(), &m1, v1); err != nil {
 			fmt.Fprintf(w, "error with order: %v\n", err)
 
 		}
 
-		fmt.Fprintf(w, "%+v", m1.CreateOrder)
+		//fmt.Fprintf(w, "%+v", m1.CreateOrder)
+
+		var m2 struct {
+			CreateStatus struct {
+				ID       graphql.ID      `graphql:"_id"`
+				Order    graphql.ID      `graphql:"order"`
+				Payment  graphql.Boolean `graphql:"payment"`
+				Delivery graphql.Boolean `graphql:"delivery"`
+			} `graphql:"createStatus(data:{order: $Order, payment: $Payment, delivery: $Delivery})"`
+		}
+
+		v2 := map[string]interface{}{
+			"Order":    m1.CreateOrder.ID,
+			"payment":  graphql.Boolean(false),
+			"delivery": graphql.Boolean(false),
+		}
+
+		if err := call.Mutate(context.Background(), &m2, v2); err != nil {
+			fmt.Fprintf(w, "error with status: %v\n", err)
+
+		}
 
 		/* var cart CartEntry
 
