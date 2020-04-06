@@ -317,13 +317,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(c.Phone) == phone {
 
+					ids = c.ID
+
 					break
 
 				}
 
 			}
-
-			ids = c.ID
 
 		} else {
 
@@ -364,7 +364,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			ids = m.CreateCostumer.ID
+			ids = m.CreateCostumer.CostumerEntry.ID
 
 		}
 

@@ -155,7 +155,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for i := 0; i < len(products); i++ {
 
-				if _, ok := m[products[i].ID]; ok {
+				if _, ok := m[products[i].ID]; !ok {
 
 					products[i] = ProductEntry{}
 
