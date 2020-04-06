@@ -239,7 +239,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					`				
 							
 				<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
-				<p>Pauschal<br><h2>€ 5</h2> + Bestellsumme: <h2>€ ` + price + `</h2></p>
+				<p><br><br><h2>€ 5</h2>Bestellsumme: <h2>€ ` + price + `</h2></p>
 				<button type="button" class="btn btn-light" onclick="window.location.href='order'">Ware jetzt bestellen</button>
 						
 				</li>
