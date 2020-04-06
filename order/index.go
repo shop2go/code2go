@@ -24,18 +24,18 @@ type Access struct {
 }
 
 type CostumerEntry struct {
-	ID         graphql.ID     `graphql:"_id"`
-	First      graphql.String `graphql:"first"`
-	Last       graphql.String `graphql:"last"`
-	Email      graphql.String `graphql:"email"`
-	Phone      graphql.String `graphql:"phone"`
-	Address    graphql.ID     `graphql:"_address"`
-	Orders     []graphql.ID     `graphql:"orders"`
+	ID         graphql.ID      `graphql:"_id"`
+	First      graphql.String  `graphql:"first"`
+	Last       graphql.String  `graphql:"last"`
+	Email      graphql.String  `graphql:"email"`
+	Phone      graphql.String  `graphql:"phone"`
+	Address    graphql.ID      `graphql:"_address"`
+	Orders     []graphql.ID    `graphql:"orders"`
 	Registered graphql.Boolean `graphql:"registered"`
 }
 
 type AddressEntry struct {
-	ID       graphql.ID `graphql:"_id"`
+	ID       graphql.ID     `graphql:"_id"`
 	Costumer graphql.ID     `graphql:"cotsumer"`
 	Street   graphql.String `graphql:"street"`
 	Number   graphql.String `graphql:"number"`
@@ -49,12 +49,12 @@ type OrderEntry struct {
 	Date     graphql.String `graphql:"date"`
 	Costumer graphql.ID     `graphql:"costumer"`
 	Cart     graphql.ID     `graphql:"cart"`
-	Amount   graphql.Float `graphql:"amount"`
+	Amount   graphql.Float  `graphql:"amount"`
 	Status   graphql.ID     `graphql:"status"`
 }
 
 type StatusEntry struct {
-	ID       graphql.ID `graphql:"_id"`
+	ID       graphql.ID      `graphql:"_id"`
 	Datetime graphql.Int     `graphql:"datetime"`
 	Payment  graphql.Boolean `graphql:"payment"`
 	Delivery graphql.Boolean `graphql:"delivery"`
@@ -88,31 +88,35 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	u = strings.TrimSuffix(u, "code2go.dev")
 
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+	if u == "" {
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("shop"), "role": "server"}))
+		http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
 
-	if err != nil {
-
-		fmt.Fprintf(w, "connection error: %v\n", err)
-
-	}
-
-	var access *Access
-
-	x.Get(&access)
-
-	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: access.Secret},
-	)
-
-	httpClient := oauth2.NewClient(context.Background(), src)
-
-	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-	if u != "" {
+	} else {
 
 		u = strings.TrimSuffix(u, ".")
+
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("shop"), "role": "server"}))
+
+		if err != nil {
+
+			fmt.Fprintf(w, "connection error: %v\n", err)
+
+		}
+
+		var access *Access
+
+		x.Get(&access)
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		//ID, _ := base64.StdEncoding.DecodeString(u)
 
@@ -167,10 +171,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "https://"+u+".code2go.dev/shop", http.StatusSeeOther)
 
 		}
-
-	} else {
-
-		http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
 
 	}
 
@@ -229,7 +229,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<li class="list-group-item">
 
-			<label class="form-check-label" for="` + pro + `" style="font-size:25px;">`+pro+`</label>
+			<label class="form-check-label" for="` + pro + `" style="font-size:25px;">` + pro + `</label>
 
 			<p><h2>€ <input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="` + price + `"></h2></p>
 
@@ -255,9 +255,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</html>
 			`
 
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-			w.Write([]byte(str))
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
 
 	case "POST":
 

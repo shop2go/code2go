@@ -37,7 +37,7 @@ type ProductEntry struct {
 }
 
 type CartEntry struct {
-	ID       graphql.ID `graphql:"_id"`
+	ID       graphql.ID   `graphql:"_id"`
 	Products []graphql.ID `graphql:"products"`
 }
 
@@ -50,6 +50,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
+
+	u = strings.TrimSuffix(u, ".")
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -109,8 +111,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if u != "" {
 
-		u = strings.TrimSuffix(u, ".")
-
 		//ID, _ := base64.StdEncoding.DecodeString(u)
 
 		var q struct {
@@ -127,7 +127,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
-		if len(q.FindCartByID.Products) > 0 {
+		if q.FindCartByID.Products != nil {
 
 			m := make(map[graphql.ID]struct{}, 0)
 
@@ -444,7 +444,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-		str = str + `
+			str = str + `
 
 		</ul>
 
