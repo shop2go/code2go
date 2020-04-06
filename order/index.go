@@ -171,6 +171,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 
 		<h1>Einkauf</h1>
+		<br>
+		<ul class="list-group">
+
+		<li class="list-group-item>
+			<p><h2>€ ` + total + `</h2>Einkaufsumme<p>
+			<br>
+			<button type="button" class="btn btn-light" onclick="window.location.href='shop'">Mit dem Einkauf fortfahren</button>
+
+			</li></ul><br><br>
 
 		<form class="form-inline" role="form" method="POST">
 		<input type="text" class="form-control" value="" aria-label="first" id ="first" name ="first" placeholder="Vorname" required>
@@ -186,13 +195,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		
 		<ul class="list-group">
-
-		<li class="list-group-item>
-			<p><h2>€ ` + total + `</h2>Einkaufsumme<p>
-			<br>
-			<button type="button" class="btn btn-light" onclick="window.location.href='shop'">Mit dem Einkauf fortfahren</button>
-
-			</li><br><br>`
+		`
 
 		for pro, flo := range m {
 
