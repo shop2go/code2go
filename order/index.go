@@ -403,9 +403,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		sum := strconv.FormatFloat(total + 5.00, 'f', 2, 64)
+		sum := strconv.FormatFloat(total+5.00, 'f', 2, 64)
 
-		str := `
+		str :=
+		
+		`
+		
 	<!DOCTYPE html>
 	<html lang="en">
 	<head>
@@ -424,9 +427,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<br>
 	<br>
 
-	<h1>Einkauf</h1>für<br>` + c.First +`<br>` +  c.Last + 
-
-	`
+	<h1>Einkauf</h1>
+	für<br>` + first + `<br>` + last + `
 
 	<br>
 	
