@@ -216,7 +216,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<li class="list-group-item">
 
 			<p><h2>€ ` + total + `</h2>Einkaufsumme<p>
-
+			<br>
 			<button type="button" class="btn btn-light" onclick="window.location.href='shop'">Mit dem Einkauf fortfahren</button>
 
 			</li><br><br>`
@@ -234,7 +234,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<label class="form-check-label" for="` + pro + `" style="font-size:25px;">` + pro + ` €</label>
 
 			<input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="` + price + `" style="font-size:30px;">
-
+			<br>
+			<button type="button" class="btn btn-light" onclick="window.location.href='produkt#`+pro+`">Produkt ändern</button>
 			</li><br>
 
 			`
