@@ -269,7 +269,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if products[0].ID != nil {
+		/* if products[0].ID != nil {
 
 			s = string(products[0].Cat)
 
@@ -326,7 +326,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br><br>
 		`
 
-		}
+		} */
 
 		for k := 1; k < len(products); k++ {
 
