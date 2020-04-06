@@ -297,9 +297,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var q struct {
-			CostumerByName struct {
+			CostumersByName struct {
 				Data []CostumerEntry
-			} `graphql:"costumerByName(last: $Last	)"`
+			} `graphql:"costumersByName(last: $Last)"`
 		}
 
 		v := map[string]interface{}{
@@ -311,9 +311,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if q.CostumerByName.Data != nil {
+		if q.CostumersByName.Data != nil {
 
-			for _, c = range q.CostumerByName.Data {
+			for _, c = range q.CostumersByName.Data {
 
 				if string(c.Phone) == phone {
 
@@ -326,8 +326,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			ids = c.ID
 
 		} else {
-
-			//if phone != string(q.CostumerByName.Phone) || q.CostumerByName.ID == nil {
 
 			var a struct {
 				CreateAddress struct {
