@@ -258,7 +258,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		var q struct {
+/* 		var q struct {
 			CostumerByName struct {
 				ID    graphql.ID     `graphql:"_id"`
 				Phone graphql.String `graphql:"phone"`
@@ -275,7 +275,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if phone != string(q.CostumerByName.Phone) || q.CostumerByName.ID == nil {
-
+ */
 			var a struct {
 				CreateAddress struct {
 					ID     graphql.ID     `graphql:"_id"`
@@ -324,11 +324,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			costumerID = m.CreateCostumer.ID
 
-		} else {
+		/* } else {
 
 			costumerID = q.CostumerByName.ID
 
-		}
+		} */
 
 		var m1 struct {
 			CreateOrder struct {
