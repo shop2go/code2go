@@ -383,7 +383,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		http.Redirect(w, r, "https://"+u+".code2go.dev/shop", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+u+".code2go.dev/order", http.StatusSeeOther)
 
 	}
 
