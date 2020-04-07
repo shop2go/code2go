@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"sort"
+	//"sort"
 	"strconv"
 	"strings"
 
@@ -45,13 +45,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
 
-	//var ID []byte
+	m := make(map[graphql.ID]int, 0)
 
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
 
 	u = strings.TrimSuffix(u, ".")
+
+	if u == "" {
+
+		http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
+
+	}
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -74,100 +80,62 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	httpClient := oauth2.NewClient(context.Background(), src)
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-	var q struct {
-		AllProducts struct {
-			Data []ProductEntry
-		}
+	
+	var p struct {
+		FindCartByID struct {
+			CartEntry
+		} `graphql:"findCartByID(id: $ID)"`
 	}
 
-	if err = call.Query(context.Background(), &q, nil); err != nil {
+	v := map[string]interface{}{
+		"ID": graphql.ID(u),
+	}
+
+	if err = call.Query(context.Background(), &p, v); err != nil {
 		fmt.Fprintf(w, "error with products: %v\n", err)
 	}
 
-	products := q.AllProducts.Data
+	if p.FindCartByID.Products != nil {
 
-	sort.Slice(products, func(i, j int) bool {
+		for _, id := range p.FindCartByID.Products {
 
-		if products[i].Cat < products[j].Cat {
-			return true
-		}
+			var n struct {
+				FindProductByID struct {
+					ProductEntry
+				} `graphql:"findProductByID(id: $ID)"`
+			}
 
-		if products[i].Cat > products[j].Cat {
-			return false
-		}
+			x := map[string]interface{}{
+				"ID": id,
+			}
 
-		if products[i].Price < products[j].Price {
-			return true
-		}
+			if err = call.Query(context.Background(), &n, x); err != nil {
+				fmt.Fprintf(w, "error with products: %v\n", err)
+			}
 
-		if products[i].Price > products[j].Price {
-			return false
-		}
+			total = total + float64(n.FindProductByID.Price)
 
-		return products[i].Product < products[j].Product
+			if _, ok := m[id]; ok {
 
-	})
+				m[id] = m[id] + 1
 
-	if u != "" {
+			} else {
 
-		//ID, _ := base64.StdEncoding.DecodeString(u)
-
-		var q struct {
-			FindCartByID struct {
-				CartEntry
-			} `graphql:"findCartByID(id: $ID)"`
-		}
-
-		v1 := map[string]interface{}{
-			"ID": graphql.ID(u),
-		}
-
-		if err = call.Query(context.Background(), &q, v1); err != nil {
-			fmt.Fprintf(w, "error with products: %v\n", err)
-		}
-
-		if q.FindCartByID.Products != nil {
-
-			m := make(map[graphql.ID]struct{}, 0)
-
-			for _, id := range q.FindCartByID.Products {
-
-				var p struct {
-					FindProductByID struct {
-						ProductEntry
-					} `graphql:"findProductByID(id: $ID)"`
-				}
-
-				v2 := map[string]interface{}{
-					"ID": id,
-				}
-
-				if err = call.Query(context.Background(), &p, v2); err != nil {
-					fmt.Fprintf(w, "error with products: %v\n", err)
-				}
-
-				total = total + float64(p.FindProductByID.Price)
-
-				m[id] = struct{}{}
+				m[id] = 1
 
 			}
 
-			for i := 0; i < len(products); i++ {
+		}
 
-				if _, ok := m[products[i].ID]; !ok {
+		/* for i := 0; i < len(products); i++ {
 
-					products[i] = ProductEntry{}
+			if _, ok := m[products[i].ID]; !ok {
 
-				}
+				products[i] = ProductEntry{}
 
 			}
 
-		} else {
-
-			http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
-
-		}
+		} */
 
 	}
 
@@ -237,11 +205,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = str +
 
 					`				
+					<div class="media">
+					<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 							
+					<div class="media-body"><br><br>			
 				<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
 				<p><br><br><h2>€ 5</h2>Bestellsumme: <h2>€ ` + price + `</h2></p>
 				<button type="button" class="btn btn-light" onclick="window.location.href='order'">Ware jetzt bestellen</button>
-						
+				</div></div>	
 				</li>
 				<br><br>
 				`
@@ -269,55 +240,87 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if products[0].ID != nil {
+		for k, i := range m {
 
-			s = string(products[0].Cat)
+			var q struct {
+				FindProductByID struct {
+					ProductEntry
+				} `graphql:"findProductByID(id: $ID)"`
+			}
 
-			price := strconv.FormatFloat(float64(products[0].Price), 'f', 2, 64)
-			pack := strconv.Itoa(int(products[0].Pack))
-			dim := strconv.Itoa(int(products[0].LinkDIM))
+			v := map[string]interface{}{
+				"ID": k,
+			}
 
-			str = str + ` 
+			if err = call.Query(context.Background(), &q, v); err != nil {
+				fmt.Fprintf(w, "error with products: %v\n", err)
+			}
+
+			if string(q.FindProductByID.Cat) != s {
+
+				s = string(q.FindProductByID.Cat)
+
+				str = str + ` 
 
 		<br>
 		<h1>` + s + `</h1>
 
+		`
+
+			}
+
+			//if products[0].ID != nil {
+
+			price := strconv.FormatFloat(float64(q.FindProductByID.Price), 'f', 2, 64)
+			pack := strconv.Itoa(int(q.FindProductByID.Pack))
+			dim := strconv.Itoa(int(q.FindProductByID.LinkDIM))
+
+			str = str + ` 
+
 		<li class="list-group-item">
 
 		<div class="media">
-		<img class="mr-3" src="` + string(products[0].ImgURL) + `" width="100">
+		<img class="mr-3" src="` + string(q.FindProductByID.ImgURL) + `" width="100">
 
 		<div class="media-body">
 
-		<h2>` + string(products[0].Product) + `</h2>
+		<h2>` + string(q.FindProductByID.Product) + `</h2>
 
-		<h4>` + string(products[0].Info) + `</h4>
+		<h4>` + string(q.FindProductByID.Info) + `</h4>
 
 		<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
 
 		<form class="form-inline" role="form" method="POST">
 				
-		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
+		<label class="form-check-label" for="` + string(q.FindProductByID.Product) + `" style="font-size:25px;">Mengenauswahl:</label>
 		
-		<select style="font-size:30px;" class="form-control" id="` + string(products[0].Product) + `" name="` + string(products[0].Product) + `">
+		<select style="font-size:30px;" class="form-control" id="` + string(q.FindProductByID.Product) + `" name="` + string(q.FindProductByID.Product) + `">
 
-			<option>1</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
-			<option>5</option>
-			<option>6</option>
-			<option>7</option>
-			<option>8</option>
-			<option>9</option>
+		`
+			//if j, ok := m[q.FindProductByID.ID]; ok {
+
+			for i >= 0 {
+
+				o := strconv.Itoa(i)
+
+				str = str + `
+				
+				<option>` + o + `</option>
+				
+				`
+				i--
+
+			}
+
+			str = str + `
 		</select>
 
-		<button type="submit" class="btn btn-light">nehmen</button>
+		<button type="submit" class="btn btn-light">ändern</button>
 		  
 		</form>
 		</p>
 		<br>
-		<a href="` + string(products[0].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[0].LinkURL) + `" width="` + dim + `">
+		<a href="` + string(q.FindProductByID.InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(q.FindProductByID.LinkURL) + `" width="` + dim + `">
 		</a>
 		
 		</div>
@@ -328,131 +331,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		for k := 1; k < len(products); k++ {
-
-			if products[k].ID != nil {
-
-				if string(products[k].Cat) == s {
-
-					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
-					pack := strconv.Itoa(int(products[k].Pack))
-					dim := strconv.Itoa(int(products[k].LinkDIM))
-
-					str = str +
-						`
-				
-				<li class="list-group-item">
-
-				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="100">
-				
-				<div class="media-body">
-
-				<h2>` + string(products[k].Product) + `</h2>
-
-				<h4>` + string(products[k].Info) + `</h4>
-	
-				<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
-		
-				<form class="form-inline" role="form" method="POST">
-		
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
-			
-				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
-
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
-					<option>5</option>
-					<option>6</option>
-					<option>7</option>
-					<option>8</option>
-					<option>9</option>
-				</select>
-
-			  	<button type="submit" class="btn btn-light">nehmen</button>
-
-				</form>
-				</p>
-				<br>
-				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
-	
-				</div>
-				</div>
-				</li>
-				<br><br>
-				`
-
-				} else {
-
-					s = string(products[k].Cat)
-
-					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
-					pack := strconv.Itoa(int(products[k].Pack))
-					dim := strconv.Itoa(int(products[k].LinkDIM))
-
-					str = str +
-						`
-				<br>
-				<h1>` + s + `</h1>
-
-				<li class="list-group-item">
-
-				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="100">
-			
-				<div class="media-body">
-			
-				<h2>` + string(products[k].Product) + `</h2>
-			
-				<h4>` + string(products[k].Info) + `</h4>
-			
-				<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
-				
-				<form class="form-inline" role="form" method="POST">
-				
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
-				
-				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
-
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
-					<option>5</option>
-					<option>6</option>
-					<option>7</option>
-					<option>8</option>
-					<option>9</option>
-				</select>
-					 
-				<button type="submit" class="btn btn-light">nehmen</button>
-					  
-				</form>
-				</p>
-				<br>
-				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
-			
-				</div>
-				</div>
-				</li>
-				<br><br>
-				`
-
-				}
-
-			}
-
-			str = str + `
+		str = str + `
 
 		</ul>
-
-		`
-
-		}
-
-		str = str + `
+		</div>
 					   
 		<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 		</body>
@@ -464,106 +346,91 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
+		/*
+				var cart CartEntry
 
-		var cart CartEntry
+				var count int
 
-		cart.Products = make([]graphql.ID, 0)
+				cart.Products = make([]graphql.ID, 0)
 
-		r.ParseForm()
+				r.ParseForm()
 
-		//form parsing
-		for k := 0; k < len(products); k++ {
+				//form parsing
+				//for k := 0; k < len(products); k++ {
 
-			cnt := r.Form.Get(string(products[k].Product))
+				for k := range m {
 
-			count, _ := strconv.Atoi(cnt)
+					for _, v := range products {
 
-			if count == 0 {
+						if v.ID == k {
 
-				continue
+							cnt := r.Form.Get(string(v.Product))
 
-			} else {
+							count, _ = strconv.Atoi(cnt)
 
-				for l := 0; l < count; l++ {
+							for l := 0; l < count; l++ {
 
-					cart.Products = append(cart.Products, products[k].ID)
+								cart.Products = append(cart.Products, v.ID)
+
+							}
+
+						}
+
+					}
 
 				}
 
-			}
+				//if u != "" {
 
-		}
+				cart.ID = graphql.ID(u)
 
-		//if len(cart.Products) == 0 {
+				var q struct {
+					FindCartByID struct {
+						CartEntry
+					} `graphql:"findCartByID(id: $ID)"`
+				}
 
-		if u != "" {
+				doc := map[string]interface{}{
+					"ID": cart.ID,
+				}
 
-			cart.ID = graphql.ID(u)
+				if err = call.Query(context.Background(), &q, doc); err != nil {
+					fmt.Fprintf(w, "error with products: %v\n", err)
+				}
 
-			var q struct {
-				FindCartByID struct {
-					CartEntry
-				} `graphql:"findCartByID(id: $ID)"`
-			}
+				// appending additional products
+				for _, p := range q.FindCartByID.Products {
 
-			doc := map[string]interface{}{
-				"ID": cart.ID,
-			}
+					cart.Products = append(cart.Products, p)
 
-			if err = call.Query(context.Background(), &q, doc); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
-			}
+				}
 
-			// appending additional products
-			for _, p := range q.FindCartByID.Products {
+				var m struct {
+					UpdateCart struct {
+						CartEntry
+					} `graphql:"updateCart(id: $ID, data:{products: $Products})"`
+				}
 
-				cart.Products = append(cart.Products, p)
+				v := map[string]interface{}{
+					"ID":       cart.ID,
+					"Products": cart.Products,
+				}
 
-			}
+				if err = call.Mutate(context.Background(), &m, v); err != nil {
+					fmt.Fprintf(w, "error with products: %v\n", err)
 
-			var m struct {
-				UpdateCart struct {
-					CartEntry
-				} `graphql:"updateCart(id: $ID, data:{products: $Products})"`
-			}
+				}
 
-			v := map[string]interface{}{
-				"ID":       cart.ID,
-				"Products": cart.Products,
-			}
+				//}
 
-			if err = call.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
+				//s = fmt.Sprintf("%s", cart.ID)
 
-			}
+				//code := base64.StdEncoding.EncodeToString([]byte(s))
 
-		} else {
-
-			var m struct {
-				CreateCart struct {
-					CartEntry
-				} `graphql:"createCart(data:{products: $Products})"`
-			}
-
-			v := map[string]interface{}{
-				"Products": cart.Products,
-			}
-
-			if err = call.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
+				http.Redirect(w, r, "https://"+u+".code2go.dev/shop", http.StatusSeeOther)
 
 			}
-
-			cart.ID = m.CreateCart.ID
-
-		}
-
-		s = fmt.Sprintf("%s", cart.ID)
-
-		//code := base64.StdEncoding.EncodeToString([]byte(s))
-
-		http.Redirect(w, r, "https://"+s+".code2go.dev/shop", http.StatusSeeOther)
-
+		*/
 	}
 
 }
