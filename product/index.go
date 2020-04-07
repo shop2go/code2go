@@ -80,7 +80,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	httpClient := oauth2.NewClient(context.Background(), src)
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-	
+
 	var p struct {
 		FindCartByID struct {
 			CartEntry
@@ -270,7 +270,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			//if products[0].ID != nil {
-
+			id := fmt.Sprintf("%s", q.FindProductByID.ID)
 			price := strconv.FormatFloat(float64(q.FindProductByID.Price), 'f', 2, 64)
 			pack := strconv.Itoa(int(q.FindProductByID.Pack))
 			dim := strconv.Itoa(int(q.FindProductByID.LinkDIM))
@@ -292,9 +292,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<form class="form-inline" role="form" method="POST">
 				
-		<label class="form-check-label" for="` + string(q.FindProductByID.Product) + `" style="font-size:25px;">Mengenauswahl:</label>
+		<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 		
-		<select style="font-size:30px;" class="form-control" id="` + string(q.FindProductByID.Product) + `" name="` + string(q.FindProductByID.Product) + `">
+		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
 
 		`
 			//if j, ok := m[q.FindProductByID.ID]; ok {
@@ -346,91 +346,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
-		/*
-				var cart CartEntry
 
-				var count int
+		products := make([]graphql.ID, 0)
 
-				cart.Products = make([]graphql.ID, 0)
+		r.ParseForm()
 
-				r.ParseForm()
+		for k := range m {
 
-				//form parsing
-				//for k := 0; k < len(products); k++ {
+			id := fmt.Sprintf("%s", k)
 
-				for k := range m {
+			cnt := r.Form.Get(id)
 
-					for _, v := range products {
+			count, _ := strconv.Atoi(cnt)
 
-						if v.ID == k {
+			for i := count; i < 0; i-- {
 
-							cnt := r.Form.Get(string(v.Product))
-
-							count, _ = strconv.Atoi(cnt)
-
-							for l := 0; l < count; l++ {
-
-								cart.Products = append(cart.Products, v.ID)
-
-							}
-
-						}
-
-					}
-
-				}
-
-				//if u != "" {
-
-				cart.ID = graphql.ID(u)
-
-				var q struct {
-					FindCartByID struct {
-						CartEntry
-					} `graphql:"findCartByID(id: $ID)"`
-				}
-
-				doc := map[string]interface{}{
-					"ID": cart.ID,
-				}
-
-				if err = call.Query(context.Background(), &q, doc); err != nil {
-					fmt.Fprintf(w, "error with products: %v\n", err)
-				}
-
-				// appending additional products
-				for _, p := range q.FindCartByID.Products {
-
-					cart.Products = append(cart.Products, p)
-
-				}
-
-				var m struct {
-					UpdateCart struct {
-						CartEntry
-					} `graphql:"updateCart(id: $ID, data:{products: $Products})"`
-				}
-
-				v := map[string]interface{}{
-					"ID":       cart.ID,
-					"Products": cart.Products,
-				}
-
-				if err = call.Mutate(context.Background(), &m, v); err != nil {
-					fmt.Fprintf(w, "error with products: %v\n", err)
-
-				}
-
-				//}
-
-				//s = fmt.Sprintf("%s", cart.ID)
-
-				//code := base64.StdEncoding.EncodeToString([]byte(s))
-
-				http.Redirect(w, r, "https://"+u+".code2go.dev/shop", http.StatusSeeOther)
+				products = append(products, k)
 
 			}
-		*/
+
+		}
+
+		var m struct {
+			UpdateCart struct {
+				CartEntry
+			} `graphql:"updateCart(id: $ID, data:{products: $Products})"`
+		}
+
+		v := map[string]interface{}{
+			"ID":       graphql.ID(u),
+			"Products": products,
+		}
+
+		if err = call.Mutate(context.Background(), &m, v); err != nil {
+			fmt.Fprintf(w, "error with products: %v\n", err)
+
+		}
+
+		http.Redirect(w, r, "https://"+u+".code2go.dev/shop", http.StatusSeeOther)
+
 	}
 
 }
