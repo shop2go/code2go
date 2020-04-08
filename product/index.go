@@ -43,13 +43,15 @@ type CartEntry struct {
 
 type SourceEntry struct {
 	ID     graphql.ID     `graphql:"_id"`
-	Link   []graphql.ID   `graphql:"source"`
+	Link   []graphql.ID   `graphql:"link"`
 	Origin graphql.String `graphql:"origin"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
+
+	products := make([]graphql.ID, 0)
 
 	m := make(map[graphql.ID]int, 0)
 
@@ -167,11 +169,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
+				products = append(products, n.FindProductByID.ID)
+
 			}
 
 			/* for i := 0; i < len(products); i++ {
 
-				if _, ok := m[products[i].ID]; !ok {
+				if _, ok := m[products[i]]; !ok {
 
 					products[i] = ProductEntry{}
 
@@ -395,7 +399,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		products := make([]graphql.ID, 0)
+		//products := make([]graphql.ID, 0)
 
 		r.ParseForm()
 

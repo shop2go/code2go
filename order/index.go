@@ -87,7 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var node string
 
-	m := make(map[graphql.ID]float64, 0)
+	m := make(map[string]float64, 0)
 
 	id := r.Host
 
@@ -199,13 +199,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					total = total + float64(q.FindProductByID.Price)
 
-					if l, ok := m[id]; ok {
+					if l, ok := m[string(q.FindProductByID.Product)]; ok {
 
-						m[id] = l + float64(q.FindProductByID.Price)
+						m[string(q.FindProductByID.Product)] = l + float64(q.FindProductByID.Price)
 
 					} else {
 
-						m[id] = float64(q.FindProductByID.Price)
+						m[string(q.FindProductByID.Product)] = float64(q.FindProductByID.Price)
 
 					}
 
@@ -278,9 +278,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<ul class="list-group">
 		`
 
-		for pro, flo := range m {
+		for prod, flo := range m {
 
-			prod := fmt.Sprintf("%s", pro)
+			//prod := fmt.Sprintf("%s", pro)
 			price := strconv.FormatFloat(flo, 'f', 2, 64)
 
 			str = str +
