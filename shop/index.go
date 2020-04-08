@@ -47,6 +47,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//var ID []byte
 
+	l := r.URL.Path
+
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
@@ -55,7 +57,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("shop"), "role": "server"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(l), "role": "server"}))
 
 	if err != nil {
 
