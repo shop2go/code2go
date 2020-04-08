@@ -87,7 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var node string
 
-	m := make(map[string]float64, 0)
+	m := make(map[graphql.ID]float64, 0)
 
 	id := r.Host
 
@@ -141,7 +141,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if q.SourceByLink.ID == nil {
 
-			http.Redirect(w, r, "https://"+id+".code2go.dev/shop", http.StatusSeeOther)
+			http.Redirect(w, r, "https://code2go.dev/", http.StatusSeeOther)
 
 		} else {
 
@@ -199,13 +199,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					total = total + float64(q.FindProductByID.Price)
 
-					if l, ok := m[string(q.FindProductByID.Product)]; ok {
+					if l, ok := m[id]; ok {
 
-						m[string(q.FindProductByID.Product)] = l + float64(q.FindProductByID.Price)
+						m[id] = l + float64(q.FindProductByID.Price)
 
 					} else {
 
-						m[string(q.FindProductByID.Product)] = float64(q.FindProductByID.Price)
+						m[id] = float64(q.FindProductByID.Price)
 
 					}
 
@@ -220,6 +220,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+
 	switch r.Method {
 
 	case "GET":
@@ -279,6 +280,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for pro, flo := range m {
 
+			prod := fmt.Sprintf("%s", pro)
 			price := strconv.FormatFloat(flo, 'f', 2, 64)
 
 			str = str +
@@ -287,9 +289,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<li class="list-group-item">
 
-			<label class="form-check-label" for="` + pro + `" style="font-size:25px;">` + pro + `</label>
+			<label class="form-check-label" for="` + prod + `" style="font-size:25px;">` + prod + `</label>
 
-			<input readonly="true" class="form-control-plaintext" id="` + pro + `" aria-label="` + pro + `" name ="` + pro + `" value="€ ` + price + `" style="font-size:30px;">
+			<input readonly="true" class="form-control-plaintext" id="` + prod + `" aria-label="` + prod + `" name ="` + prod + `" value="€ ` + price + `" style="font-size:30px;">
 			<br>
 			<button type="button" class="btn btn-light" onclick="window.location.href='product'">Produkt ändern</button>
 			</li><br>

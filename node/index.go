@@ -140,21 +140,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			for _, id := range q.FindCartByID.Products {
 
-				var p struct {
+				var q struct {
 					FindProductByID struct {
 						ProductEntry
 					} `graphql:"findProductByID(id: $ID)"`
 				}
 
-				v2 := map[string]interface{}{
+				v = map[string]interface{}{
 					"ID": id,
 				}
 
-				if err = call.Query(context.Background(), &p, v2); err != nil {
+				if err = call.Query(context.Background(), &q, v); err != nil {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
-				total = total + float64(p.FindProductByID.Price)
+				total = total + float64(q.FindProductByID.Price)
 
 				m[id] = struct{}{}
 
@@ -606,7 +606,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		id = fmt.Sprintf("%s", cart.ID)
 
-		http.Redirect(w, r, "https://"+id+".code2go.dev/order", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+id+".code2go.dev/"+node, http.StatusSeeOther)
 
 	}
 
