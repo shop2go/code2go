@@ -107,7 +107,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if node != "" {
 
-		x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database(node), "role": "server"}))
+		x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database(string(node)), "role": "server"}))
 
 		if err != nil {
 
