@@ -51,8 +51,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
 
-	products := make([]graphql.ID, 0)
-
 	m := make(map[graphql.ID]int, 0)
 
 	id := r.Host
@@ -399,7 +397,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		//products := make([]graphql.ID, 0)
+		products := make([]graphql.ID, 0)
 
 		r.ParseForm()
 
@@ -411,7 +409,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			count, _ := strconv.Atoi(cnt)
 
-			for i := count; i > 0; i-- {
+			for i := 0; i < count; i++ {
 
 				products = append(products, k)
 
