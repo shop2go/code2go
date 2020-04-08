@@ -344,8 +344,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				
 		<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 		
-		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
-
+		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `" value="`+strconv.Itoa(i)+`">
+			
 		`
 			//if j, ok := m[q.FindProductByID.ID]; ok {
 
@@ -354,6 +354,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				o := strconv.Itoa(i)
 
 				str = str + `
+				
 				
 				<option>` + o + `</option>
 				

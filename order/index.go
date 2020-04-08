@@ -257,7 +257,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 			<p><h2>€ ` + sum + `</h2>Einkaufsumme<p>
 			<br>
-			<button type="button" class="btn btn-light" onclick="window.location.href='shop'">Mit dem Einkauf fortfahren</button>
+			<button type="button" class="btn btn-light" onclick="window.location.href='`+node+`'">Mit dem Einkauf fortfahren</button>
 
 			<br><br>
 
