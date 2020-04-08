@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	//"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -76,27 +75,31 @@ type OrderEntry struct {
 	Status   graphql.ID     `graphql:"status"`
 }
 
+type SourceEntry struct {
+	ID     graphql.ID     `graphql:"_id"`
+	Link   []graphql.ID   `graphql:"source"`
+	Origin graphql.String `graphql:"origin"`
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
 
+	var node string
+
 	m := make(map[string]float64, 0)
 
-	var call *graphql.Client
+	id := r.Host
 
-	var ids graphql.ID
+	id = strings.TrimSuffix(id, "code2go.dev")
 
-	u := r.Host
+	if id == "" {
 
-	u = strings.TrimSuffix(u, "code2go.dev")
-
-	if u == "" {
-
-		http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
+		http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
 
 	} else {
 
-		u = strings.TrimSuffix(u, ".")
+		id = strings.TrimSuffix(id, ".")
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -118,64 +121,105 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		httpClient := oauth2.NewClient(context.Background(), src)
 
-		call = graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		//ID, _ := base64.StdEncoding.DecodeString(u)
 
 		var q struct {
-			FindCartByID struct {
-				CartEntry
-			} `graphql:"findCartByID(id: $ID)"`
+			SourceByLink struct {
+				SourceEntry
+			} `graphql:"sourceByLink(link: $Link)"`
 		}
 
-		v1 := map[string]interface{}{
-			"ID": graphql.ID(u),
+		v := map[string]interface{}{
+			"Link": graphql.ID(id),
 		}
 
-		if err = call.Query(context.Background(), &q, v1); err != nil {
-			fmt.Fprintf(w, "error with products: %v\n", err)
+		if err = call.Query(context.Background(), &q, v); err != nil {
+			fmt.Fprintf(w, "error with source: %v\n", err)
 		}
 
-		if q.FindCartByID.Products != nil {
+		if q.SourceByLink.ID == nil {
 
-			for _, ids = range q.FindCartByID.Products {
-
-				var p struct {
-					FindProductByID struct {
-						ProductEntry
-					} `graphql:"findProductByID(id: $ID)"`
-				}
-
-				v := map[string]interface{}{
-					"ID": ids,
-				}
-
-				if err = call.Query(context.Background(), &p, v); err != nil {
-					fmt.Fprintf(w, "error with products: %v\n", err)
-				}
-
-				total = total + float64(p.FindProductByID.Price)
-
-				if l, ok := m[string(p.FindProductByID.Product)]; ok {
-
-					m[string(p.FindProductByID.Product)] = l + float64(p.FindProductByID.Price)
-
-				} else {
-
-					m[string(p.FindProductByID.Product)] = float64(p.FindProductByID.Price)
-
-				}
-
-			}
+			http.Redirect(w, r, "https://"+id+"code2go.dev/shop", http.StatusSeeOther)
 
 		} else {
 
-			http.Redirect(w, r, "https://"+u+".code2go.dev/shop", http.StatusSeeOther)
+			node = string(q.SourceByLink.Origin)
+
+			x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database(node), "role": "server"}))
+
+			if err != nil {
+
+				fmt.Fprintf(w, "connection error: %v\n", err)
+
+			}
+
+			x.Get(&access)
+
+			src = oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			httpClient = oauth2.NewClient(context.Background(), src)
+
+			call = graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			var q struct {
+				FindCartByID struct {
+					CartEntry
+				} `graphql:"findCartByID(id: $ID)"`
+			}
+
+			v = map[string]interface{}{
+				"ID": graphql.ID(id),
+			}
+
+			if err = call.Query(context.Background(), &q, v); err != nil {
+				fmt.Fprintf(w, "error with cart: %v\n", err)
+			}
+
+			if q.FindCartByID.Products != nil {
+
+				for _, id := range q.FindCartByID.Products {
+
+					var q struct {
+						FindProductByID struct {
+							ProductEntry
+						} `graphql:"findProductByID(id: $ID)"`
+					}
+
+					v := map[string]interface{}{
+						"ID": id,
+					}
+
+					if err = call.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with products: %v\n", err)
+					}
+
+					total = total + float64(q.FindProductByID.Price)
+
+					if l, ok := m[string(q.FindProductByID.Product)]; ok {
+
+						m[string(q.FindProductByID.Product)] = l + float64(q.FindProductByID.Price)
+
+					} else {
+
+						m[string(q.FindProductByID.Product)] = float64(q.FindProductByID.Price)
+
+					}
+
+				}
+
+			} else {
+
+				http.Redirect(w, r, "https://"+id+".code2go.dev/"+node, http.StatusSeeOther)
+
+			}
 
 		}
 
 	}
-
 	switch r.Method {
 
 	case "GET":
@@ -280,6 +324,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var c CostumerEntry
 
+		var gqlid graphql.ID
+
 		r.ParseForm()
 
 		first := r.Form.Get("first")
@@ -295,6 +341,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			registered = true
 
 		}
+
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("shop"), "role": "server"}))
+
+		if err != nil {
+
+			fmt.Fprintf(w, "connection error: %v\n", err)
+
+		}
+
+		var access *Access
+
+		x.Get(&access)
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		var q struct {
 			CostumersByName struct {
@@ -317,7 +385,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(c.Phone) == phone {
 
-					ids = c.ID
+					gqlid = c.ID
 
 					break
 
@@ -363,8 +431,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "error with costumer: %v\n", err)
 
 			}
-
-			ids = m.CreateCostumer.CostumerEntry.ID
+			gqlid = m.CreateCostumer.CostumerEntry.ID
 
 		}
 
@@ -376,8 +443,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		x1 := map[string]interface{}{
 			"Date":     graphql.String(time.Now().UTC().Format("2006-01-02")),
-			"Costumer": ids,
-			"Cart":     graphql.ID(u),
+			"Costumer": gqlid,
+			"Cart":     graphql.ID(node),
 			"Amount":   graphql.Float(total),
 		}
 
@@ -406,8 +473,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		sum := strconv.FormatFloat(total+5.00, 'f', 2, 64)
 
 		str :=
-		
-		`
+
+			`
 		
 	<!DOCTYPE html>
 	<html lang="en">

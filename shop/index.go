@@ -41,25 +41,30 @@ type CartEntry struct {
 	Products []graphql.ID `graphql:"products"`
 }
 
+type SourceEntry struct {
+	ID     graphql.ID     `graphql:"_id"`
+	Link   graphql.ID     `graphql:"source"`
+	Origin graphql.String `graphql:"origin"`
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
 
-	//var ID []byte
+	//node id
+	node := r.URL.Path
 
-	l := r.URL.Path
+	node = strings.TrimPrefix(node, "/")
 
-	l = strings.TrimPrefix(l, "/")
+	id := r.Host
 
-	u := r.Host
+	id = strings.TrimSuffix(id, "code2go.dev")
 
-	u = strings.TrimSuffix(u, "code2go.dev")
-
-	u = strings.TrimSuffix(u, ".")
+	id = strings.TrimSuffix(id, ".")
 
 	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(l), "role": "server"}))
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database(node), "role": "server"}))
 
 	if err != nil {
 
@@ -113,9 +118,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	})
 
-	if u != "" {
-
-		//ID, _ := base64.StdEncoding.DecodeString(u)
+	if id != "" {
 
 		var q struct {
 			FindCartByID struct {
@@ -123,11 +126,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} `graphql:"findCartByID(id: $ID)"`
 		}
 
-		v1 := map[string]interface{}{
-			"ID": graphql.ID(u),
+		v := map[string]interface{}{
+			"ID": graphql.ID(id),
 		}
 
-		if err = call.Query(context.Background(), &q, v1); err != nil {
+		if err = call.Query(context.Background(), &q, v); err != nil {
 			fmt.Fprintf(w, "error with products: %v\n", err)
 		}
 
@@ -169,7 +172,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
+			http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
 
 		}
 
@@ -213,7 +216,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		`
 
-		if u == "" {
+		if id == "" {
 
 			str = str +
 
@@ -277,6 +280,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			s = string(products[0].Cat)
 
+			id := fmt.Sprintf("%s", products[0].ID)
 			price := strconv.FormatFloat(float64(products[0].Price), 'f', 2, 64)
 			pack := strconv.Itoa(int(products[0].Pack))
 			dim := strconv.Itoa(int(products[0].LinkDIM))
@@ -301,9 +305,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<form class="form-inline" role="form" method="POST">
 				
-		<label class="form-check-label" for="` + string(products[0].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
+		<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 		
-		<select style="font-size:30px;" class="form-control" id="` + string(products[0].Product) + `" name="` + string(products[0].Product) + `">
+		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
 
 			<option>1</option>
 			<option>2</option>
@@ -338,6 +342,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if string(products[k].Cat) == s {
 
+					id := fmt.Sprintf("%s", products[k].ID)
 					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
 					pack := strconv.Itoa(int(products[k].Pack))
 					dim := strconv.Itoa(int(products[k].LinkDIM))
@@ -360,9 +365,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 				<form class="form-inline" role="form" method="POST">
 		
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
+				<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 			
-				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
+				<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
 
 					<option>1</option>
 					<option>2</option>
@@ -392,6 +397,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					s = string(products[k].Cat)
 
+					id := fmt.Sprintf("%s", products[k].ID)
 					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
 					pack := strconv.Itoa(int(products[k].Pack))
 					dim := strconv.Itoa(int(products[k].LinkDIM))
@@ -416,9 +422,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				
 				<form class="form-inline" role="form" method="POST">
 				
-				<label class="form-check-label" for="` + string(products[k].Product) + `" style="font-size:25px;">Mengenauswahl:</label>
+				<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 				
-				<select style="font-size:30px;" class="form-control" id="` + string(products[k].Product) + `" name="` + string(products[k].Product) + `">
+				<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
 
 					<option>1</option>
 					<option>2</option>
@@ -469,6 +475,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
+		//node = ok
 		var cart CartEntry
 
 		cart.Products = make([]graphql.ID, 0)
@@ -478,7 +485,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//form parsing
 		for k := 0; k < len(products); k++ {
 
-			cnt := r.Form.Get(string(products[k].Product))
+			id := fmt.Sprintf("%s", products[k].ID)
+
+			cnt := r.Form.Get(id)
 
 			count, _ := strconv.Atoi(cnt)
 
@@ -488,7 +497,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			} else {
 
-				for l := 0; l < count; l++ {
+				for i := 0; i < count; i++ {
 
 					cart.Products = append(cart.Products, products[k].ID)
 
@@ -498,11 +507,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//if len(cart.Products) == 0 {
+		if id != "" {
 
-		if u != "" {
-
-			cart.ID = graphql.ID(u)
+			cart.ID = graphql.ID(id)
 
 			var q struct {
 				FindCartByID struct {
@@ -510,12 +517,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} `graphql:"findCartByID(id: $ID)"`
 			}
 
-			doc := map[string]interface{}{
+			v := map[string]interface{}{
 				"ID": cart.ID,
 			}
 
-			if err = call.Query(context.Background(), &q, doc); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
+			if err = call.Query(context.Background(), &q, v); err != nil {
+				fmt.Fprintf(w, "error with cart: %v\n", err)
 			}
 
 			// appending additional products
@@ -531,13 +538,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				} `graphql:"updateCart(id: $ID, data:{products: $Products})"`
 			}
 
-			v := map[string]interface{}{
+			v = map[string]interface{}{
 				"ID":       cart.ID,
 				"Products": cart.Products,
 			}
 
 			if err = call.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
+				fmt.Fprintf(w, "error with cart: %v\n", err)
 
 			}
 
@@ -554,19 +561,52 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if err = call.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
+				fmt.Fprintf(w, "error with cart: %v\n", err)
 
 			}
 
 			cart.ID = m.CreateCart.ID
 
+			//node == shop
+			x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database("shop"), "role": "server"}))
+
+			if err != nil {
+
+				fmt.Fprintf(w, "connection error: %v\n", err)
+
+			}
+
+			x.Get(&access)
+
+			src = oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			httpClient = oauth2.NewClient(context.Background(), src)
+
+			call = graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			var s struct {
+				CreateSource struct {
+					SourceEntry
+				} `graphql:"createSource(data:{origin: $Origin, link: $Link})"`
+			}
+
+			v = map[string]interface{}{
+				"Origin": graphql.String(node),
+				"Link":   cart.ID,
+			}
+
+			if err = call.Mutate(context.Background(), &s, v); err != nil {
+				fmt.Fprintf(w, "error with source: %v\n", err)
+
+			}
+
+			id = fmt.Sprintf("%s", cart.ID)
+
 		}
 
-		s = fmt.Sprintf("%s", cart.ID)
-
-		//code := base64.StdEncoding.EncodeToString([]byte(s))
-
-		http.Redirect(w, r, "https://"+s+".code2go.dev/shop", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+id+".code2go.dev/shop", http.StatusSeeOther)
 
 	}
 

@@ -41,21 +41,27 @@ type CartEntry struct {
 	Products []graphql.ID `graphql:"products"`
 }
 
+type SourceEntry struct {
+	ID     graphql.ID     `graphql:"_id"`
+	Link   []graphql.ID   `graphql:"source"`
+	Origin graphql.String `graphql:"origin"`
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
 
 	m := make(map[graphql.ID]int, 0)
 
-	u := r.Host
+	id := r.Host
 
-	u = strings.TrimSuffix(u, "code2go.dev")
+	id = strings.TrimSuffix(id, "code2go.dev")
 
-	u = strings.TrimSuffix(u, ".")
+	id = strings.TrimSuffix(id, ".")
 
-	if u == "" {
+	if id == "" {
 
-		http.Redirect(w, r, "https://code2go.dev/shop", http.StatusSeeOther)
+		http.Redirect(w, r, "https://code2go.dev/", http.StatusSeeOther)
 
 	}
 
@@ -81,61 +87,103 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-	var p struct {
-		FindCartByID struct {
-			CartEntry
-		} `graphql:"findCartByID(id: $ID)"`
+	var q struct {
+		SourceByLink struct {
+			SourceEntry
+		} `graphql:"sourceByLink(link: $Link)"`
 	}
 
 	v := map[string]interface{}{
-		"ID": graphql.ID(u),
+		"Link": graphql.ID(id),
 	}
 
-	if err = call.Query(context.Background(), &p, v); err != nil {
-		fmt.Fprintf(w, "error with products: %v\n", err)
+	if err = call.Query(context.Background(), &q, v); err != nil {
+		fmt.Fprintf(w, "error with source: %v\n", err)
 	}
 
-	if p.FindCartByID.Products != nil {
+	node := q.SourceByLink.Origin
 
-		for _, id := range p.FindCartByID.Products {
+	if node != "" {
 
-			var n struct {
-				FindProductByID struct {
-					ProductEntry
-				} `graphql:"findProductByID(id: $ID)"`
-			}
+		x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database(node), "role": "server"}))
 
-			x := map[string]interface{}{
-				"ID": id,
-			}
+		if err != nil {
 
-			if err = call.Query(context.Background(), &n, x); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
-			}
-
-			total = total + float64(n.FindProductByID.Price)
-
-			if _, ok := m[id]; ok {
-
-				m[id] = m[id] + 1
-
-			} else {
-
-				m[id] = 1
-
-			}
+			fmt.Fprintf(w, "connection error: %v\n", err)
 
 		}
 
-		/* for i := 0; i < len(products); i++ {
+		x.Get(&access)
 
-			if _, ok := m[products[i].ID]; !ok {
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
 
-				products[i] = ProductEntry{}
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		var p struct {
+			FindCartByID struct {
+				CartEntry
+			} `graphql:"findCartByID(id: $ID)"`
+		}
+
+		v := map[string]interface{}{
+			"ID": graphql.ID(id),
+		}
+
+		if err = call.Query(context.Background(), &p, v); err != nil {
+			fmt.Fprintf(w, "error with cart: %v\n", err)
+		}
+
+		if p.FindCartByID.Products != nil {
+
+			for _, id := range p.FindCartByID.Products {
+
+				var n struct {
+					FindProductByID struct {
+						ProductEntry
+					} `graphql:"findProductByID(id: $ID)"`
+				}
+
+				x := map[string]interface{}{
+					"ID": id,
+				}
+
+				if err = call.Query(context.Background(), &n, x); err != nil {
+					fmt.Fprintf(w, "error with products: %v\n", err)
+				}
+
+				total = total + float64(n.FindProductByID.Price)
+
+				if _, ok := m[id]; ok {
+
+					m[id] = m[id] + 1
+
+				} else {
+
+					m[id] = 1
+
+				}
 
 			}
 
-		} */
+			/* for i := 0; i < len(products); i++ {
+
+				if _, ok := m[products[i].ID]; !ok {
+
+					products[i] = ProductEntry{}
+
+				}
+
+			} */
+
+		}
+
+	} else {
+
+		http.Redirect(w, r, "https://code2go.dev/", http.StatusSeeOther)
 
 	}
 
@@ -177,7 +225,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		`
 
-		if u == "" {
+		if id == "" {
 
 			str = str +
 
@@ -374,7 +422,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v := map[string]interface{}{
-			"ID":       graphql.ID(u),
+			"ID":       graphql.ID(id),
 			"Products": products,
 		}
 
@@ -383,7 +431,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		http.Redirect(w, r, "https://"+u+".code2go.dev/order", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+id+".code2go.dev/order", http.StatusSeeOther)
 
 	}
 
