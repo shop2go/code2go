@@ -93,13 +93,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id = strings.TrimSuffix(id, "code2go.dev")
 
+	id = strings.TrimSuffix(id, ".")
+
 	if id == "" {
 
-		http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
+		http.Redirect(w, r, "https://code2go.dev/", http.StatusSeeOther)
 
 	} else {
-
-		id = strings.TrimSuffix(id, ".")
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 

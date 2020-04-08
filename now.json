@@ -12,6 +12,8 @@
 
       {"src": "./shop/index.go", "use": "@now/go"},
 
+      {"src": "./node/index.go", "use": "@now/go"},
+
       {"src": "./order/index.go", "use": "@now/go"},
 
       {"src": "./product/index.go", "use": "@now/go"},
