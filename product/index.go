@@ -103,11 +103,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "error with source: %v\n", err)
 	}
 
-	node := q.SourceByLink.Origin
+	node := string(q.SourceByLink.Origin)
 
 	if node != "" {
 
-		x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database(string(node)), "role": "server"}))
+		x, err = fc.Query(f.CreateKey(f.Obj{"database": f.Database(node), "role": "server"}))
 
 		if err != nil {
 
@@ -117,13 +117,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		x.Get(&access)
 
-		src := oauth2.StaticTokenSource(
+		src = oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: access.Secret},
 		)
 
-		httpClient := oauth2.NewClient(context.Background(), src)
+		httpClient = oauth2.NewClient(context.Background(), src)
 
-		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+		call = graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		var p struct {
 			FindCartByID struct {
@@ -169,7 +169,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-				products = append(products, n.FindProductByID.ID)
+				//products = append(products, n.FindProductByID.ID)
 
 			}
 
