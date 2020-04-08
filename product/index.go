@@ -359,7 +359,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			count, _ := strconv.Atoi(cnt)
 
-			for i := count; i < 0; i-- {
+			for i := count; i > 0; i-- {
 
 				products = append(products, k)
 
