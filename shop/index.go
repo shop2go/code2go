@@ -49,6 +49,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	l := r.URL.Path
 
+	l = strings.TrimPrefix(l, "/")
+
 	u := r.Host
 
 	u = strings.TrimSuffix(u, "code2go.dev")
