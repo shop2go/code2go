@@ -43,7 +43,7 @@ type CartEntry struct {
 
 type SourceEntry struct {
 	ID     graphql.ID     `graphql:"_id"`
-	Link   []graphql.ID   `graphql:"link"`
+	Link   graphql.ID     `graphql:"link"`
 	Origin graphql.String `graphql:"origin"`
 }
 
