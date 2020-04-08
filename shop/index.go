@@ -602,9 +602,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			id = fmt.Sprintf("%s", cart.ID)
-
 		}
+
+		id = fmt.Sprintf("%s", cart.ID)
 
 		http.Redirect(w, r, "https://"+id+".code2go.dev/shop", http.StatusSeeOther)
 
