@@ -141,7 +141,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if q.SourceByLink.ID == nil {
 
-			http.Redirect(w, r, "https://"+id+"code2go.dev/shop", http.StatusSeeOther)
+			http.Redirect(w, r, "https://"+id+".code2go.dev/shop", http.StatusSeeOther)
 
 		} else {
 
