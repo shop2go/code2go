@@ -34,6 +34,7 @@ type ProductEntry struct {
 	InfoURL graphql.String `graphql:"infoURL"`
 	LinkURL graphql.String `graphql:"linkURL"`
 	LinkDIM graphql.Int    `graphql:"linkDIM"`
+	Quant   graphql.Int    `graphql:"quant"`
 }
 
 type CartEntry struct {

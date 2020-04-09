@@ -53,6 +53,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	m := make(map[graphql.ID]int, 0)
 
+	products := make([]graphql.ID, 0)
+
 	id := r.Host
 
 	id = strings.TrimSuffix(id, "code2go.dev")
@@ -398,8 +400,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		products := make([]graphql.ID, 0)
-
 		r.ParseForm()
 
 		for k := range m {
@@ -410,11 +410,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			count, _ := strconv.Atoi(cnt)
 
-			for i := 0; i < count; i++ {
+			m[k] = count
+
+		}
+
+		for k, i := range m {
+
+			for i > 0 {
 
 				products = append(products, k)
 
+				i--
 			}
+
 
 		}
 
