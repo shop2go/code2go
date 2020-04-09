@@ -90,6 +90,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<!-- Add Material CSS, replace Bootstrap CSS -->
 		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+		<script src="https://unpkg.com/@mux/upchunk@1"></script>
 		</head>
 		<body style="background-color: #a1b116;">
 
@@ -109,7 +110,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		
 		<script>	
-		import "https://unpkg.com/@mux/upchunk@1" as UpChunk;
+
+		import * as UpChunk from '@mux/upchunk';
 
 		const filePicker = document.getElementById('file-picker');
 		
