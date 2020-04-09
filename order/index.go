@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
+	//"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/shurcooL/graphql"
@@ -262,19 +262,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br><br>
 
 		<form role="form" method="POST">
-		<input type="text" class="form-control" value="" aria-label="first" id ="first" name ="first" placeholder="Vorname" required>
-		<input type="text" class="form-control" value="" aria-label="last" id ="last" name ="last" placeholder="Nachname" required>
-		<input type="email" class="form-control" value="" aria-label="email" id ="email" name ="email" placeholder="Email">
-		<input type="number" class="form-control" value="" aria-label="phone" id ="phone" name ="phone" placeholder="Telefon" required>
-		<input type="text" class="form-control" value="" aria-label="street" id ="street" name ="street" placeholder="Straße" required>
-		<input type="text" class="form-control" value="" aria-label="number" id ="number" name ="number" placeholder="Hausnummer" required>
-		<input type="text" class="form-control" value="" aria-label="door" id ="Email" door ="door" placeholder="Türnummer"required>
-		<input readonly="true" type="text" class="form-control" value="Salzburg" aria-label="city" id ="city" name ="city">
-		<input readonly="true" type="text" class="form-control" value="5020" aria-label="zip" id ="zip" name ="zip">
-		
-		<br>
-		<br>
-		
+
 		<ul class="list-group">
 		<li class="list-group-item">
 		<button type="submit" class="btn btn-light" style="font-size:30px;">Bezahlen</button>
@@ -325,13 +313,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		var registered bool
+		//var registered bool
 
-		var c CostumerEntry
+		//var c CostumerEntry
 
-		var gqlid graphql.ID
+		//var gqlid graphql.ID
 
-		r.ParseForm()
+		/* r.ParseForm()
 
 		first := r.Form.Get("first")
 		last := r.Form.Get("last")
@@ -345,9 +333,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			registered = true
 
-		}
+		} */
 
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+		/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("shop"), "role": "server"}))
 
@@ -368,8 +356,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		httpClient := oauth2.NewClient(context.Background(), src)
 
 		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-		var q struct {
+ */
+		/* var q struct {
 			CostumersByName struct {
 				Data []CostumerEntry
 			} `graphql:"costumersByName(last: $Last)"`
@@ -474,7 +462,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "error with status: %v\n", err)
 
 		}
-
+ */
 		sum := strconv.FormatFloat(total+5.00, 'f', 2, 64)
 
 		str :=
@@ -499,8 +487,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<br>
 	<br>
 
-	<h1>Einkauf</h1>
-	für<br>` + first + `<br>` + last + `
+	<h1>Einkauf</h1>´
+	um<br>
 
 	<br>
 	
