@@ -104,7 +104,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<form role="form" method="PUT">
 
 		<input id="file-picker" type="file" />
-		<button type="submit" class="btn btn-light">upload</button>
 
 		</form>
 
@@ -113,9 +112,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		const filePicker = document.getElementById('file-picker');
 		
-		const url = 
-		
-		` + s + `
+		const url = '` + s + `'
 		
 		filePicker.onchange = function () {
 		  const file = filePicker.files[0];
