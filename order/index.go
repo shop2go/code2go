@@ -288,7 +288,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<li class="list-group-item">
 
-			<label class="form-check-label" for="` + prod + `" style="font-size:25px;">Bestellung:` + prod + `</label>
+			<label class="form-check-label" for="` + prod + `" style="font-size:25px;">Bestellung: ` + prod + `</label>
 
 			<input readonly="true" class="form-control-plaintext" id="` + prod + `" aria-label="` + prod + `" name ="` + prod + `" value="€ ` + price + `" style="font-size:30px;">
 			<br>
