@@ -107,7 +107,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		</form>
 
-		<script src="https://unpkg.com/@mux/upchunk@1"></script>
+		<script type="module" src="https://unpkg.com/@mux/upchunk@1"></script>
 
 		<script>	
 		import * as UpChunk from '@mux/upchunk';
