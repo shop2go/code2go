@@ -53,8 +53,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	m := make(map[graphql.ID]int, 0)
 
-	products := make([]graphql.ID, 0)
-
 	id := r.Host
 
 	id = strings.TrimSuffix(id, "code2go.dev")
@@ -141,7 +139,39 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if p.FindCartByID.Products != nil {
 
+			//products = p.FindCartByID.Products
+
 			for _, id := range p.FindCartByID.Products {
+
+				if _, ok := m[id]; ok {
+
+					m[id] = m[id] + 1
+
+				} else {
+
+					m[id] = 1
+
+				}
+
+				var n struct {
+					FindProductByID struct {
+						ProductEntry
+					} `graphql:"findProductByID(id: $ID)"`
+				}
+
+				x := map[string]interface{}{
+					"ID": id,
+				}
+
+				if err = call.Query(context.Background(), &n, x); err != nil {
+					fmt.Fprintf(w, "error with products: %v\n", err)
+				}
+
+				total = total + float64(n.FindProductByID.Price)
+
+			}
+
+			/* for _, id := range p.FindCartByID.Products {
 
 				var n struct {
 					FindProductByID struct {
@@ -171,7 +201,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				//products = append(products, n.FindProductByID.ID)
 
-			}
+			} */
 
 			/* for i := 0; i < len(products); i++ {
 
@@ -183,11 +213,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			} */
 
+		} else {
+
+			http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
+
 		}
 
 	} else {
 
-		http.Redirect(w, r, "https://code2go.dev/", http.StatusSeeOther)
+		http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
 
 	}
 
@@ -346,7 +380,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				
 		<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 		
-		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `" value="`+strconv.Itoa(i)+`">
+		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
 			
 		`
 			//if j, ok := m[q.FindProductByID.ID]; ok {
@@ -368,8 +402,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 		</select>
 
-		<button type="submit" class="btn btn-light">ändern</button>
-		  
+		
 		</form>
 		</p>
 		<br>
@@ -400,21 +433,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
+		products := make([]graphql.ID, 0)
+
 		r.ParseForm()
 
-		for k := range m {
+		for k, i := range m {
 
 			id := fmt.Sprintf("%s", k)
 
 			cnt := r.Form.Get(id)
 
-			count, _ := strconv.Atoi(cnt)
+			if cnt != "" {
 
-			m[k] = count
+				count, _ := strconv.Atoi(cnt)
 
-		}
+				m[k] = count
 
-		for k, i := range m {
+				for count > 0 {
+
+					products = append(products, k)
+
+					count--
+
+				}
+
+				continue
+
+			}
 
 			for i > 0 {
 
@@ -422,7 +467,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				i--
 			}
-
 
 		}
 

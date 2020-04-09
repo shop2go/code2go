@@ -276,7 +276,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br>
 		
 		<ul class="list-group">
+		<li class="list-group-item">
 		<button type="submit" class="btn btn-light" style="font-size:30px;">Bezahlen</button>
+		</li><br>
 		`
 
 		for prod, flo := range m {
