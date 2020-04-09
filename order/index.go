@@ -227,6 +227,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		sum := strconv.FormatFloat(total+5.00, 'f', 2, 64)
 
+		if sum < 19 {
+
+			http.Redirect(w, r, "https://"+id+".code2go.dev/"+node, http.StatusSeeOther)
+				
+		}
+
 		str :=
 
 			`
