@@ -90,7 +90,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<!-- Add Material CSS, replace Bootstrap CSS -->
 		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		<script src="https://unpkg.com/@mux/upchunk@1"></script>
+		<script type="module" src="https://unpkg.com/@mux/upchunk@1"></script>
 		</head>
 		<body style="background-color: #a1b116;">
 
