@@ -111,9 +111,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</form>
 
 		
-		<script>	
-
-		import * as UpChunk from '@mux/upchunk';
+		<script>
 
 		const filePicker = document.getElementById('file-picker');
 		
