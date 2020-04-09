@@ -250,9 +250,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<div class="container" id="order" style="color:rgb(255, 255, 255); font-size:30px;">
 
 		<br>
-		<br>
-
-		<h1>Einkauf</h1>
+		<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg">
 		<br>
 		
 			<p><h2>€ ` + sum + `</h2>Einkaufsumme<p>
