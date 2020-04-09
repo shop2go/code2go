@@ -244,11 +244,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = str +
 
 					`				
+					<div class="media">
+					<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 							
+					<div class="media-body"><br><br>
+							
+								
 				<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
-				<p><br><br><h2>€ 5</h2>Bestellsumme: <h2>€ ` + price + `</h2></p>
+				<p><br><br>Lieferpauschale:<h2>€ 5</h2>Bestellsumme:<h2>€ ` + price + `</h2></p>
 				<button type="button" class="btn btn-light" onclick="window.location.href='order'">Ware jetzt bestellen</button>
-						
+				</div></div>		
 				</li>
 				<br><br>
 				`

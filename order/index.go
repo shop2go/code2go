@@ -199,9 +199,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					total = total + float64(q.FindProductByID.Price)
 
-					if l, ok := m[string(q.FindProductByID.Product)]; ok {
+					if fl, ok := m[string(q.FindProductByID.Product)]; ok {
 
-						m[string(q.FindProductByID.Product)] = l + float64(q.FindProductByID.Price)
+						m[string(q.FindProductByID.Product)] = fl + float64(q.FindProductByID.Price)
 
 					} else {
 
@@ -288,7 +288,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<li class="list-group-item">
 
-			<label class="form-check-label" for="` + prod + `" style="font-size:25px;">` + prod + `</label>
+			<label class="form-check-label" for="` + prod + `" style="font-size:25px;">Bestellung:` + prod + `</label>
 
 			<input readonly="true" class="form-control-plaintext" id="` + prod + `" aria-label="` + prod + `" name ="` + prod + `" value="€ ` + price + `" style="font-size:30px;">
 			<br>
