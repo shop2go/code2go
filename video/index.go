@@ -12,8 +12,7 @@ import (
 
 	"github.com/muxinc/mux-go"
 	/* 	f "github.com/fauna/faunadb-go/faunadb"
-	   	"github.com/shurcooL/graphql" */
-	//"golang.org/x/oauth2"
+	   	"github.com/shurcooL/graphql" *///"golang.org/x/oauth2"
 	//"github.com/plutov/paypal"
 )
 
@@ -57,17 +56,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 		))
 
-		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
-		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
-		u, err := client.DirectUploadsApi.CreateDirectUpload(cur)
+	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
+	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
+	u, err := client.DirectUploadsApi.CreateDirectUpload(cur)
 
-		if err != nil {
+	if err != nil {
 
-			fmt.Fprintf(w, "%v", err)
+		fmt.Fprintf(w, "%v", err)
 
-		}
-		
-		s = u.Data.Url
+	}
+
+	s = u.Data.Url
+
+	//http.NewRequest("PUT", s, nil)
 
 	switch r.Method {
 
@@ -90,7 +91,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<!-- Add Material CSS, replace Bootstrap CSS -->
 		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		<script type="module" src="https://unpkg.com/@mux/upchunk"></script>
+		
 		</head>
 		<body style="background-color: #a1b116;">
 
@@ -110,21 +111,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		</form>
 
-		
-		<script>
+
+		<script> 
+
+		const UpChunk = 'https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js'
 
 		const filePicker = document.getElementById('file-picker');
-		
+
 		const url = '` + s + `'
-		
+
 		filePicker.onchange = function () {
 		  const file = filePicker.files[0];
-		
+
 		  const upload = UpChunk.createUpload({
 			file,
 			endpoint: url
 		  });
-		  
+
 		  upload.on('success', () => console.log('file uploaded'));
 		  }
 		  </script>
