@@ -106,6 +106,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<input id="file-picker" type="file" />
 
+		<button type="submit" class="btn btn-light">upload</button>
+
 		</form>
 
 		
