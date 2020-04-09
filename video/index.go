@@ -104,6 +104,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<form role="form" method="PUT">
 
 		<input id="file-picker" type="file" />
+		<button type="submit" class="btn btn-light">upload</button>
 
 		</form>
 
@@ -126,7 +127,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		  
 		  upload.on('success', () => console.log('file uploaded'));
 		  </script>
-		}`
+		`
 
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
