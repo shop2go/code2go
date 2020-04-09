@@ -385,9 +385,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		`
 			//if j, ok := m[q.FindProductByID.ID]; ok {
 
+			i = i + 5
+
 			for i >= 0 {
 
-				o := strconv.Itoa(i + 5)
+				o := strconv.Itoa(i)
 
 				str = str + `
 				
