@@ -402,6 +402,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `
 		</select>
 
+		<button type="submit" class="btn btn-light">ändern</button>
 		
 		</form>
 		</p>
