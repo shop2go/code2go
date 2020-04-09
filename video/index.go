@@ -123,6 +123,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		  });
 		  
 		  upload.on('success', () => console.log('file uploaded'));
+		  }
 		  </script>
 		`
 
