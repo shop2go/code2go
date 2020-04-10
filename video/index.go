@@ -112,9 +112,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<script type="module"> 
 
-		const UpChunk = 'https://unpkg.com/@mux/upchunk@1';
+		const UpChunk = 'https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js';
   
 		import(UpChunk)
+
+		    .then((module) => {
 
 		const filePicker = document.getElementById('file-picker');
 
@@ -129,7 +131,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		  });
 
 		  upload.on('success', () => console.log('file uploaded'));
-		  }
+		  };
+
+		  });
+		  
 		  </script>
 		`
 
