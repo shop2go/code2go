@@ -91,7 +91,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<!-- Add Material CSS, replace Bootstrap CSS -->
 		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
+		<script type="module" src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
 		</head>
 		<body style="background-color: #a1b116;">
 
@@ -110,7 +110,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</form>
 
 
-		<script> 
+		<script type="module"> 
 
 		import * as UpChunk from '@mux/upchunk';
 
