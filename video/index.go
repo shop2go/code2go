@@ -107,14 +107,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<input id="file-picker" type="file" />
 
-		<button type="submit" class="btn btn-light">upload</button>
-
 		</form>
 
 
-		<script type="module" src="https://unpkg.com/@mux/upchunk@1"> 
+		<script> 
 
-		import * as UpChunk from '@mux/upchunk';
+		import UpChunk from "https://unpkg.com/@mux/upchunk@1";
 
 		const filePicker = document.getElementById('file-picker');
 
