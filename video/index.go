@@ -109,10 +109,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		</form>
 
+		<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
 
 		<script type="module">
 	
-		import * as UpChunk from 'https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js';
+		import * as UpChunk from '@mux/upchunk@1';
 
 		const filePicker = document.getElementById('file-picker');
 
@@ -126,7 +127,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			endpoint: url
 		  });
 
-		  upload.on('success', () => console.log('file uploaded'));
+		  upload.on('success', () => alert('file uploaded'));
 		  
 		};
 
