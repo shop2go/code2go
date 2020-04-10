@@ -117,11 +117,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		const url = '` + s + `'
 
-		filePicker.onchange = function () {
-		  const file = filePicker.files[0];
+		filePicker.onchange = () => {
 
 		  const upload = UpChunk.createUpload({
-			file,
+			file: filePicker.files[0];
 			endpoint: url
 		  });
 
