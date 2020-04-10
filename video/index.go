@@ -103,16 +103,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<h1>Video</h1>
 
-		<form role="form" method="PUT">
+		<form role="form">
 
 		<input id="file-picker" type="file" />
 
 		</form>
 
 
-		<script> 
+		<script type="module"> 
 
-		import UpChunk from "https://unpkg.com/@mux/upchunk@1";
+		import * as UpChunk from 'https://unpkg.com/@mux/upchunk@1';
 
 		const filePicker = document.getElementById('file-picker');
 
