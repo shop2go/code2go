@@ -109,7 +109,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		</form>
 
-		<script type="module">
+		<script type="module" src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
 			
 		import * as UpChunk from 'https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js';
 
@@ -117,11 +117,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		const url = '` + s + `'
 
-		filePicker.onchange = () => {
+		filePicker.onchange = () => {	
 
 		  const upload = UpChunk.createUpload({
 			file: filePicker.files[0],
-			endpoint: url
+			endpoint: url,
 		  });
 
 		  upload.on('success', () => alert('file uploaded'));
