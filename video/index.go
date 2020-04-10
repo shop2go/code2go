@@ -111,7 +111,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		<script type="module" src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
 			
-		import * as UpChunk from 'https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js';
+		import * as UpChunk from '@mux/upchunk';
 
 		const filePicker = document.getElementById('file-picker');
 
