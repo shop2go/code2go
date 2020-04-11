@@ -10,10 +10,10 @@ import (
 	"strconv"
 	//"strings"
 
+	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
-		f "github.com/fauna/faunadb-go/faunadb"
-		   "github.com/shurcooL/graphql" 
-		   "golang.org/x/oauth2"
+	"github.com/shurcooL/graphql"
+	"golang.org/x/oauth2"
 	//"github.com/plutov/paypal"
 )
 
@@ -43,7 +43,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 
 		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
-		os.Exit(1)
 
 	}
 
@@ -76,21 +75,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	//http.NewRequest("PUT", s, nil)
 
 	var m struct {
-		var m struct {
-			CreateInput struct {
-				InputEntry
-			} `graphql:"createInput(data:{url: $URL})"`
-		}
+		CreateInput struct {
+			InputEntry
+		} `graphql:"createInput(data:{url: $URL})"`
 	}
 
 	v := map[string]interface{}{
-		"URL":    graphql.String(s),
+		"URL": graphql.String(s),
 	}
 
 	if err = call.Mutate(context.Background(), &m, v); err != nil {
 		fmt.Printf("error with input: %v\n", err)
 	}
-
 
 	switch r.Method {
 
