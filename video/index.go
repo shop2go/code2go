@@ -114,8 +114,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
 
-	<script>
-
 	const UpChunk = require('@mux/upchunk');
 
 	const filePicker = document.getElementById('file-picker');
