@@ -76,65 +76,137 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		str :=
 
-			`
-		<!DOCTYPE html>
-		<html lang="en">
-		<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>shop2go</title>
-		<!-- CSS -->
-		<!-- Add Material font (Roboto) and Material icon as needed -->
-		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-		<!-- Add Material CSS, replace Bootstrap CSS -->
-		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		
-		</head>
-		<body style="background-color: #a1b116;">
-
-		<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
-
-		<ul class="list-group">
-		<br>
-		<br>
-
-		<h1>Video</h1>
-
-		<form role="form">
-
-		<input id="file-picker" type="file" />
-
-		</form>
-
-		<script type="module" src="https://unpkg.com/@mux/upchunk@1">
-			
-		import * as UpChunk from '@mux/upchunk';
-
-		const filePicker = document.getElementById('file-picker');
-
-		const url = '` + s + `'
-
-		filePicker.onchange = () => {	
-
-		  const upload = UpChunk.createUpload({
-			file: filePicker.files[0],
-			endpoint: url,
-		  });
-
-		  upload.on('success', () => alert('file uploaded'));
-		  
-		};
-
-		  </script>
 		`
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>shop2go</title>
+	<!-- CSS -->
+	<!-- Add Material font (Roboto) and Material icon as needed -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+	<!-- Add Material CSS, replace Bootstrap CSS -->
+	<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 
+	</head>
+	<body style="background-color: #a1b116;">
+
+	<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
+
+	<br>
+	<br>
+
+	<h1>Video</h1>
+
+	<form role="form">
+
+	<input id="file-picker" type="file" />
+
+	</form>
+
+	<script type="module" src="https://unpkg.com/@mux/upchunk@1">
+
+	import * as UpChunk from '@mux/upchunk';
+
+	const filePicker = document.getElementById('file-picker');
+
+	const url = '` + s + `'
+
+	filePicker.onchange = () => {
+
+	  const upload = UpChunk.createUpload({
+		file: filePicker.files[0],
+		endpoint: url,
+	  });
+
+	  upload.on('success', () => alert('file uploaded'));
+
+	};
+
+	  </script>
+
+	</div>
+				   
+	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+	</body>
+	</html>
+	
+
+	`
+
+		
+	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	w.Write([]byte(str))
+
+
+
+		/* 	str :=
+
+				`
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<title>shop2go</title>
+			<!-- CSS -->
+			<!-- Add Material font (Roboto) and Material icon as needed -->
+			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+			<!-- Add Material CSS, replace Bootstrap CSS -->
+			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+
+			</head>
+			<body style="background-color: #a1b116;">
+
+			<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
+
+			<ul class="list-group">
+			<br>
+			<br>
+
+			<h1>Video</h1>
+
+			<form role="form">
+
+			<input id="file-picker" type="file" />
+
+			</form>
+
+			<script type="module" src="https://unpkg.com/@mux/upchunk@1">
+
+			import * as UpChunk from '@mux/upchunk';
+
+			const filePicker = document.getElementById('file-picker');
+
+			const url = '` + s + `'
+
+			filePicker.onchange = () => {
+
+			  const upload = UpChunk.createUpload({
+				file: filePicker.files[0],
+				endpoint: url,
+			  });
+
+			  upload.on('success', () => alert('file uploaded'));
+
+			};
+
+			  </script>
+			`
+
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+			w.Write([]byte(str))
+
+		}
+		*/
 	}
-
 }
