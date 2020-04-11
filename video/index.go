@@ -49,26 +49,25 @@ type SourceEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var s string
 
 	client := muxgo.NewAPIClient(
 		muxgo.NewConfiguration(
 			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 		))
 
-	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
+	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
 	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 	u, err := client.DirectUploadsApi.CreateDirectUpload(cur)
 
 	if err != nil {
 
-		fmt.Fprintf(w, "%v", err)
+	fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
 
 	}
 
-	fmt.Fprintf(w, "%s\n %s", u.Data.Status, u.Data.AssetId)
+	i := u.Data.Status
 
-	s = u.Data.Url
+	s := u.Data.Url
 
 	//http.NewRequest("PUT", s, nil)
 
@@ -85,7 +84,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>shop2go</title>
+	<title>vdo2go</title>
 	<!-- CSS -->
 	<!-- Add Material font (Roboto) and Material icon as needed -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
@@ -102,7 +101,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<br>
 	<br>
 
-	<h1>Video</h1>
+	<h1>` + i + ` for video...</h1>
 
 	<form role="form" method="PUT">
 
@@ -130,11 +129,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	  });
 	
 	  upload.on('attempt', ({ detail }) => {
-		alert('There was an attempt!', detail);
+		alert('uploading...', detail);
 	  });
 	
 	  upload.on('success', () => {
-		alert('We did it!');
+		alert('ready');
 	  });
 	};
 	  </script>
