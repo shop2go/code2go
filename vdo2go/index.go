@@ -89,7 +89,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			"AssetID": graphql.String(a.Id),
 		}
 
-		if err = call.Mutate(context.Background(), &q, v); err != nil {
+		if err = call.Query(context.Background(), &q, v); err != nil {
 			fmt.Fprintf(w, "error with asset: %v\n", err)
 		}
 
