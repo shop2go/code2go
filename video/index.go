@@ -68,7 +68,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	s = u.Data.Url
 	
-
 	//http.NewRequest("PUT", s, nil)
 
 	switch r.Method {
