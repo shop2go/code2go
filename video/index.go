@@ -61,7 +61,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var access *Access
-
 	x.Get(&access)
 
 	src := oauth2.StaticTokenSource(
