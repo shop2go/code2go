@@ -66,7 +66,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	fmt.Fprintf(w, "%s", u.Data.AssetId)
+	fmt.Fprintf(w, "%s", u.Data.Status)
 
 	s = u.Data.Url
 
@@ -114,7 +114,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
 
-	const UpChunk = require('@mux/upchunk');
+	import * as UpChunk from '@mux/upchunk'
+
+export default ({ }) => {
 
 	const filePicker = document.getElementById('file-picker');
 	
@@ -129,9 +131,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	  });
 	  
 	  upload.on('success', () => console.log('We did it, everyone!'));
-	}
+	};
 	
-
+	}
 	  </script>
 				   
 	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
