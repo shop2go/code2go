@@ -103,7 +103,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<h1>` + i + ` for video...</h1>
 
-	<form role="form" method="PUT">
+	<form role="form">
 
 	<input id="picker" type="file" />
 
