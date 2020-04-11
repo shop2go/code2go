@@ -66,7 +66,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	fmt.Fprintf(w, "%s", u.Data.Status)
+	fmt.Fprintf(w, "%s\n %s", u.Data.Status, u.Data.AssetId)
 
 	s = u.Data.Url
 
@@ -106,34 +106,37 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<form role="form" method="PUT">
 
-	<input id="file-picker" type="file" />
+	<input id="picker" type="file" />
 
 	</form>	
 
 	</div>
 
-	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
+	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
 
-	import * as UpChunk from '@mux/upchunk'
+	<script>
 
-export default ({ }) => {
-
-	const filePicker = document.getElementById('file-picker');
-	
-	const url = ` + s + `
-	
-	filePicker.onchange = function () {
-	  const file = filePicker.files[0];
+	const picker = document.getElementById('picker');
+	picker.onchange = () => {
+	  const endpoint = '` + s + `';
+	  const file = picker.files[0];
 	
 	  const upload = UpChunk.createUpload({
+		endpoint,
 		file,
-		endpoint: url
 	  });
-	  
-	  upload.on('success', () => console.log('We did it, everyone!'));
-	};
+	  upload.on('error', err => {
+		console.error('It all went wrong!', err.detail);
+	  });
 	
-	}
+	  upload.on('attempt', ({ detail }) => {
+		alert('There was an attempt!', detail);
+	  });
+	
+	  upload.on('success', () => {
+		alert('We did it!');
+	  });
+	};
 	  </script>
 				   
 	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
