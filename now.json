@@ -12,9 +12,7 @@
 
       {"src": "./product/index.go", "use": "@now/go"},
 
-      {"src": "./video/index.go", "use": "@now/go"},
-
-      {"src": "./vdo2go/index.go", "use": "@now/go"}
+      {"src": "./video/index.go", "use": "@now/go"}
 
     ],
 
