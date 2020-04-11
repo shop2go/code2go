@@ -110,7 +110,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	</div>
 
-	<script type="module" src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
+	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
+
+	<script>
 
 	const UpChunk = require('@mux/upchunk');
 
@@ -120,12 +122,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	filePicker.onchange = () => {
 
-		const asset = filePicker.files[0];
 
 
 
 	  const upload = UpChunk.createUpload({
-		file: asset,
+		file: filePicker.files[0],
 		endpoint: url,
 	  });
 
