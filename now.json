@@ -23,14 +23,6 @@
         }
       ],
       
-    "alias": "code2go.dev",
-    
-    "env": {
-      "MUX_ID": "@mux_token_id",
-      "MUX_SECRET": "@mux_token_secret",
-      "FAUNA_ACCESS": "@fdb",
-      "PP_CLIENT_ID": "@ppc",
-      "PP_SECRET": "@pps"
-      }
+    "alias": "code2go.dev"
         
     }
