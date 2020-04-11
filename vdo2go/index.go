@@ -82,7 +82,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var q struct {
 			AssetByAssetID struct {
 				AssetEntry
-			} `graphql:"assetById(assetId: $AssetID)"`
+			} `graphql:"assetByAssetId(assetId: $AssetID)"`
 		}
 
 		v := map[string]interface{}{
@@ -115,7 +115,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				"PlaybackID": graphql.String(res.Data.Id),
 			}
 
-			if err = call.Query(context.Background(), &m, v); err != nil {
+			if err = call.Mutate(context.Background(), &m, v); err != nil {
 				fmt.Fprintf(w, "error with asset: %v\n", err)
 			}
 
