@@ -64,7 +64,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	for _, a := range assets.Data {
 
-		fmt.Fprintf(w, "%v\n%v\n%v", a.Id, a.CreatedAt, a.PlaybackIds)
+		fmt.Fprintf(w, "%v\n%v\n\n", a.Id, a.CreatedAt)
+
+		req := muxgo.CreatePlaybackIdRequest{muxgo.SIGNED}
+		res, _ := client.AssetsApi.CreateAssetPlaybackId(a.Id, req)
+
+		fmt.Fprintf(w, "%v\n%v\n\n", res.Data.Policy, res.Data.Id)
+
 	}
 
 }
