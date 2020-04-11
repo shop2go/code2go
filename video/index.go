@@ -66,6 +66,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	fmt.Fprintf(w, "%s", u.Data.AssetId)
+
 	s = u.Data.Url
 
 	//http.NewRequest("PUT", s, nil)
@@ -117,22 +119,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	const UpChunk = require('@mux/upchunk');
 
 	const filePicker = document.getElementById('file-picker');
-
-	const url = '` + s + `'
-
-	filePicker.onchange = () => {
-
-
-
-
+	
+	const url = ` + s + `
+	
+	filePicker.onchange = function () {
+	  const file = filePicker.files[0];
+	
 	  const upload = UpChunk.createUpload({
-		file: filePicker.files[0],
-		endpoint: url,
+		file,
+		endpoint: url
 	  });
-
-	  upload.on('success', () => alert('file uploaded'));
-
-	};
+	  
+	  upload.on('success', () => console.log('We did it, everyone!'));
+	}
+	
 
 	  </script>
 				   
