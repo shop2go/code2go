@@ -23,32 +23,12 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-/* type ProductEntry struct {
-	ID      graphql.ID     `graphql:"_id"`
-	ImgURL  graphql.String `graphql:"imgURL"`
-	Product graphql.String `graphql:"product"`
-	Cat     graphql.String `graphql:"cat"`
-	Info    graphql.String `graphql:"info"`
-	Price   graphql.Float  `graphql:"price"`
-	Pack    graphql.Int    `graphql:"pack"`
-	InfoURL graphql.String `graphql:"infoURL"`
-	LinkURL graphql.String `graphql:"linkURL"`
-	LinkDIM graphql.Int    `graphql:"linkDIM"`
+type InputEntry struct {
+	ID  graphql.ID     `graphql:"_id"`
+	URL graphql.String `graphql:"url"`
 }
-
-type CartEntry struct {
-	ID       graphql.ID   `graphql:"_id"`
-	Products []graphql.ID `graphql:"products"`
-}
-
-type SourceEntry struct {
-	ID     graphql.ID     `graphql:"_id"`
-	Link   graphql.ID     `graphql:"link"`
-	Origin graphql.String `graphql:"origin"`
-} */
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-
 
 	client := muxgo.NewAPIClient(
 		muxgo.NewConfiguration(
@@ -57,19 +37,59 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
 	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
-	u, err := client.DirectUploadsApi.CreateDirectUpload(cur)
+	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
 
 	if err != nil {
 
-	fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
+		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
+		os.Exit(1)
 
 	}
 
-	i := u.Data.Status
+	i := res.Data.Status
 
-	s := u.Data.Url
+	s := res.Data.Url
+
+	fc := f.NewFaunaClient("FAUNA_ACCESS")
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+	if err != nil {
+
+		fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
+
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 	//http.NewRequest("PUT", s, nil)
+
+	var m struct {
+		var m struct {
+			CreateInput struct {
+				InputEntry
+			} `graphql:"createInput(data:{url: $URL})"`
+		}
+	}
+
+	v := map[string]interface{}{
+		"URL":    graphql.String(s),
+	}
+
+	if err = call.Mutate(context.Background(), &m, v); err != nil {
+		fmt.Printf("error with input: %v\n", err)
+	}
+
 
 	switch r.Method {
 
