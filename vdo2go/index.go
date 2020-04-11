@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"context"
+	"context"
 	//"encoding/base64"
 	"fmt"
 	"net/http"
@@ -10,9 +10,10 @@ import (
 	//"strconv"
 	//"strings"
 
+	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
-	/* 	f "github.com/fauna/faunadb-go/faunadb"
-	   	"github.com/shurcooL/graphql" *///"golang.org/x/oauth2"
+	"github.com/shurcooL/graphql"
+	"golang.org/x/oauth2"
 	//"github.com/plutov/paypal"
 )
 
@@ -23,54 +24,108 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-/* type ProductEntry struct {
-	ID      graphql.ID     `graphql:"_id"`
-	ImgURL  graphql.String `graphql:"imgURL"`
-	Product graphql.String `graphql:"product"`
-	Cat     graphql.String `graphql:"cat"`
-	Info    graphql.String `graphql:"info"`
-	Price   graphql.Float  `graphql:"price"`
-	Pack    graphql.Int    `graphql:"pack"`
-	InfoURL graphql.String `graphql:"infoURL"`
-	LinkURL graphql.String `graphql:"linkURL"`
-	LinkDIM graphql.Int    `graphql:"linkDIM"`
+type AssetEntry struct {
+	ID         graphql.ID     `graphql:"_id"`
+	AssetID    graphql.String `graphql:"assetId"`
+	PlaybackID graphql.String `graphql:"playbackId"`
 }
-
-type CartEntry struct {
-	ID       graphql.ID   `graphql:"_id"`
-	Products []graphql.ID `graphql:"products"`
-}
-
-type SourceEntry struct {
-	ID     graphql.ID     `graphql:"_id"`
-	Link   graphql.ID     `graphql:"link"`
-	Origin graphql.String `graphql:"origin"`
-} */
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	client := muxgo.NewAPIClient(
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("2020"), "role": "server"}))
+
+	if err != nil {
+
+		fmt.Fprintf(w, "connection error: %v\n", err)
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
+
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+	/* 	var q struct {
+	   		AllAssets struct {
+	   			Data []AssetEntry
+	   		}
+	   	}
+
+	   	if err = call.Query(context.Background(), &q, nil); err != nil {
+	   		fmt.Fprintf(w, "error with assets: %v\n", err)
+	   	} */
+
+	mux := muxgo.NewAPIClient(
 		muxgo.NewConfiguration(
 			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 		))
 
-	assets, err := client.AssetsApi.ListAssets()
+	assets, err := mux.AssetsApi.ListAssets()
 
 	if err != nil {
 
-		fmt.Fprintf(w, "something went wrong", err)
+		fmt.Fprintf(w, "something went wrong... %v\n", err)
 
 	}
 
 	for _, a := range assets.Data {
 
-		fmt.Fprintf(w, "%v\n%v\n\n", a.Id, a.CreatedAt)
+		var q struct {
+			AssetByAssetID struct {
+				AssetEntry
+			} `graphql:"assetById(assetId: $AssetID)"`
+		}
 
-		req := muxgo.CreatePlaybackIdRequest{muxgo.SIGNED}
-		res, _ := client.AssetsApi.CreateAssetPlaybackId(a.Id, req)
+		v := map[string]interface{}{
+			"AssetID": graphql.String(a.Id),
+		}
 
-		fmt.Fprintf(w, "%v\n%v\n\n", res.Data.Policy, res.Data.Id)
+		if err = call.Mutate(context.Background(), &q, v); err != nil {
+			fmt.Fprintf(w, "error with asset: %v\n", err)
+		}
+
+		if q.AssetByAssetID.ID == nil {
+
+			req := muxgo.CreatePlaybackIdRequest{muxgo.SIGNED}
+			res, err := mux.AssetsApi.CreateAssetPlaybackId(a.Id, req)
+
+			if err != nil {
+
+				fmt.Fprintf(w, "something went wrong... %v\n", err)
+
+			}
+
+			var m struct {
+				CreateAsset struct {
+					AssetEntry
+				} `graphql:"createAsset(assetId: $AssetID, playbackId: $PlaybackID)"`
+			}
+
+			v = map[string]interface{}{
+				"AssetID":    graphql.String(a.Id),
+				"PlaybackID": graphql.String(res.Data.Id),
+			}
+
+			if err = call.Query(context.Background(), &m, v); err != nil {
+				fmt.Fprintf(w, "error with asset: %v\n", err)
+			}
+
+		}
 
 	}
+
+	/* 	k, _ := mux.URLSigningKeysApi.CreateUrlSigningKey()
+	   	kg, _ := mux.URLSigningKeysApi.GetUrlSigningKey(k.Data.Id)
+
+	   	fmt.Fprintf(w, "%v\n\n", kg.Data.PrivateKey) */
 
 }

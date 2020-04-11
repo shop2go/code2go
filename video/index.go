@@ -125,7 +125,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		file,
 	  });
 	  upload.on('error', err => {
-		console.error('It all went wrong!', err.detail);
+		console.error('something went wrong', err.detail);
 	  });
 	
 	  upload.on('attempt', ({ detail }) => {
@@ -134,6 +134,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	  upload.on('success', () => {
 		alert('ready');
+
+	
 	  });
 	};
 	  </script>
