@@ -26,8 +26,8 @@ type Access struct {
 
 type AssetEntry struct {
 	ID         graphql.ID     `graphql:"_id"`
-	AssetID    graphql.String `graphql:"assetId"`
-	PlaybackID graphql.String `graphql:"playbackId"`
+	AssetID    graphql.String `graphql:"assetID"`
+	PlaybackID graphql.String `graphql:"playbackID"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -82,7 +82,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var q struct {
 			AssetByAssetID struct {
 				AssetEntry
-			} `graphql:"assetByAssetId(assetId: $AssetID)"`
+			} `graphql:"assetByAssetId(assetID: $AssetID)"`
 		}
 
 		v := map[string]interface{}{
@@ -107,7 +107,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var m struct {
 				CreateAsset struct {
 					AssetEntry
-				} `graphql:"createAsset(assetId: $AssetID, playbackId: $PlaybackID)"`
+				} `graphql:"createAsset(assetID: $AssetID, playbackID: $PlaybackID)"`
 			}
 
 			v = map[string]interface{}{
