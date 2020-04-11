@@ -104,7 +104,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<h1>Video</h1>
 
-	<form role="form">
+	<form role="form" method="PUT">
 
 	<input id="file-picker" type="file" />
 
