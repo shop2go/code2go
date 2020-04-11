@@ -67,7 +67,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s = u.Data.Url
-	
+
 	//http.NewRequest("PUT", s, nil)
 
 	switch r.Method {
@@ -76,7 +76,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		str :=
 
-		`
+			`
 	<!DOCTYPE html>
 	<html lang="en">
 	<head>
@@ -106,11 +106,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<input id="file-picker" type="file" />
 
-	</form>
+	</form>	
 
-	<script type="module">
+	</div>
 
-	import * as UpChunk from 'https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js';
+	<script type="module" src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js">
+
+	const UpChunk = require('@mux/upchunk');
 
 	const filePicker = document.getElementById('file-picker');
 
@@ -118,8 +120,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	filePicker.onchange = () => {
 
+		const asset = filePicker.files[0];
+
+
+
 	  const upload = UpChunk.createUpload({
-		file: filePicker.files[0],
+		file: asset,
 		endpoint: url,
 	  });
 
@@ -128,8 +134,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	};
 
 	  </script>
-
-	</div>
 				   
 	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 	</body>
@@ -138,12 +142,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	`
 
-		
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str))
-
-
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+		w.Write([]byte(str))
 
 		/* 	str :=
 
