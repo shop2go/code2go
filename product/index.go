@@ -446,11 +446,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			cnt := r.Form.Get(id)
 
-			if cnt != "0" {
+			if cnt != "" {
 
 				count, _ := strconv.Atoi(cnt)
 
 				m[k] = count
+
+				if count = 0 {
+
+					continue
+					
+				}
 
 				for count > 0 {
 
@@ -463,6 +469,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				continue
 
 			}
+
 			for i > 0 {
 
 				products = append(products, k)
