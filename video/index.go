@@ -26,7 +26,7 @@ type Access struct {
 
 type InputEntry struct {
 	ID  graphql.ID     `graphql:"_id"`
-	URL graphql.String `graphql:"url"`
+	Url graphql.String `graphql:"url"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -61,6 +61,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var access *Access
+
 	x.Get(&access)
 
 	src := oauth2.StaticTokenSource(
@@ -76,11 +77,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	var m struct {
 		CreateInput struct {
 			InputEntry
-		} `graphql:"createInput(data:{url: $URL})"`
+		} `graphql:"createInput(data:{url: $Url})"`
 	}
 
 	v := map[string]interface{}{
-		"URL": graphql.String(s),
+		"Url": graphql.String(s),
 	}
 
 	if err = call.Mutate(context.Background(), &m, v); err != nil {
