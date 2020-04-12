@@ -446,7 +446,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			cnt := r.Form.Get(id)
 
-			if cnt != "" {
+			if cnt != "0" {
 
 				count, _ := strconv.Atoi(cnt)
 

@@ -10,10 +10,10 @@ import (
 	"strconv"
 	//"strings"
 
-	f "github.com/fauna/faunadb-go/faunadb"
+	//f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
-	"github.com/shurcooL/graphql"
-	"golang.org/x/oauth2"
+	//"github.com/shurcooL/graphql"
+	//"golang.org/x/oauth2"
 	//"github.com/plutov/paypal"
 )
 
@@ -31,7 +31,7 @@ type InputEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	fc := f.NewFaunaClient("FAUNA_ACCESS")
+	/* fc := f.NewFaunaClient("FAUNA_ACCESS")
 
 	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
@@ -49,7 +49,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		&oauth2.Token{AccessToken: access.Secret},
 	)
 
-	httpClient := oauth2.NewClient(context.Background(), src)
+	httpClient := o auth2.NewClient(context.Background(), src)
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
@@ -66,7 +66,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
 
-	}
+	} */
 
 	i := res.Data.Status
 
@@ -74,7 +74,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//http.NewRequest("PUT", s, nil)
 
-	var m struct {
+	/* var m struct {
 		CreateInput struct {
 			InputEntry
 		} `graphql:"createInput(data:{url: $Url})"`
@@ -86,7 +86,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if err = call.Mutate(context.Background(), &m, v); err != nil {
 		fmt.Printf("error with input: %v\n", err)
-	}
+	} */
 
 	switch r.Method {
 
