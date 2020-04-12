@@ -452,12 +452,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				m[k] = count
 
-				if count = 0 {
-
-					continue
-					
-				}
-
 				for count > 0 {
 
 					products = append(products, k)
@@ -470,11 +464,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			for i > 0 {
+			if cnt != "0" {
 
-				products = append(products, k)
+				for i > 0 {
 
-				i--
+					products = append(products, k)
+
+					i--
+				}
+
 			}
 
 		}
