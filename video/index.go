@@ -24,10 +24,10 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type InputEntry struct {
+/* type InputEntry struct {
 	ID  graphql.ID     `graphql:"_id"`
 	Url graphql.String `graphql:"url"`
-}
+} */
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
@@ -52,7 +52,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	httpClient := o auth2.NewClient(context.Background(), src)
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
+	*/
 	client := muxgo.NewAPIClient(
 		muxgo.NewConfiguration(
 			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
@@ -66,7 +66,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
 
-	} */
+	}
 
 	i := res.Data.Status
 
