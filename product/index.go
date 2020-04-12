@@ -462,15 +462,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				continue
 
-			} else {
+			}
+			for i > 0 {
 
-				for i > 0 {
+				products = append(products, k)
 
-					products = append(products, k)
-
-					i--
-				}
-
+				i--
 			}
 
 		}
