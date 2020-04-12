@@ -31,25 +31,6 @@ type InputEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	client := muxgo.NewAPIClient(
-		muxgo.NewConfiguration(
-			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
-		))
-
-	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
-	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
-	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
-
-	if err != nil {
-
-		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
-
-	}
-
-	i := res.Data.Status
-
-	s := res.Data.Url
-
 	fc := f.NewFaunaClient("FAUNA_ACCESS")
 
 	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
@@ -71,6 +52,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	httpClient := oauth2.NewClient(context.Background(), src)
 
 	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+	client := muxgo.NewAPIClient(
+		muxgo.NewConfiguration(
+			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
+		))
+
+	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
+	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
+	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
+
+	if err != nil {
+
+		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
+
+	}
+
+	i := res.Data.Status
+
+	s := res.Data.Url
 
 	//http.NewRequest("PUT", s, nil)
 
