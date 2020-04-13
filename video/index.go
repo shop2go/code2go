@@ -9,6 +9,7 @@ import (
 	//"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
@@ -38,6 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
 	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
+
 	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
 
 	if err != nil {
@@ -45,8 +47,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
 
 	}
-
-	ulid := res.Data.Id
 
 	i := res.Data.Status
 
@@ -160,6 +160,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
+		var ulid string
+
+		for {
+
+			if res.Data.Status == "asset_created" {
+
+				ulid = res.Data.AssetId
+
+				break
+
+			}
+
+			time.Sleep(1e9)
+		}
+
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
@@ -182,9 +197,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-		ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
+		/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
 
-		assetID := ul.Data.AssetId
+		assetID := ul.Data.AssetId */
 
 		var m struct {
 			CreateAsset struct {
@@ -193,7 +208,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v := map[string]interface{}{
-			"AssetID": graphql.String(assetID),
+			"AssetID": graphql.String(ulid),
 		}
 
 		if err = call.Mutate(context.Background(), &m, v); err != nil {
