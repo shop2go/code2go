@@ -8,7 +8,7 @@ import (
 	"os"
 	//"sort"
 	"strconv"
-	//"strings"
+	"strings"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
@@ -81,6 +81,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<br>
 	<br>
+	
+	`
+
+		id := r.Host
+
+		id = strings.TrimSuffix(id, "code2go.dev")
+
+		if id == "" {
+
+			str = str + `		
 
 	<h1>` + i + ` for video...</h1>
 
@@ -88,10 +98,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	
 	<input id="picker" type="file" />
-	<button type="submit" class="btn btn-light">click on input; when ready submit</button>
+	<button type="submit" class="btn btn-light">select file for upload; when completed: confim here!</button>
 	
 
-	</form>	
+	</form>	`
+
+		} else {
+
+			str = str + `	
+
+		<p>Asset created @ ` + s + `</p>`
+		
+	}
+
+		str = str + `
 
 	</div>
 
@@ -113,11 +133,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	  });
 	
 	  upload.on('attempt', ({ detail }) => {
-		alert('uploading...', detail);
+		alert('uploading... please wait for completion', detail);
 	  });
 	
 	  upload.on('success', () => {
-		alert('ready');
+		alert('completed');
 
 	
 	  });
@@ -174,42 +194,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		s = fmt.Sprintf("%s", m.CreateInput.ID)
 
 		http.Redirect(w, r, "https://"+s+".code2go.dev/video", http.StatusSeeOther)
-		str :=
-
-		`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>vdo2go</title>
-<!-- CSS -->
-<!-- Add Material font (Roboto) and Material icon as needed -->
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-<!-- Add Material CSS, replace Bootstrap CSS -->
-<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-
-</head>
-<body style="background-color: #a1b116;">
-
-<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-
-<p>Asset created @ `+s+`</p>
-<br>
-<br>
-
-<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-</body>
-</html>
-
-`
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-	w.Write([]byte(str))
-
 
 	}
 }
