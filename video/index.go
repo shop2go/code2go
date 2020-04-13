@@ -46,7 +46,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	assetID := res.Data.NewAssetSettings.Id
+	ulid := res.Data.Id
 
 	i := res.Data.Status
 
@@ -181,6 +181,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		httpClient := oauth2.NewClient(context.Background(), src)
 
 		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
+
+		assetID := ul.Data.AssetId
 
 		var m struct {
 			CreateAsset struct {
