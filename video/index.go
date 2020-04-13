@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"context"
+	"context"
 	//"encoding/base64"
 	"fmt"
 	"net/http"
@@ -10,10 +10,10 @@ import (
 	"strconv"
 	//"strings"
 
-	//f "github.com/fauna/faunadb-go/faunadb"
+	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
-	//"github.com/shurcooL/graphql"
-	//"golang.org/x/oauth2"
+	"github.com/shurcooL/graphql"
+	"golang.org/x/oauth2"
 	//"github.com/plutov/paypal"
 )
 
@@ -24,35 +24,13 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-/* type InputEntry struct {
+type InputEntry struct {
 	ID  graphql.ID     `graphql:"_id"`
 	Url graphql.String `graphql:"url"`
-} */
+}
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	/* fc := f.NewFaunaClient("FAUNA_ACCESS")
-
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-	if err != nil {
-
-		fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-	}
-
-	var access *Access
-
-	x.Get(&access)
-
-	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: access.Secret},
-	)
-
-	httpClient := o auth2.NewClient(context.Background(), src)
-
-	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-	*/
 	client := muxgo.NewAPIClient(
 		muxgo.NewConfiguration(
 			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
@@ -74,19 +52,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//http.NewRequest("PUT", s, nil)
 
-	/* var m struct {
-		CreateInput struct {
-			InputEntry
-		} `graphql:"createInput(data:{url: $Url})"`
-	}
+	
 
-	v := map[string]interface{}{
-		"Url": graphql.String(s),
-	}
 
-	if err = call.Mutate(context.Background(), &m, v); err != nil {
-		fmt.Printf("error with input: %v\n", err)
-	} */
 
 	switch r.Method {
 
@@ -120,9 +88,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<h1>` + i + ` for video...</h1>
 
-	<form role="form">
+	<form role="form" method="POST">
 
+	<button type="submit" class="btn btn-light">
 	<input id="picker" type="file" />
+	</button>
 
 	</form>	
 
@@ -160,14 +130,54 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 	</body>
 	</html>
-	
 
 	`
-
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
+	
+	case "POST":
+
+		fc := f.NewFaunaClient("FAUNA_ACCESS")
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+	if err != nil {
+
+		fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
+
+	httpClient := o auth2.NewClient(context.Background(), src)
+
+	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+	var m struct {
+		CreateInput struct {
+			InputEntry
+		} `graphql:"createInput(data:{url: $Url})"`
+	}
+
+	v := map[string]interface{}{
+		"Url": graphql.String(s),
+	}
+
+	if err = call.Mutate(context.Background(), &m, v); err != nil {
+		fmt.Printf("error with input: %v\n", err)
+	}
+	
+		s = fmt.Printf("%s", m.CreateInput.ID)
+
+		http.Redirect(w, r, "https://" + s + "code2go.dev/video", http.StatusSeeOther)
 		/* 	str :=
 
 				`
