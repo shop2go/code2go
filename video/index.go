@@ -86,9 +86,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<form role="form" method="POST">
 
-	<button type="submit" class="btn btn-light">
+	
 	<input id="picker" type="file" />
-	</button>
+	<button type="submit" class="btn btn-light">click on input and submit</button>
+	
 
 	</form>	
 
@@ -134,7 +135,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		fc := f.NewFaunaClient("FAUNA_ACCESS")
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
