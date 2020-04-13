@@ -40,8 +40,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
 
-	dataId := res.Data.AssetId
-
 	if err != nil {
 
 		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
@@ -185,11 +183,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var m struct {
 			CreateInput struct {
 				InputEntry
-			} `graphql:"createInput(data:{dataId: $DataId})"`
+			} `graphql:"createInput(data:{sourceID: $SourceID})"`
 		}
 
 		v := map[string]interface{}{
-			"DataId": graphql.String(dataId),
+			"SourceID": graphql.String(res.Data.AssetId),
 		}
 
 		if err = call.Mutate(context.Background(), &m, v); err != nil {
