@@ -25,8 +25,8 @@ type Access struct {
 }
 
 type InputEntry struct {
-	ID  graphql.ID     `graphql:"_id"`
-	DataId graphql.String `graphql:"url"`
+	ID       graphql.ID     `graphql:"_id"`
+	SourceID graphql.String `graphql:"sourceID"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -110,8 +110,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = str + `	
 
 		<p>asset created @ service with id:<br>` + id + `</p>`
-		
-	}
+
+		}
 
 		str = str + `
 
