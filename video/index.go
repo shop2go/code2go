@@ -52,10 +52,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//http.NewRequest("PUT", s, nil)
 
-	
-
-
-
 	switch r.Method {
 
 	case "GET":
@@ -136,48 +132,47 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
 
-	
 	case "POST":
 
 		fc := f.NewFaunaClient("FAUNA_ACCESS")
 
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
-	if err != nil {
+		if err != nil {
 
-		fmt.Fprintf(w, "a connection error occured: %v\n", err)
+			fmt.Fprintf(w, "a connection error occured: %v\n", err)
 
-	}
+		}
 
-	var access *Access
+		var access *Access
 
-	x.Get(&access)
+		x.Get(&access)
 
-	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: access.Secret},
-	)
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
 
-	httpClient := o auth2.NewClient(context.Background(), src)
+		httpClient := oauth2.NewClient(context.Background(), src)
 
-	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-	var m struct {
-		CreateInput struct {
-			InputEntry
-		} `graphql:"createInput(data:{url: $Url})"`
-	}
+		var m struct {
+			CreateInput struct {
+				InputEntry
+			} `graphql:"createInput(data:{url: $Url})"`
+		}
 
-	v := map[string]interface{}{
-		"Url": graphql.String(s),
-	}
+		v := map[string]interface{}{
+			"Url": graphql.String(s),
+		}
 
-	if err = call.Mutate(context.Background(), &m, v); err != nil {
-		fmt.Printf("error with input: %v\n", err)
-	}
-	
+		if err = call.Mutate(context.Background(), &m, v); err != nil {
+			fmt.Printf("error with input: %v\n", err)
+		}
+
 		s = fmt.Printf("%s", m.CreateInput.ID)
 
-		http.Redirect(w, r, "https://" + s + "code2go.dev/video", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+s+"code2go.dev/video", http.StatusSeeOther)
 		/* 	str :=
 
 				`
