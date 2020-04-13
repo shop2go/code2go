@@ -25,7 +25,7 @@ type Access struct {
 }
 
 type AssetEntry struct {
-	ID       graphql.ID     `graphql:"_id"`
+	ID      graphql.ID     `graphql:"_id"`
 	AssetID graphql.String `graphql:"assetID"`
 }
 
@@ -111,7 +111,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			str = str + `	
 
-		<p>asset created @ service with id:<br>` + id + `</p>`
+		<p>asset created @ id:<br>` + id + `</p>`
 
 		}
 
@@ -183,9 +183,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		var m struct {
-			CreateInput struct {
+			CreateAsset struct {
 				AssetEntry
-			} `graphql:"createInput(data:{assetID: $AssetID})"`
+			} `graphql:"createAsset(data:{assetID: $AssetID})"`
 		}
 
 		v := map[string]interface{}{
@@ -196,7 +196,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("error with input: %v\n", err)
 		}
 
-		id := fmt.Sprintf("%s", m.CreateInput.ID)
+		id := fmt.Sprintf("%s", m.CreateAsset.ID)
 
 		http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
