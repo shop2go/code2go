@@ -170,7 +170,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("error with input: %v\n", err)
 		}
 
-		s = fmt.Printf("%s", m.CreateInput.ID)
+		s = fmt.Sprintf("%s", m.CreateInput.ID)
 
 		http.Redirect(w, r, "https://"+s+"code2go.dev/video", http.StatusSeeOther)
 		/* 	str :=
