@@ -159,7 +159,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		ul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
+		ul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.AssetId)
 		
 		ulid := ul.Data.AssetId
 
