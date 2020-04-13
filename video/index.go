@@ -105,9 +105,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
+			id = strings.TrimSuffix(id, ".")
+
 			str = str + `	
 
-		<p>Asset created @ ` + s + `</p>`
+		<p>asset created @ service with id:<br>` + id + `</p>`
 		
 	}
 
@@ -127,6 +129,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	  const upload = UpChunk.createUpload({
 		endpoint,
 		file,
+		chunkSize: 5120,
 	  });
 	  upload.on('error', err => {
 		console.error('something went wrong', err.detail);
@@ -191,9 +194,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("error with input: %v\n", err)
 		}
 
-		s = fmt.Sprintf("%s", m.CreateInput.ID)
+		id := fmt.Sprintf("%s", m.CreateInput.ID)
 
-		http.Redirect(w, r, "https://"+s+".code2go.dev/video", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
 	}
 }
