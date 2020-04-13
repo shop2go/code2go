@@ -26,7 +26,7 @@ type Access struct {
 
 type InputEntry struct {
 	ID  graphql.ID     `graphql:"_id"`
-	Url graphql.String `graphql:"url"`
+	DataId graphql.String `graphql:"url"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +39,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
 	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
+
+	dataId := res.Data.AssetId
 
 	if err != nil {
 
@@ -183,11 +185,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var m struct {
 			CreateInput struct {
 				InputEntry
-			} `graphql:"createInput(data:{url: $Url})"`
+			} `graphql:"createInput(data:{dataId: $DataId})"`
 		}
 
 		v := map[string]interface{}{
-			"Url": graphql.String(s),
+			"DataId": graphql.String(dataId),
 		}
 
 		if err = call.Mutate(context.Background(), &m, v); err != nil {
