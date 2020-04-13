@@ -24,9 +24,9 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
-type InputEntry struct {
+type AssetEntry struct {
 	ID       graphql.ID     `graphql:"_id"`
-	SourceID graphql.String `graphql:"sourceID"`
+	AssetID graphql.String `graphql:"assetID"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -45,6 +45,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
 
 	}
+
+	assetID := res.Data.NewAssetSettings.Id
 
 	i := res.Data.Status
 
@@ -182,12 +184,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		var m struct {
 			CreateInput struct {
-				InputEntry
-			} `graphql:"createInput(data:{sourceID: $SourceID})"`
+				AssetEntry
+			} `graphql:"createInput(data:{assetID: $AssetID})"`
 		}
 
 		v := map[string]interface{}{
-			"SourceID": graphql.String(res.Data.AssetId),
+			"AssetID": graphql.String(assetID),
 		}
 
 		if err = call.Mutate(context.Background(), &m, v); err != nil {
