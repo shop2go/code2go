@@ -77,7 +77,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</head>
 	<body style="background-color: #a1b116;">
 
-	<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
+	<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
 
 	<br>
 	<br>
@@ -88,7 +88,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	
 	<input id="picker" type="file" />
-	<button type="submit" class="btn btn-light">click on input and submit</button>
+	<button type="submit" class="btn btn-light">click on input; when ready submit</button>
 	
 
 	</form>	
@@ -173,69 +173,43 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		s = fmt.Sprintf("%s", m.CreateInput.ID)
 
-		http.Redirect(w, r, "https://"+s+"code2go.dev/video", http.StatusSeeOther)
-		/* 	str :=
+		http.Redirect(w, r, "https://"+s+".code2go.dev/video", http.StatusSeeOther)
+		str :=
 
-				`
-			<!DOCTYPE html>
-			<html lang="en">
-			<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta http-equiv="X-UA-Compatible" content="ie=edge">
-			<title>shop2go</title>
-			<!-- CSS -->
-			<!-- Add Material font (Roboto) and Material icon as needed -->
-			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>vdo2go</title>
+<!-- CSS -->
+<!-- Add Material font (Roboto) and Material icon as needed -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-			<!-- Add Material CSS, replace Bootstrap CSS -->
-			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+<!-- Add Material CSS, replace Bootstrap CSS -->
+<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 
-			</head>
-			<body style="background-color: #a1b116;">
+</head>
+<body style="background-color: #a1b116;">
 
-			<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
+<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
 
-			<ul class="list-group">
-			<br>
-			<br>
+<p>Asset created @ `+s+`</p>
+<br>
+<br>
 
-			<h1>Video</h1>
+<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+</body>
+</html>
 
-			<form role="form">
+`
+	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
+	w.Write([]byte(str))
 
-			<input id="file-picker" type="file" />
 
-			</form>
-
-			<script type="module" src="https://unpkg.com/@mux/upchunk@1">
-
-			import * as UpChunk from '@mux/upchunk';
-
-			const filePicker = document.getElementById('file-picker');
-
-			const url = '` + s + `'
-
-			filePicker.onchange = () => {
-
-			  const upload = UpChunk.createUpload({
-				file: filePicker.files[0],
-				endpoint: url,
-			  });
-
-			  upload.on('success', () => alert('file uploaded'));
-
-			};
-
-			  </script>
-			`
-
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-			w.Write([]byte(str))
-
-		}
-		*/
 	}
 }
