@@ -49,6 +49,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	s := res.Data.Url
 
+	ur, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
+
+	assetID := ur.Data.AssetId
+
 	//http.NewRequest("PUT", s, nil)
 
 	switch r.Method {
@@ -157,7 +161,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		ma := res.Data.NewAssetSettings.Master.Url
+		//ma := res.Data.NewAssetSettings.Master.Url
 
 		//i = "test"
 
@@ -215,7 +219,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v := map[string]interface{}{
-			"AssetID": graphql.String(ma),
+			"AssetID": graphql.String(assetID),
 		}
 
 		if err = call.Mutate(context.Background(), &m, v); err != nil {
