@@ -51,15 +51,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//ur, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.)
 
-	assetID := res.Data.AssetId
+	data, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
-	if assetID == "" {
+	assetID := data.Data.Id
 
-		data, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
-
-		assetID = data.Data.AssetId
-
-	} else {
+	if assetID != "" {
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -107,15 +103,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//http.NewRequest("PUT", s, nil)
 
+	id := r.Host
+
+	id = strings.TrimSuffix(id, "code2go.dev")
+
 	s := res.Data.Url
 
 	switch r.Method {
 
 	case "GET":
-
-		id := r.Host
-
-		id = strings.TrimSuffix(id, "code2go.dev")
 
 		str :=
 
@@ -240,11 +236,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		//if ulid != "" {
 
-		id := fmt.Sprintf("%s", dataID)
+		if dataID != nil {
 
-		if id != "" {
+			i := fmt.Sprintf("%s", dataID)
 
-			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+			http.Redirect(w, r, "https://"+i+".code2go.dev/video", http.StatusSeeOther)
 
 		} else {
 
