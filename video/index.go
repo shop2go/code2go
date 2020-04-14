@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	i := res.Data.AssetId
+	var i string
 
 	s := res.Data.Url
 
@@ -159,9 +159,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		ul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.AssetId)
-		
-		ulid := ul.Data.AssetId
+		i = res.Data.AssetId
+
+		/* 		ul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.AssetId)
+
+		   		ulid := ul.Data.AssetId */
 
 		/* 		var ulid string
 
@@ -178,53 +180,53 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		   			time.Sleep(1e9)
 		   		} */
 
-		if ulid != "" {
+		//if ulid != "" {
 
-			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
-			if err != nil {
+		if err != nil {
 
-				fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-			}
-
-			var access *Access
-
-			x.Get(&access)
-
-			src := oauth2.StaticTokenSource(
-				&oauth2.Token{AccessToken: access.Secret},
-			)
-
-			httpClient := oauth2.NewClient(context.Background(), src)
-
-			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
-
-			assetID := ul.Data.AssetId */
-
-			var m struct {
-				CreateAsset struct {
-					AssetEntry
-				} `graphql:"createAsset(data:{assetID: $AssetID})"`
-			}
-
-			v := map[string]interface{}{
-				"AssetID": graphql.String(ulid),
-			}
-
-			if err = call.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Printf("error with input: %v\n", err)
-			}
-
-			id := fmt.Sprintf("%s", m.CreateAsset.ID)
-
-			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+			fmt.Fprintf(w, "a connection error occured: %v\n", err)
 
 		}
 
+		var access *Access
+
+		x.Get(&access)
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
+
+		assetID := ul.Data.AssetId */
+
+		var m struct {
+			CreateAsset struct {
+				AssetEntry
+			} `graphql:"createAsset(data:{assetID: $AssetID})"`
+		}
+
+		v := map[string]interface{}{
+			"AssetID": graphql.String(i),
+		}
+
+		if err = call.Mutate(context.Background(), &m, v); err != nil {
+			fmt.Printf("error with input: %v\n", err)
+		}
+
+		id := fmt.Sprintf("%s", m.CreateAsset.ID)
+
+		http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+
 	}
+
+	//}
 }
