@@ -91,7 +91,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			str = str + `		
 
-	<h1>video: ` + i + `</h1>
+	<h1>video:</h1>
 
 	<form role="form" method="POST">
 
