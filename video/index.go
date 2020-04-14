@@ -48,7 +48,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 			))
 
-		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}, MasterAccess: "temporary"}
+		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC} /*, MasterAccess: "temporary" */}
 		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 
 		res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
