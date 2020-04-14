@@ -59,13 +59,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		assetID = data.Data.AssetId
 
-	}
-
-	id := r.Host
-
-	id = strings.TrimSuffix(id, "code2go.dev")
-
-	if id == "" {
+	} else {
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -107,6 +101,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("error with input: %v\n", err)
 		}
 
+		dataID = m.CreateAsset.ID
+
 	}
 
 	//http.NewRequest("PUT", s, nil)
@@ -116,6 +112,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 
 	case "GET":
+
+		id := r.Host
+
+		id = strings.TrimSuffix(id, "code2go.dev")
 
 		str :=
 
@@ -242,7 +242,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		id := fmt.Sprintf("%s", dataID)
 
-		http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+		if id != "" {
+
+			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+
+		} else {
+
+			http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
+
+		}
 
 	}
 
