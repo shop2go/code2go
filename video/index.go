@@ -31,6 +31,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var client *muxgo.APIClient
 
+	var assets muxgo.ListAssetsResponse
+
 	var dbID graphql.ID
 
 	var access *Access
@@ -64,6 +66,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
 		sourceID = dul.Data.Id
+
+		assets, _ = client.AssetsApi.ListAssets()
 
 		if sourceID != "" {
 
@@ -111,8 +115,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-
-		assets, _ := client.AssetsApi.ListAssets()
 
 		if assets.Data != nil {
 
