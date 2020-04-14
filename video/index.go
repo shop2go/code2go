@@ -33,81 +33,87 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var dataID graphql.ID
 
-	client := muxgo.NewAPIClient(
-		muxgo.NewConfiguration(
-			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
-		))
-
-	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}, MasterAccess: "temporary"}
-	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
-
-	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
-
-	if err != nil {
-
-		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
-
-	}
-
-	//ur, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.)
-
-	data, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
-
-	assetID := data.Data.Id
-
-	if assetID != "" {
-
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-		if err != nil {
-
-			fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-		}
-
-		var access *Access
-
-		x.Get(&access)
-
-		src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: access.Secret},
-		)
-
-		httpClient := oauth2.NewClient(context.Background(), src)
-
-		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-		/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
-
-		assetID := ul.Data.AssetId */
-
-		var m struct {
-			CreateAsset struct {
-				AssetEntry
-			} `graphql:"createAsset(data:{assetID: $AssetID})"`
-		}
-
-		v := map[string]interface{}{
-			"AssetID": graphql.String(assetID),
-		}
-
-		if err = call.Mutate(context.Background(), &m, v); err != nil {
-			fmt.Printf("error with input: %v\n", err)
-		}
-
-		dataID = m.CreateAsset.ID
-
-	}
-
-	//http.NewRequest("PUT", s, nil)
+	var s string
 
 	id := r.Host
 
 	id = strings.TrimSuffix(id, "code2go.dev")
 
-	s := res.Data.Url
+	if id == "" {
+
+		client := muxgo.NewAPIClient(
+			muxgo.NewConfiguration(
+				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
+			))
+
+		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}, MasterAccess: "temporary"}
+		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
+
+		res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
+
+		if err != nil {
+
+			fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
+
+		}
+
+		s = res.Data.Url
+
+		//ur, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.)
+
+		data, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
+
+		assetID := data.Data.Id
+
+		if assetID != "" {
+
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+			if err != nil {
+
+				fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+			}
+
+			var access *Access
+
+			x.Get(&access)
+
+			src := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			httpClient := oauth2.NewClient(context.Background(), src)
+
+			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
+
+			assetID := ul.Data.AssetId */
+
+			var m struct {
+				CreateAsset struct {
+					AssetEntry
+				} `graphql:"createAsset(data:{assetID: $AssetID})"`
+			}
+
+			v := map[string]interface{}{
+				"AssetID": graphql.String(assetID),
+			}
+
+			if err = call.Mutate(context.Background(), &m, v); err != nil {
+				fmt.Printf("error with input: %v\n", err)
+			}
+
+			dataID = m.CreateAsset.ID
+
+		}
+
+	}
+
+	//http.NewRequest("PUT", s, nil)
 
 	switch r.Method {
 
@@ -141,9 +147,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	`
 
-		if id == "" {
+		if s != "" {
 
-			str = str + `		
+			if id == "" {
+
+				str = str + `		
 
 	<h1>video:</h1>
 
@@ -156,17 +164,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	</form>	`
 
-		} else {
+			} else {
 
-			id = strings.TrimSuffix(id, ".")
+				id = strings.TrimSuffix(id, ".")
 
-			str = str + `	
+				str = str + `	
 
 		<p>asset created @ id:<br>` + id + `</p>`
 
-		}
+			}
 
-		str = str + `
+			str = str + `
 
 	</div>
 
@@ -199,7 +207,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	  });
 	};
 	  </script>
-				   
+	  `
+
+		}
+
+		str = str + `
+	
+	
 	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 	</body>
 	</html>
@@ -210,31 +224,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
-
-		//ma := res.Data.NewAssetSettings.Master.Url
-
-		//i = "test"
-
-		/* 		ul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.AssetId)
-
-		   		ulid := ul.Data.AssetId */
-
-		/* 		var ulid string
-
-		   		for {
-
-		   			if res.Data.Status == "asset_created" {
-
-		   				ulid = res.Data.AssetId
-
-		   				break
-
-		   			}
-
-		   			time.Sleep(1e9)
-		   		} */
-
-		//if ulid != "" {
 
 		if dataID != nil {
 
