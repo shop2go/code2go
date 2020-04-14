@@ -2,11 +2,9 @@ package main
 
 import (
 	"context"
-	//"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
-	//"sort"
 	"strconv"
 	"strings"
 
@@ -14,7 +12,6 @@ import (
 	"github.com/muxinc/mux-go"
 	"github.com/shurcooL/graphql"
 	"golang.org/x/oauth2"
-	//"github.com/plutov/paypal"
 )
 
 type Access struct {
@@ -25,15 +22,20 @@ type Access struct {
 }
 
 type AssetEntry struct {
-	ID      graphql.ID     `graphql:"_id"`
-	AssetID graphql.String `graphql:"assetID"`
+	ID       graphql.ID     `graphql:"_id"`
+	SourceID graphql.String `graphql:"sourceID"`
+	AssetID  graphql.String `graphql:"assetID"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var dataID graphql.ID
+	var client *muxgo.APIClient
 
-	var s string
+	var dbID graphql.ID
+
+	var access *Access
+
+	var sourceURL string
 
 	id := r.Host
 
@@ -41,7 +43,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if id == "" {
 
-		client := muxgo.NewAPIClient(
+		client = muxgo.NewAPIClient(
 			muxgo.NewConfiguration(
 				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 			))
@@ -57,15 +59,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		s = res.Data.Url
+		sourceURL = res.Data.Url
 
-		//ur, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.)
+		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
-		data, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
+		sourceID := dul.Data.Id
 
-		assetID := data.Data.Id
-
-		if assetID != "" {
+		if sourceID != "" {
 
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -77,8 +77,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			var access *Access
-
 			x.Get(&access)
 
 			src := oauth2.StaticTokenSource(
@@ -89,25 +87,96 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
-
-			assetID := ul.Data.AssetId */
-
 			var m struct {
 				CreateAsset struct {
 					AssetEntry
-				} `graphql:"createAsset(data:{assetID: $AssetID})"`
+				} `graphql:"createAsset(data:{sourceID: $SourceID})"`
 			}
 
 			v := map[string]interface{}{
-				"AssetID": graphql.String(assetID),
+				"SourceID": graphql.String(sourceID),
 			}
 
 			if err = call.Mutate(context.Background(), &m, v); err != nil {
 				fmt.Printf("error with input: %v\n", err)
 			}
 
-			dataID = m.CreateAsset.ID
+			dbID = m.CreateAsset.ID
+
+		}
+
+	} else {
+
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+		if err != nil {
+
+			fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+		}
+
+		x.Get(&access)
+
+		src := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: access.Secret},
+		)
+
+		httpClient := oauth2.NewClient(context.Background(), src)
+
+		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+		assets, _ := client.AssetsApi.ListAssets()
+
+		for _, a := range assets.Data {
+
+			input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+
+			for _, b := range input.Data {
+
+				url := b.Settings.Url
+
+				url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+
+				sl := strings.SplitN(url, "?", 1)
+
+				//url = strings.TrimSuffix(sl[0], "?")
+
+				var q struct {
+					AssetBySourceID struct {
+						AssetEntry
+					} `graphql:"assetBySourceID(sourceID: $SourceID)"`
+				}
+
+				v := map[string]interface{}{
+					"SourceID": graphql.ID(sl[0]),
+				}
+
+				if err = call.Query(context.Background(), &q, v); err != nil {
+					fmt.Printf("error with asset: %v\n", err)
+				}
+
+				if q.AssetBySourceID.ID != nil {
+
+					var m struct {
+						UpdateAsset struct {
+							AssetEntry
+						} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
+					}
+
+					v = map[string]interface{}{
+						"ID":      q.AssetBySourceID.ID,
+						"AssetID": graphql.String(a.Id),
+					}
+
+					if err = call.Mutate(context.Background(), &m, v); err != nil {
+						fmt.Printf("error with asset: %v\n", err)
+					}
+
+				}
+
+			}
 
 		}
 
@@ -147,22 +216,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	`
 
-		if s != "" {
+		if sourceURL != "" {
 
 			if id == "" {
 
 				str = str + `		
 
-	<h1>video:</h1>
+	<h1>video upload for:</h1>
 
 	<form role="form" method="POST">
 
+		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required>
+		<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last" required>
+		<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First" required>
+		<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content" required></textarea>
+		<br>
 	
 	<input id="picker" type="file" />
 	<button type="submit" class="btn btn-light">select file for upload; when completed: confim here!</button>
 	
 
-	</form>	`
+	</form>
+	
+	</div>	`
 
 			} else {
 
@@ -170,44 +246,57 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				str = str + `	
 
-		<p>asset created @ id:<br>` + id + `</p>`
+		<p>asset created @ ` + id + `</p>
+		
+	</div>
+	`
 
 			}
 
 			str = str + `
 
-	</div>
-
 	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
 
 	<script>
 
-	const picker = document.getElementById('picker');
-	picker.onchange = () => {
-	  const endpoint = '` + s + `';
-	  const file = picker.files[0];
-	
-	  const upload = UpChunk.createUpload({
-		endpoint,
-		file,
-		chunkSize: 5120,
-	  });
-	  upload.on('error', err => {
-		console.error('something went wrong', err.detail);
-	  });
-	
-	  upload.on('attempt', ({ detail }) => {
-		alert('uploading... please wait for completion', detail);
-	  });
-	
-	  upload.on('success', () => {
-		alert('completed');
+			const picker = document.getElementById('picker');
+			picker.onchange = () => {
+			  const endpoint = '` + sourceURL + `';
+			  const file = picker.files[0];
+			
+			  const upload = UpChunk.createUpload({
+				endpoint,
+				file,
+				chunkSize: 5120,
+			  });
+			  upload.on('error', err => {
+				console.error('something went wrong', err.detail);
+			  });
+			
+			  upload.on('attempt', ({ detail }) => {
+				alert('uploading... please wait for completion', detail);
+			  });
+			
+			  upload.on('success', () => {
+				alert('completed');
+		
+			
+			  });
+			};
+			  </script>
 
-	
-	  });
-	};
-	  </script>
-	  `
+	`
+
+		} else {
+
+			str = str + `
+			
+			
+			
+			  
+			
+			
+			`
 
 		}
 
@@ -225,9 +314,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		if dataID != nil {
+		sourceURL = ""
 
-			i := fmt.Sprintf("%s", dataID)
+		if dbID != nil {
+
+			i := fmt.Sprintf("%s", dbID)
 
 			http.Redirect(w, r, "https://"+i+".code2go.dev/video", http.StatusSeeOther)
 
