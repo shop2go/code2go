@@ -47,13 +47,53 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	s := res.Data.Url
-
 	ur, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
 	assetID := ur.Data.AssetId
 
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+	if err != nil {
+
+		fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
+
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+	/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
+
+	assetID := ul.Data.AssetId */
+
+	var m struct {
+		CreateAsset struct {
+			AssetEntry
+		} `graphql:"createAsset(data:{assetID: $AssetID})"`
+	}
+
+	v := map[string]interface{}{
+		"AssetID": graphql.String(assetID),
+	}
+
+	if err = call.Mutate(context.Background(), &m, v); err != nil {
+		fmt.Printf("error with input: %v\n", err)
+	}
+
 	//http.NewRequest("PUT", s, nil)
+
+	s := res.Data.Url
 
 	switch r.Method {
 
@@ -185,46 +225,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		   		} */
 
 		//if ulid != "" {
-
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-		if err != nil {
-
-			fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-		}
-
-		var access *Access
-
-		x.Get(&access)
-
-		src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: access.Secret},
-		)
-
-		httpClient := oauth2.NewClient(context.Background(), src)
-
-		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-		/* ul, _ := client.DirectUploadsApi.GetDirectUpload(ulid)
-
-		assetID := ul.Data.AssetId */
-
-		var m struct {
-			CreateAsset struct {
-				AssetEntry
-			} `graphql:"createAsset(data:{assetID: $AssetID})"`
-		}
-
-		v := map[string]interface{}{
-			"AssetID": graphql.String(assetID),
-		}
-
-		if err = call.Mutate(context.Background(), &m, v); err != nil {
-			fmt.Printf("error with input: %v\n", err)
-		}
 
 		id := fmt.Sprintf("%s", m.CreateAsset.ID)
 
