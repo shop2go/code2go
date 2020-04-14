@@ -29,15 +29,15 @@ type AssetEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var client *muxgo.APIClient
+	var (
+		client *muxgo.APIClient
 
-	var assets muxgo.ListAssetsResponse
+		access *Access
 
-	var dbID graphql.ID
+		dbID graphql.ID
 
-	var access *Access
-
-	var sourceURL, sourceID string
+		sourceURL, sourceID string
+	)
 
 	id := r.Host
 
@@ -50,7 +50,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 			))
 
-		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC} /*, MasterAccess: "temporary" */}
+		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}, MasterAccess: "temporary"}
 		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 
 		res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
@@ -66,8 +66,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
 		sourceID = dul.Data.Id
-
-		assets, _ = client.AssetsApi.ListAssets()
 
 		if sourceID != "" {
 
@@ -112,86 +110,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
 
-		}
-
-	} else {
-
-		if assets.Data != nil {
-
-			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-			if err != nil {
-
-				fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-			}
-
-			x.Get(&access)
-
-			src := oauth2.StaticTokenSource(
-				&oauth2.Token{AccessToken: access.Secret},
-			)
-
-			httpClient := oauth2.NewClient(context.Background(), src)
-
-			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-			for _, a := range assets.Data {
-
-				input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
-
-				for _, b := range input.Data {
-
-					url := b.Settings.Url
-
-					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
-
-					sl := strings.SplitN(url, "?", 1)
-
-					//url = strings.TrimSuffix(sl[0], "?")
-
-					var q struct {
-						AssetBySourceID struct {
-							AssetEntry
-						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
-					}
-
-					v := map[string]interface{}{
-						"SourceID": graphql.ID(sl[0]),
-					}
-
-					if err = call.Query(context.Background(), &q, v); err != nil {
-						fmt.Printf("error with asset: %v\n", err)
-					}
-
-					if q.AssetBySourceID.ID != nil {
-
-						var m struct {
-							UpdateAsset struct {
-								AssetEntry
-							} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
-						}
-
-						v = map[string]interface{}{
-							"ID":      q.AssetBySourceID.ID,
-							"AssetID": graphql.String(a.Id),
-						}
-
-						if err = call.Mutate(context.Background(), &m, v); err != nil {
-							fmt.Printf("error with asset: %v\n", err)
-						}
-
-					}
-
-				}
-
-			}
-
-		} else {
-
-			fmt.Fprint(w, "sorry, there was an error...")
 		}
 
 	}
@@ -330,6 +248,92 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
+
+		assets, err := client.AssetsApi.ListAssets()
+
+		if err != nil {
+
+			fmt.Fprintf(w, "%v", err)
+
+		}
+
+		if assets.Data != nil {
+
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+			if err != nil {
+
+				fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+			}
+
+			x.Get(&access)
+
+			src := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			httpClient := oauth2.NewClient(context.Background(), src)
+
+			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			for _, a := range assets.Data {
+
+				input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+
+				for _, b := range input.Data {
+
+					url := b.Settings.Url
+
+					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+
+					sl := strings.SplitN(url, "?", 1)
+
+					//url = strings.TrimSuffix(sl[0], "?")
+
+					var q struct {
+						AssetBySourceID struct {
+							AssetEntry
+						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
+					}
+
+					v := map[string]interface{}{
+						"SourceID": graphql.ID(sl[0]),
+					}
+
+					if err = call.Query(context.Background(), &q, v); err != nil {
+						fmt.Printf("error with asset: %v\n", err)
+					}
+
+					if q.AssetBySourceID.ID != nil {
+
+						var m struct {
+							UpdateAsset struct {
+								AssetEntry
+							} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
+						}
+
+						v = map[string]interface{}{
+							"ID":      q.AssetBySourceID.ID,
+							"AssetID": graphql.String(a.Id),
+						}
+
+						if err = call.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Printf("error with asset: %v\n", err)
+						}
+
+					}
+
+				}
+
+			}
+
+		} else {
+
+			fmt.Fprint(w, "sorry, there was an error...")
+		}
 
 		sourceURL = ""
 
