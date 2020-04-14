@@ -35,7 +35,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var access *Access
 
-	var sourceURL string
+	var sourceURL, sourceID string
 
 	id := r.Host
 
@@ -63,7 +63,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
-		sourceID := dul.Data.Id
+		sourceID = dul.Data.Id
 
 		if sourceID != "" {
 
@@ -101,83 +101,95 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Printf("error with input: %v\n", err)
 			}
 
+			//state with inputinfo - id
 			dbID = m.CreateAsset.ID
+
+		} else {
+
+			http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
 
 		}
 
 	} else {
 
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-		if err != nil {
-
-			fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-		}
-
-		x.Get(&access)
-
-		src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: access.Secret},
-		)
-
-		httpClient := oauth2.NewClient(context.Background(), src)
-
-		call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
 		assets, _ := client.AssetsApi.ListAssets()
 
-		for _, a := range assets.Data {
+		if assets.Data != nil {
 
-			input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-			for _, b := range input.Data {
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
-				url := b.Settings.Url
+			if err != nil {
 
-				url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+				fmt.Fprintf(w, "a connection error occured: %v\n", err)
 
-				sl := strings.SplitN(url, "?", 1)
+			}
 
-				//url = strings.TrimSuffix(sl[0], "?")
+			x.Get(&access)
 
-				var q struct {
-					AssetBySourceID struct {
-						AssetEntry
-					} `graphql:"assetBySourceID(sourceID: $SourceID)"`
-				}
+			src := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
 
-				v := map[string]interface{}{
-					"SourceID": graphql.ID(sl[0]),
-				}
+			httpClient := oauth2.NewClient(context.Background(), src)
 
-				if err = call.Query(context.Background(), &q, v); err != nil {
-					fmt.Printf("error with asset: %v\n", err)
-				}
+			call := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-				if q.AssetBySourceID.ID != nil {
+			for _, a := range assets.Data {
 
-					var m struct {
-						UpdateAsset struct {
+				input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+
+				for _, b := range input.Data {
+
+					url := b.Settings.Url
+
+					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+
+					sl := strings.SplitN(url, "?", 1)
+
+					//url = strings.TrimSuffix(sl[0], "?")
+
+					var q struct {
+						AssetBySourceID struct {
 							AssetEntry
-						} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
+						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
 					}
 
-					v = map[string]interface{}{
-						"ID":      q.AssetBySourceID.ID,
-						"AssetID": graphql.String(a.Id),
+					v := map[string]interface{}{
+						"SourceID": graphql.ID(sl[0]),
 					}
 
-					if err = call.Mutate(context.Background(), &m, v); err != nil {
+					if err = call.Query(context.Background(), &q, v); err != nil {
 						fmt.Printf("error with asset: %v\n", err)
+					}
+
+					if q.AssetBySourceID.ID != nil {
+
+						var m struct {
+							UpdateAsset struct {
+								AssetEntry
+							} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
+						}
+
+						v = map[string]interface{}{
+							"ID":      q.AssetBySourceID.ID,
+							"AssetID": graphql.String(a.Id),
+						}
+
+						if err = call.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Printf("error with asset: %v\n", err)
+						}
+
 					}
 
 				}
 
 			}
 
+		} else {
+
+			fmt.Fprint(w, "sorry, there was an error...")
 		}
 
 	}
@@ -216,13 +228,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	`
 
-		if sourceURL != "" {
+		if sourceID != "" {
 
 			if id == "" {
 
 				str = str + `		
 
 	<h1>video upload for:</h1>
+
+	<form role="form">
+	<input id="picker" type="file" />
+	</form>		
 
 	<form role="form" method="POST">
 
@@ -232,7 +248,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content" required></textarea>
 		<br>
 	
-	<input id="picker" type="file" />
 	<button type="submit" class="btn btn-light">select file for upload; when completed: confim here!</button>
 	
 
@@ -293,7 +308,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			
 			
-			  
+			  <p>test</p>
 			
 			
 			`
