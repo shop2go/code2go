@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	i := res.Data.Status
+	i := res.Data.AssetId
 
 	s := res.Data.Url
 
@@ -93,7 +93,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			str = str + `		
 
-	<h1>` + i + ` for video...</h1>
+	<h1>video: ` + i + `</h1>
 
 	<form role="form" method="POST">
 
