@@ -335,7 +335,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, "sorry, there was an error...")
 		}
 
-		sourceURL = ""
+		sourceURL, sourceID = "", ""
 
 		if dbID != nil {
 
