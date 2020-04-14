@@ -36,7 +36,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 		))
 
-	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
+	car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}, MasterAccess: "temporary"}
 	cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 
 	res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
@@ -46,8 +46,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
 
 	}
-
-	var i string
 
 	s := res.Data.Url
 
@@ -159,7 +157,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		i = res.Data.AssetId
+		ma := res.Data.NewAssetSettings.Master.Url
+
+		//i = "test"
 
 		/* 		ul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.AssetId)
 
@@ -215,7 +215,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		v := map[string]interface{}{
-			"AssetID": graphql.String(i),
+			"AssetID": graphql.String(ma),
 		}
 
 		if err = call.Mutate(context.Background(), &m, v); err != nil {
