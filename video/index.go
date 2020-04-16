@@ -156,11 +156,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	`
 
-		if sourceID != "" {
+		if id == "" {
 
-			if id == "" {
-
-				str = str + `		
+			str = str + `		
 
 	<h1>video upload for:</h1>
 
@@ -184,20 +182,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	</div>	`
 
-			} else {
+		} else {
 
-				id = strings.TrimSuffix(id, ".")
+			id = strings.TrimSuffix(id, ".")
 
-				str = str + `	
+			str = str + `	
 
 		<p>asset created @ ` + id + `</p>
 		
 	</div>
 	`
 
-			}
+		}
 
-			str = str + `
+		str = str + `
 
 	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
 
@@ -229,22 +227,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			};
 			  </script>
 
-	`
 
-		} else {
-
-			str = str + `
-			
-			
-			
-			  <p>no source</p>
-			
-			
-			`
-
-		}
-
-		str = str + `
 	
 	
 	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
