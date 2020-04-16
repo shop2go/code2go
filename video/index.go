@@ -87,38 +87,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		sourceURL = res.Data.Url
 
-		if res.Data.Id != "" {
+		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
-			dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
+		sourceID = dul.Data.Id
 
-			sourceID = dul.Data.Id
-
-			if sourceID != "" {
-
-				var m struct {
-					CreateAsset struct {
-						AssetEntry
-					} `graphql:"createAsset(data:{sourceID: $SourceID})"`
-				}
-
-				v := map[string]interface{}{
-					"SourceID": graphql.String(sourceID),
-				}
-
-				if err = caller.Mutate(context.Background(), &m, v); err != nil {
-					fmt.Printf("error with input: %v\n", err)
-				}
-
-				//state with inputinfo - id
-				dbID = m.CreateAsset.ID
-
-			}
-
-		} else {
-
-			http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
-
+		var m struct {
+			CreateAsset struct {
+				AssetEntry
+			} `graphql:"createAsset(data:{sourceID: $SourceID})"`
 		}
+
+		v := map[string]interface{}{
+			"SourceID": graphql.String(sourceID),
+		}
+
+		if err = caller.Mutate(context.Background(), &m, v); err != nil {
+			fmt.Printf("error with input: %v\n", err)
+		}
+
+		dbID = m.CreateAsset.ID
 
 	}
 
@@ -180,23 +167,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	</form>
 	
-	</div>	`
-
-		} else {
-
-			id = strings.TrimSuffix(id, ".")
-
-			str = str + `	
-
-		<p>asset created @ ` + id + `</p>
-		
 	</div>
-	`
-
-		}
-
-		str = str + `
-
 	<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
 
 	<script>
@@ -234,7 +205,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	</body>
 	</html>
 
+		`
+
+		} else {
+
+			id = strings.TrimSuffix(id, ".")
+
+			str = str + `	
+
+		<p>asset created @ ` + id + `</p>
+		
+	</div>
+	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+	</body>
+	</html>
 	`
+
+		}
+
 		w.Header().Set("Content-Type", "text/html")
 		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 		w.Write([]byte(str))
