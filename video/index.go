@@ -241,58 +241,64 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
 
-			for _, b := range input.Data {
+			if input.Data != nil {
 
-				url := b.Settings.Url
+				for _, b := range input.Data {
 
-				url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+					url := b.Settings.Url
 
-				sl := strings.SplitN(url, "?", 1)
+					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
 
-				//url = strings.TrimSuffix(sl[0], "?")
+					sl := strings.SplitN(url, "?", 1)
 
-				var q struct {
-					AssetBySourceID struct {
-						AssetEntry
-					} `graphql:"assetBySourceID(sourceID: $SourceID)"`
-				}
+					//url = strings.TrimSuffix(sl[0], "?")
 
-				v := map[string]interface{}{
-					"SourceID": graphql.ID(sl[0]),
-				}
-
-				if err = caller.Query(context.Background(), &q, v); err != nil {
-					fmt.Printf("error with asset: %v\n", err)
-				}
-
-				if q.AssetBySourceID.ID != nil {
-
-					var m struct {
-						UpdateAsset struct {
+					var q struct {
+						AssetBySourceID struct {
 							AssetEntry
-						} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
+						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
 					}
 
-					v = map[string]interface{}{
-						"ID":      q.AssetBySourceID.ID,
-						"AssetID": graphql.String(a.Id),
+					v := map[string]interface{}{
+						"SourceID": graphql.ID(sl[0]),
 					}
 
-					if err = caller.Mutate(context.Background(), &m, v); err != nil {
+					if err = caller.Query(context.Background(), &q, v); err != nil {
 						fmt.Printf("error with asset: %v\n", err)
 					}
 
-				} else {
+					if q.AssetBySourceID.ID == dbID {
 
-					http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
+						var m struct {
+							UpdateAsset struct {
+								AssetEntry
+							} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
+						}
+
+						v = map[string]interface{}{
+							"ID":      q.AssetBySourceID.ID,
+							"AssetID": graphql.String(a.Id),
+						}
+
+						if err = caller.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Printf("error with asset: %v\n", err)
+						}
+
+						break
+
+					}
 
 				}
+
+			} else {
+
+				continue
 
 			}
 
 		}
 
-		sourceURL, sourceID = "", ""
+		//sourceURL, sourceID = "", ""
 
 		if dbID != nil {
 
