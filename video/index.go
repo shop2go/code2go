@@ -35,6 +35,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id = strings.TrimSuffix(id, "code2go.dev")
 
+	id = strings.TrimSuffix(id, ".")
+
 	if id == "" {
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -98,8 +100,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		i := fmt.Sprintf("%s", m.CreateAsset.ID)
-
-		i = i + "."
 
 		content =
 
@@ -219,17 +219,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for _, a := range assets.Data {
 
-			input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+			inputInfo, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
 
-			for _, b := range input.Data {
+			for _, b := range inputInfo.Data {
 
 				url := b.Settings.Url
 
 				url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
 
-				sl := strings.SplitN(url, "?", 1)
-
-				//url = strings.TrimSuffix(sl[0], "?")
+				sl := strings.SplitN(url, "?", -1)
 
 				var q struct {
 					AssetBySourceID struct {
@@ -245,7 +243,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with asset query: %v\n", err)
 				}
 
-				if q.AssetBySourceID.ID == graphql.ID(strings.TrimSuffix(id, ".")) {
+				if q.AssetBySourceID.ID == graphql.ID(id) {
 
 					var m struct {
 						UpdateAsset struct {
@@ -261,8 +259,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					if err := caller.Mutate(context.Background(), &m, v); err != nil {
 						fmt.Fprintf(w, "error with asset mutation: %v\n", err)
 					}
-
-					break
 
 				}
 
@@ -336,14 +332,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		id = strings.TrimSuffix(id, "code2go.dev")
 
+		id = strings.TrimSuffix(id, ".")
+
 		if id == "" {
 
 			r.ParseForm()
 
-			id := r.Form.Get("ID")
+			id = r.Form.Get("ID")
 
 			//fmt.Fprintf(w, "id: %v\n", i)
-			http.Redirect(w, r, "https://"+id+"code2go.dev/video", http.StatusSeeOther)
+			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
 		} else {
 
