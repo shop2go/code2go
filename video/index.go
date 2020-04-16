@@ -121,7 +121,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
 
-		if input.Data[0] != nil {
+		if input.Data != nil {
 
 			for _, b := range input.Data {
 
