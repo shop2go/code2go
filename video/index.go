@@ -109,6 +109,75 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	assets, err := client.AssetsApi.ListAssets()
+
+	if err != nil {
+
+		fmt.Fprintf(w, "%v", err)
+
+	}
+
+	for _, a := range assets.Data {
+
+		input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+
+		if input.Data[0] != nil {
+
+			for _, b := range input.Data {
+
+				url := b.Settings.Url
+
+				url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+
+				sl := strings.SplitN(url, "?", 1)
+
+				//url = strings.TrimSuffix(sl[0], "?")
+
+				var q struct {
+					AssetBySourceID struct {
+						AssetEntry
+					} `graphql:"assetBySourceID(sourceID: $SourceID)"`
+				}
+
+				v := map[string]interface{}{
+					"SourceID": graphql.ID(sl[0]),
+				}
+
+				if err = caller.Query(context.Background(), &q, v); err != nil {
+					fmt.Printf("error with asset: %v\n", err)
+				}
+
+				if q.AssetBySourceID.ID == dbID {
+
+					var m struct {
+						UpdateAsset struct {
+							AssetEntry
+						} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
+					}
+
+					v = map[string]interface{}{
+						"ID":      q.AssetBySourceID.ID,
+						"AssetID": graphql.String(a.Id),
+					}
+
+					if err = caller.Mutate(context.Background(), &m, v); err != nil {
+						fmt.Printf("error with asset: %v\n", err)
+					}
+
+					break
+
+				}
+
+			}
+
+		} else {
+
+			continue
+
+		}
+
+	}
+
 	//http.NewRequest("PUT", s, nil)
 
 	switch r.Method {
@@ -156,14 +225,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	<form role="form" method="POST">
 
-		<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required>
-		<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last" required>
-		<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First" required>
-		<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content" required></textarea>
-		<br>
+		
+
+	<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required>
+	<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last" required>
+	<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First" required>
+	<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content" required></textarea>
+	<br>
+	
+
 	 	<p>after file upload completion:</p>
 	<button type="submit" class="btn btn-light">submit</button>
-	
 
 	</form>
 	
@@ -228,75 +300,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
-
-		assets, err := client.AssetsApi.ListAssets()
-
-		if err != nil {
-
-			fmt.Fprintf(w, "%v", err)
-
-		}
-
-		for _, a := range assets.Data {
-
-			input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
-
-			if input.Data != nil {
-
-				for _, b := range input.Data {
-
-					url := b.Settings.Url
-
-					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
-
-					sl := strings.SplitN(url, "?", 1)
-
-					//url = strings.TrimSuffix(sl[0], "?")
-
-					var q struct {
-						AssetBySourceID struct {
-							AssetEntry
-						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
-					}
-
-					v := map[string]interface{}{
-						"SourceID": graphql.ID(sl[0]),
-					}
-
-					if err = caller.Query(context.Background(), &q, v); err != nil {
-						fmt.Printf("error with asset: %v\n", err)
-					}
-
-					if q.AssetBySourceID.ID == dbID {
-
-						var m struct {
-							UpdateAsset struct {
-								AssetEntry
-							} `graphql:"updateCart(id: $ID, data:{assetID: $AssetID})"`
-						}
-
-						v = map[string]interface{}{
-							"ID":      q.AssetBySourceID.ID,
-							"AssetID": graphql.String(a.Id),
-						}
-
-						if err = caller.Mutate(context.Background(), &m, v); err != nil {
-							fmt.Printf("error with asset: %v\n", err)
-						}
-
-						break
-
-					}
-
-				}
-
-			} else {
-
-				continue
-
-			}
-
-		}
 
 		//sourceURL, sourceID = "", ""
 
