@@ -87,9 +87,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		sourceURL = res.Data.Url
 
-		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.AssetId)
+		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
 
-		sourceID = dul.Data.AssetId
+		sourceID = dul.Data.Id
 
 		var m struct {
 			CreateAsset struct {
