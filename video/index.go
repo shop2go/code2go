@@ -272,7 +272,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					fmt.Fprintf(w, "values: %v\n%v\n", q.AssetBySourceID.ID, dbID)
 
-					if q.AssetBySourceID.ID == dbID {
+					/* if q.AssetBySourceID.ID == dbID {
 
 						var m struct {
 							UpdateAsset struct {
@@ -291,7 +291,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						break
 
-					}
+					} */
 
 				}
 
@@ -308,10 +308,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		if i != "" {
 
 			i = i + "."
-
 		}
 
-		http.Redirect(w, r, "https://"+i+"code2go.dev/video", http.StatusSeeOther)
+		fmt.Fprintf(w, "id: %v\n",i)
+		//http.Redirect(w, r, "https://"+i+"code2go.dev/video", http.StatusSeeOther)
 
 	}
 
