@@ -33,7 +33,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id := r.Host
 
-	id = strings.TrimSuffix(id, "code2go.dev")	
+	id = strings.TrimSuffix(id, "code2go.dev")
+
+	id = strings.TrimSuffix(id, ".")
 
 	if id == "" {
 
@@ -177,8 +179,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 
 	} else {
-
-		id = strings.TrimSuffix(id, ".")
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -328,9 +328,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-/* 		id := r.Host
+		/* 		id := r.Host
 
-		id = strings.TrimSuffix(id, "code2go.dev") */
+		   		id = strings.TrimSuffix(id, "code2go.dev") */
 
 		if id == "" {
 
@@ -339,7 +339,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			id = r.Form.Get("ID")
 
 			//fmt.Fprintf(w, "id: %v\n", i)
-			http.Redirect(w, r, "https://"+id+"code2go.dev/video", http.StatusSeeOther)
+			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
 		} else {
 
