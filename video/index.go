@@ -29,11 +29,7 @@ type AssetEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var (
-		dbID graphql.ID
-
-		content, sourceURL, sourceID string
-	)
+	var content, sourceURL, sourceID string
 
 	id := r.Host
 
@@ -99,7 +95,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "error with input: %v\n", err)
 		}
 
-		dbID = m.CreateAsset.ID
+		
+
+		i := fmt.Sprintf("%s", m.CreateAsset.ID)
+
+			i = i + "."
 
 		content =
 
@@ -131,11 +131,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<form role="form">
 			<input id="picker" type="file" />
-			<p>on info click OK</p>
+			<p>when promted click ok</p>
 			</form>		
 			
 			<form role="form" method="POST">
 						
+			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `">
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First" required>
@@ -199,15 +200,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		i := fmt.Sprintf("%s", dbID)
-
-		if i != "" {
-
-			i = i + "."
-		}
+		r.ParseForm()
+		
+		id := r.Form.Get("ID")
 
 		//fmt.Fprintf(w, "id: %v\n", i)
-		http.Redirect(w, r, "https://"+i+"code2go.dev/video", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+id+"code2go.dev/video", http.StatusSeeOther)
 
 	}
 
