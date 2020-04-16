@@ -71,7 +71,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	id := r.Host
 
 	id = strings.TrimSuffix(id, "code2go.dev")
-
 	//http.NewRequest("PUT", s, nil)
 
 	switch r.Method {
@@ -80,7 +79,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if id == "" {
 
-			car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}, MasterAccess: "temporary"}
+			car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
 			cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 
 			res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
@@ -232,77 +231,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		assets, err := client.AssetsApi.ListAssets()
-
-		if err != nil {
-
-			fmt.Fprintf(w, "%v", err)
-
-		}
-
-		for _, a := range assets.Data {
-
-			input, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
-
-			if input.Data != nil {
-
-				for _, b := range input.Data {
-
-					url := b.Settings.Url
-
-					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
-
-					sl := strings.SplitN(url, "?", 1)
-
-					//url = strings.TrimSuffix(sl[0], "?")
-
-					var q struct {
-						AssetBySourceID struct {
-							AssetEntry
-						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
-					}
-
-					v := map[string]interface{}{
-						"SourceID": graphql.String(sl[0]),
-					}
-
-					if err := caller.Query(context.Background(), &q, v); err != nil {
-						fmt.Fprintf(w, "error with asset: %v\n", err)
-					}
-
-					fmt.Fprintf(w, "values: %v\n%v\n", q.AssetBySourceID.ID, dbID)
-
-					/* if q.AssetBySourceID.ID == dbID {
-
-						var m struct {
-							UpdateAsset struct {
-								AssetEntry
-							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID})"`
-						}
-
-						v := map[string]interface{}{
-							"ID":      q.AssetBySourceID.ID,
-							"AssetID": graphql.String(a.Id),
-						}
-
-						if err := caller.Mutate(context.Background(), &m, v); err != nil {
-							fmt.Fprintf(w, "error with asset mutation: %v\n", err)
-						}
-
-						break
-
-					} */
-
-				}
-
-			} else {
-
-				continue
-
-			}
-
-		}
-
 		i := fmt.Sprintf("%s", dbID)
 
 		if i != "" {
@@ -310,8 +238,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			i = i + "."
 		}
 
-		fmt.Fprintf(w, "id: %v\n",i)
-		//http.Redirect(w, r, "https://"+i+"code2go.dev/video", http.StatusSeeOther)
+		fmt.Fprintf(w, "id: %v\n", i)
+		http.Redirect(w, r, "https://"+i+"code2go.dev/video", http.StatusSeeOther)
 
 	}
 
