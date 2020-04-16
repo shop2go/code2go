@@ -113,14 +113,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			dbID = m.CreateAsset.ID
 
-			assets, err := client.AssetsApi.ListAssets()
-
-			if err != nil {
-
-				fmt.Fprintf(w, "%v", err)
-
-			}
-
 		}
 
 		str :=
@@ -239,6 +231,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
+
+		assets, err := client.AssetsApi.ListAssets()
+
+			if err != nil {
+
+				fmt.Fprintf(w, "%v", err)
+
+			}
 
 		for _, a := range assets.Data {
 
