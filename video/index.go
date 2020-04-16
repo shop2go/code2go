@@ -35,6 +35,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id = strings.TrimSuffix(id, "code2go.dev")
 
+	id = strings.TrimSuffix(id, ".")
+
 	if id == "" {
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -326,11 +328,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		id := r.Host
+/* 		id := r.Host
 
 		id = strings.TrimSuffix(id, "code2go.dev")
 
-		id = strings.TrimSuffix(id, ".")
+		id = strings.TrimSuffix(id, ".") */
 
 		if id == "" {
 
