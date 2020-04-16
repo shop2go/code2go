@@ -301,19 +301,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 
-		if dbID != nil {
+		i := fmt.Sprintf("%s", dbID)
 
-			i := fmt.Sprintf("%s", dbID)
+		if i != "" {
 
-			http.Redirect(w, r, "https://"+i+".code2go.dev/video", http.StatusSeeOther)
-
-		} else {
-
-			http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
+			i = i + "."
 
 		}
 
+		http.Redirect(w, r, "https://"+i+"code2go.dev/video", http.StatusSeeOther)
+
 	}
 
-	//}
 }
