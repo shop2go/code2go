@@ -339,7 +339,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			id = r.Form.Get("ID")
 
 			//fmt.Fprintf(w, "id: %v\n", i)
-			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusAccepted)
 
 		} else {
 
