@@ -108,7 +108,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if err = caller.Mutate(context.Background(), &m, v); err != nil {
-				fmt.Printf("error with input: %v\n", err)
+				fmt.Fprintf(w, "error with input: %v\n", err)
 			}
 
 			dbID = m.CreateAsset.ID
@@ -266,11 +266,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						"SourceID": graphql.String(sl[0]),
 					}
 
-					if err = caller.Query(context.Background(), &q, v); err != nil {
-						fmt.Printf("error with asset: %v\n", err)
+					if err := caller.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with asset: %v\n", err)
 					}
 
 					if q.AssetBySourceID.ID == dbID {
+
+						fmt.Fprintf(w, "values: %v\n%v\n", q.AssetBySourceID.ID, dbID)
 
 						var m struct {
 							UpdateAsset struct {
@@ -278,13 +280,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID})"`
 						}
 
-						v = map[string]interface{}{
+						v := map[string]interface{}{
 							"ID":      q.AssetBySourceID.ID,
 							"AssetID": graphql.String(a.Id),
 						}
 
-						if err = caller.Mutate(context.Background(), &m, v); err != nil {
-							fmt.Printf("error with asset: %v\n", err)
+						if err := caller.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Fprintf(w, "error with asset mutation: %v\n", err)
 						}
 
 						break
