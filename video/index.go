@@ -270,9 +270,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						fmt.Fprintf(w, "error with asset: %v\n", err)
 					}
 
-					if q.AssetBySourceID.ID == dbID {
+					fmt.Fprintf(w, "values: %v\n%v\n", q.AssetBySourceID.ID, dbID)
 
-						fmt.Fprintf(w, "values: %v\n%v\n", q.AssetBySourceID.ID, dbID)
+					if q.AssetBySourceID.ID == dbID {
 
 						var m struct {
 							UpdateAsset struct {
