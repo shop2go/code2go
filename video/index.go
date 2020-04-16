@@ -263,7 +263,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					v := map[string]interface{}{
-						"SourceID": sl[0],
+						"SourceID": ]interface{}{
+							"SourceID": graphql.String(sl[0]),
 					}
 
 					if err = caller.Query(context.Background(), &q, v); err != nil {
