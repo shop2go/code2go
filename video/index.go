@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
@@ -36,6 +37,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	id = strings.TrimSuffix(id, "code2go.dev")
 
 	id = strings.TrimSuffix(id, ".")
+
+	time.Sleep(4e8)
 
 	if id == "" {
 
