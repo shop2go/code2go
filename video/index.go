@@ -234,11 +234,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		assets, err := client.AssetsApi.ListAssets()
 
-			if err != nil {
+		if err != nil {
 
-				fmt.Fprintf(w, "%v", err)
+			fmt.Fprintf(w, "%v", err)
 
-			}
+		}
 
 		for _, a := range assets.Data {
 
@@ -263,8 +263,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					v := map[string]interface{}{
-						"SourceID": ]interface{}{
-							"SourceID": graphql.String(sl[0]),
+						"SourceID": graphql.String(sl[0]),
 					}
 
 					if err = caller.Query(context.Background(), &q, v); err != nil {
