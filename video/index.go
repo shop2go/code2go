@@ -74,7 +74,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if id == "" {
 
-		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
+		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}, MasterAccess: "temporary"}
 		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 
 		res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
@@ -87,9 +87,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		sourceURL = res.Data.Url
 
-		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
+		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.AssetId)
 
-		sourceID = dul.Data.Id
+		sourceID = dul.Data.AssetId
 
 		var m struct {
 			CreateAsset struct {
@@ -106,14 +106,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		dbID = m.CreateAsset.ID
-
-	}
-
-	assets, err := client.AssetsApi.ListAssets()
-
-	if err != nil {
-
-		fmt.Fprintf(w, "%v", err)
 
 	}
 
@@ -239,6 +231,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(str))
 
 	case "POST":
+
+		assets, err := client.AssetsApi.ListAssets()
+
+		if err != nil {
+
+			fmt.Fprintf(w, "%v", err)
+
+		}
 
 		for _, a := range assets.Data {
 
