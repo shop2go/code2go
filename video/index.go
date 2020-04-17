@@ -129,9 +129,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						
 			<h1>video upload:</h1>
 			
-			<form role="form">
+			<form>
 			<input id="picker" type="file" accept="video/*" />
-			<p>when promted click ok</p>
+			<p>when ready click ok</p>
 			</form>		
 			
 			<form role="form" method="POST">
@@ -162,8 +162,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  upload.on('error', err => {
 					console.error('something went wrong', err.detail);
 				  });
+
+				  upload.on('progress', () => {
+					alert('video file uploading...');
+				  });
+
+				  
 				
-				
+				  upload.on('success', () => {
+					alert('video file upload done.');
 			
 				
 				  });
