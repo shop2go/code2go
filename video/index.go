@@ -31,7 +31,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var content string
 
-	var loop graphql.ID
+	var pbid string
 
 	id := r.Host
 
@@ -127,7 +127,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		i := fmt.Sprintf("%s", m.CreateAsset.ID)
 
-		loop =  m.CreateAsset.ID
+		//loop =  m.CreateAsset.ID
 
 		content =
 
@@ -286,6 +286,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						fmt.Fprintf(w, "error with asset ID: %v\n", err)
 					}
 
+					for _, pb := range a.PlaybackIds {
+
+						if pb.Policy == muxgo.PUBLIC {
+							pbid = pb.Id
+						}
+
+					}
+
 				}
 
 			}
@@ -365,57 +373,99 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+			content =
 
-			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+			`
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<title>vdo2go</title>
+			<!-- CSS -->
+			<!-- Add Material font (Roboto) and Material icon as needed -->
+			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+			
+			<!-- Add Material CSS, replace Bootstrap CSS -->
+			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+			
+			</head>
+			<body style="background-color: #a1b116;">
 
-			if err != nil {
+			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
+			
+			<br>
+			<br>
 
-				fmt.Fprintf(w, "a connection error occured: %v\n", err)
+			<img src="https://image.mux.com/`+pbid+`/thumbnail.jpg?width=214&height=121&fit_mode=pad">
 
-			}
+			</div>
+						
+			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+			</body>
+			</html>
 
-			var access *Access
+			`
 
-			x.Get(&access)
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+			w.Write([]byte(content))
 
-			src := oauth2.StaticTokenSource(
-				&oauth2.Token{AccessToken: access.Secret},
-			)
+			/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
-			access = &Access{}
+				x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
-			httpClient := oauth2.NewClient(context.Background(), src)
+				if err != nil {
 
-			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+					fmt.Fprintf(w, "a connection error occured: %v\n", err)
 
-			var q struct {
-				FindAssetByID struct {
-					AssetEntry
-				} `graphql:"findAssetByID(id: $ID)"`
-			}
+				}
 
-			v := map[string]interface{}{
-				"ID": loop,
-			}
+				var access *Access
 
-			if err := caller.Query(context.Background(), &q, v); err != nil {
-				fmt.Fprintf(w, "error with asset query: %v\n", err)
-			}
+				x.Get(&access)
 
-			if q.FindAssetByID.AssetID == graphql.String("") {
+				src := oauth2.StaticTokenSource(
+					&oauth2.Token{AccessToken: access.Secret},
+				)
 
-				var m struct {
-					DeleteAsset struct {
+				access = &Access{}
+
+				httpClient := oauth2.NewClient(context.Background(), src)
+
+				caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+				var q struct {
+					FindAssetByID struct {
 						AssetEntry
-					} `graphql:"deleteAsset(id: $ID)"`
+					} `graphql:"findAssetByID(id: $ID)"`
 				}
 
-				if err := caller.Mutate(context.Background(), &m, v); err != nil {
-					fmt.Fprintf(w, "error with asset mutation: %v\n", err)
+				v := map[string]interface{}{
+					"ID": loop,
 				}
 
-			}
+				if err := caller.Query(context.Background(), &q, v); err != nil {
+					fmt.Fprintf(w, "error with asset query: %v\n", err)
+				}
+
+				if q.FindAssetByID.AssetID == graphql.String("") {
+
+					var m struct {
+						DeleteAsset struct {
+							AssetEntry
+						} `graphql:"deleteAsset(id: $ID)"`
+					}
+
+					if err := caller.Mutate(context.Background(), &m, v); err != nil {
+						fmt.Fprintf(w, "error with asset mutation: %v\n", err)
+					}
+
+				}
+
+			} */
 
 		}
 
