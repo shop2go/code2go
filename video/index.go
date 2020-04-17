@@ -33,11 +33,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id := r.Host
 
-	id = strings.TrimSuffix(id, ".code2go.dev")
+	id = strings.TrimSuffix(id, "code2go.dev")
 
-	//id = strings.TrimSuffix(id, ".")
+	id = strings.TrimSuffix(id, ".")
 
-	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+	/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
@@ -59,11 +59,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	httpClient := oauth2.NewClient(context.Background(), src)
 
-	caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+	caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient) */
 
 	if id == "" {
 
-		/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
@@ -85,7 +85,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		httpClient := oauth2.NewClient(context.Background(), src)
 
-		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient) */
+		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		client := muxgo.NewAPIClient(
 			muxgo.NewConfiguration(
@@ -202,7 +202,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 
-		/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
@@ -224,7 +224,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		httpClient := oauth2.NewClient(context.Background(), src)
 
-		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient) */
+		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 		client := muxgo.NewAPIClient(
 			muxgo.NewConfiguration(
@@ -361,7 +361,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			//fmt.Fprint(w, id)
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+			if err != nil {
+
+				fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+			}
+
+			var access *Access
+
+			x.Get(&access)
+
+			src := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			access = &Access{}
+
+			httpClient := oauth2.NewClient(context.Background(), src)
+
+			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 			var q struct {
 				FindAssetByID struct {
@@ -388,7 +410,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if err := caller.Mutate(context.Background(), &m, v); err != nil {
 					fmt.Fprintf(w, "error with asset mutation: %v\n", err)
 				}
-			
+
 			}
 
 		}
