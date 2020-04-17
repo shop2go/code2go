@@ -31,6 +31,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var content string
 
+	var loop graphql.ID
+
 	id := r.Host
 
 	id = strings.TrimSuffix(id, "code2go.dev")
@@ -120,10 +122,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err = caller.Mutate(context.Background(), &m, v); err != nil {
-			fmt.Fprintf(w, "error with input: %v\n", err)
+			fmt.Fprintf(w, "error with asset soutce: %v\n", err)
 		}
 
 		i := fmt.Sprintf("%s", m.CreateAsset.ID)
+
+		loop =  m.CreateAsset.ID
 
 		content =
 
@@ -262,7 +266,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 				if err := caller.Query(context.Background(), &q, v); err != nil {
-					fmt.Fprintf(w, "error with asset query: %v\n", err)
+					fmt.Fprintf(w, "error with asset source: %v\n", err)
 				}
 
 				if q.AssetBySourceID.ID == graphql.ID(id) {
@@ -279,7 +283,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					if err := caller.Mutate(context.Background(), &m, v); err != nil {
-						fmt.Fprintf(w, "error with asset mutation: %v\n", err)
+						fmt.Fprintf(w, "error with asset ID: %v\n", err)
 					}
 
 				}
@@ -392,7 +396,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			v := map[string]interface{}{
-				"ID": graphql.ID(id),
+				"ID": loop,
 			}
 
 			if err := caller.Query(context.Background(), &q, v); err != nil {
