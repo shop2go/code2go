@@ -33,13 +33,37 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id := r.Host
 
-	id = strings.TrimSuffix(id, "code2go.dev")
+	id = strings.TrimSuffix(id, ".code2go.dev")
 
-	id = strings.TrimSuffix(id, ".")
+	//id = strings.TrimSuffix(id, ".")
+
+	fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+	if err != nil {
+
+		fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+	}
+
+	var access *Access
+
+	x.Get(&access)
+
+	src := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: access.Secret},
+	)
+
+	access = &Access{}
+
+	httpClient := oauth2.NewClient(context.Background(), src)
+
+	caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
 	if id == "" {
 
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+		/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
@@ -61,7 +85,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		httpClient := oauth2.NewClient(context.Background(), src)
 
-		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient) */
 
 		client := muxgo.NewAPIClient(
 			muxgo.NewConfiguration(
@@ -161,18 +185,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  });
 				  upload.on('error', err => {
 					console.error('something went wrong', err.detail);
-				  });
-
-				  upload.on('progress', () => {
-					alert('video file uploading...');
-				  });
-
-				  
+				  });				  
 				
 				  upload.on('success', () => {
 					alert('video file upload done.');
-			
-				
 				  });
 				};
 				 
@@ -186,7 +202,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+		/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
 
@@ -208,7 +224,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		httpClient := oauth2.NewClient(context.Background(), src)
 
-		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient) */
 
 		client := muxgo.NewAPIClient(
 			muxgo.NewConfiguration(
@@ -334,12 +350,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-/* 		id := r.Host
-
-		id = strings.TrimSuffix(id, "code2go.dev")
-
-		id = strings.TrimSuffix(id, ".") */
-
 		if id == "" {
 
 			r.ParseForm()
@@ -351,7 +361,35 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			fmt.Fprint(w, id)
+			//fmt.Fprint(w, id)
+
+			var q struct {
+				FindAssetByID struct {
+					AssetEntry
+				} `graphql:"findAssetByID(id: $ID)"`
+			}
+
+			v := map[string]interface{}{
+				"ID": graphql.String(id),
+			}
+
+			if err := caller.Query(context.Background(), &q, v); err != nil {
+				fmt.Fprintf(w, "error with asset query: %v\n", err)
+			}
+
+			if q.FindAssetByID.AssetID == graphql.String("") {
+
+				var m struct {
+					DeleteAsset struct {
+						AssetEntry
+					} `graphql:"deleteAsset(id: $ID)"`
+				}
+
+				if err := caller.Mutate(context.Background(), &m, v); err != nil {
+					fmt.Fprintf(w, "error with asset mutation: %v\n", err)
+				}
+			
+			}
 
 		}
 
