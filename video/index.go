@@ -370,7 +370,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			v := map[string]interface{}{
-				"ID": graphql.String(id),
+				"ID": graphql.ID(id),
 			}
 
 			if err := caller.Query(context.Background(), &q, v); err != nil {
