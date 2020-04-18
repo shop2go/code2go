@@ -159,10 +159,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 						
 			<h1>video upload:</h1>
-			
+			<b>
 			<form>
 			<input id="picker" type="file" accept="video/*" />
-			<p>when ready click ok</p>
+			<p>when upload done click ok</p>
 			</form>		
 			
 			<form role="form" method="POST">
@@ -329,14 +329,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<br>
 						
-			<h1>video upload for:</h1>	
+			<h1>video` + id + `:</h1>	
 			
 			<form role="form" method="POST">
 						
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last">
 			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First">
-			<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content" required></textarea>
+			<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content/Title"></textarea>
 			<br>
 			
 			<button type="submit" class="btn btn-light">submit</button>
@@ -421,11 +421,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "error with asset source: %v\n", err)
 			}
 
-			if string(q.FindAssetByID.Email) == email {	
+			if string(q.FindAssetByID.Email) == email {
 
-			cont :=
+				cont :=
 
-				`
+					`
 			<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -460,9 +460,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(cont)))
-			w.Write([]byte(cont))
+				w.Header().Set("Content-Type", "text/html")
+				w.Header().Set("Content-Length", strconv.Itoa(len(cont)))
+				w.Write([]byte(cont))
 
 			} else {
 
@@ -484,8 +484,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				if err := caller.Mutate(context.Background(), &m, v); err != nil {
 					fmt.Fprintf(w, "error with asset update: %v\n", err)
-				}
+				} else {
 
+					http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+
+				}
 
 			}
 
