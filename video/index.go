@@ -421,7 +421,40 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "error with asset source: %v\n", err)
 			}
 
-			if string(q.FindAssetByID.Email) == email {
+			switch string(q.FindAssetByID.Email) {
+
+			default:
+
+				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+
+			case "":
+
+				//authenticate
+
+				var m struct {
+					UpdateAsset struct {
+						AssetEntry
+					} `graphql:"updateAsset(id: $ID, data:{pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
+				}
+
+				v = map[string]interface{}{
+					"ID":      graphql.ID(id),
+					"Email":   graphql.String(email),
+					"First":   graphql.String(first),
+					"Last":    graphql.String(last),
+					"Content": graphql.String(content),
+					"PbID":    graphql.String(pbid),
+				}
+
+				if err := caller.Mutate(context.Background(), &m, v); err != nil {
+					fmt.Fprintf(w, "error with asset update: %v\n", err)
+				} else {
+
+					http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+
+				}
+
+			case email:
 
 				content = string(q.FindAssetByID.Content)
 
@@ -465,32 +498,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("Content-Type", "text/html")
 				w.Header().Set("Content-Length", strconv.Itoa(len(cont)))
 				w.Write([]byte(cont))
-
-			} else {
-
-				//authenticate
-				var m struct {
-					UpdateAsset struct {
-						AssetEntry
-					} `graphql:"updateAsset(id: $ID, data:{pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
-				}
-
-				v = map[string]interface{}{
-					"ID":      graphql.ID(id),
-					"Email":   graphql.String(email),
-					"First":   graphql.String(first),
-					"Last":    graphql.String(last),
-					"Content": graphql.String(content),
-					"PbID":    graphql.String(pbid),
-				}
-
-				if err := caller.Mutate(context.Background(), &m, v); err != nil {
-					fmt.Fprintf(w, "error with asset update: %v\n", err)
-				} else {
-
-					http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
-
-				}
 
 			}
 
