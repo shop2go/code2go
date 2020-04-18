@@ -423,6 +423,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if string(q.FindAssetByID.Email) == email {
 
+				content = string(q.FindAssetByID.Content)
+
 				cont :=
 
 					`
