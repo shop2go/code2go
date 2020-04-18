@@ -25,6 +25,11 @@ type AssetEntry struct {
 	ID       graphql.ID     `graphql:"_id"`
 	SourceID graphql.String `graphql:"sourceID"`
 	AssetID  graphql.String `graphql:"assetID"`
+	PbID     graphql.String `graphql:"pbID"`
+	First    graphql.String `graphql:"first"`
+	Last     graphql.String `graphql:"last"`
+	Email    graphql.String `graphql:"email"`
+	Content  graphql.String `graphql:"content"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -122,12 +127,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err = caller.Mutate(context.Background(), &m, v); err != nil {
-			fmt.Fprintf(w, "error with asset soutce: %v\n", err)
+			fmt.Fprintf(w, "error with asset source: %v\n", err)
 		}
 
 		i := fmt.Sprintf("%s", m.CreateAsset.ID)
-
-		//loop =  m.CreateAsset.ID
 
 		content =
 
@@ -373,9 +376,77 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			content =
+			r.ParseForm()
 
-			`
+			first := r.Form.Get("First")
+			last := r.Form.Get("Last")
+			email := r.Form.Get("Email")
+			content := r.Form.Get("Content")
+
+			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+			if err != nil {
+
+				fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
+			}
+
+			var access *Access
+
+			x.Get(&access)
+
+			src := oauth2.StaticTokenSource(
+				&oauth2.Token{AccessToken: access.Secret},
+			)
+
+			access = &Access{}
+
+			httpClient := oauth2.NewClient(context.Background(), src)
+
+			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
+
+			var q struct {
+				AssetByID struct {
+					AssetEntry
+				} `graphql:"assetByID(id: $ID)"`
+			}
+
+			v := map[string]interface{}{
+				"ID": graphql.ID(id),
+			}
+
+			if err := caller.Query(context.Background(), &q, v); err != nil {
+				fmt.Fprintf(w, "error with asset source: %v\n", err)
+			}
+
+			if q.AssetByID.Content == "" {
+
+				var m struct {
+					UpdateAsset struct {
+						AssetEntry
+					} `graphql:"updateAsset(id: $ID, data:{pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
+				}
+
+				v = map[string]interface{}{
+					"ID":      graphql.ID(id),
+					"Email":   graphql.String(email),
+					"First":   graphql.String(first),
+					"Last":    graphql.String(last),
+					"Content": graphql.String(content),
+					"PbID":    graphql.String(pbid),
+				}
+
+				if err := caller.Mutate(context.Background(), &m, v); err != nil {
+					fmt.Fprintf(w, "error with asset update: %v\n", err)
+				}
+
+			}
+
+			cont :=
+
+				`
 			<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -399,8 +470,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<br>
 
-			<img src="https://image.mux.com/`+pbid+`/thumbnail.jpg?width=214&height=121&fit_mode=pad">
-
+			<img src="https://image.mux.com/` + pbid + `/thumbnail.jpg?width=214&height=121&fit_mode=pad">
+			<br>
+			<p>` + content + `</p>
 			</div>
 						
 			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
@@ -410,33 +482,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 
 			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-			w.Write([]byte(content))
+			w.Header().Set("Content-Length", strconv.Itoa(len(cont)))
+			w.Write([]byte(cont))
 
-			/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-				x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-				if err != nil {
-
-					fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-				}
-
-				var access *Access
-
-				x.Get(&access)
-
-				src := oauth2.StaticTokenSource(
-					&oauth2.Token{AccessToken: access.Secret},
-				)
-
-				access = &Access{}
-
-				httpClient := oauth2.NewClient(context.Background(), src)
-
-				caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
+			/*
 				var q struct {
 					FindAssetByID struct {
 						AssetEntry
