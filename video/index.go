@@ -417,9 +417,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						if pb.Policy == muxgo.PUBLIC {
 							pbid = pb.Id
 
-						} else {
-
-							pbid = "signed video"
 						}
 
 					}
@@ -712,7 +709,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-				if pbid == "signed video" {
+				if pbid == "" {
 
 					content = content + `
 				
