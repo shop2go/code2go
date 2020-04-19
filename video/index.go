@@ -36,9 +36,7 @@ type AssetEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var content string
-
-	var pbid string
+	var content, pbid string
 
 	id := r.Host
 
@@ -46,7 +44,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id = strings.TrimSuffix(id, ".")
 
-	if id == "SIGNED" || id == "" {
+	switch id {
+
+	case "SIGNED":
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -198,7 +198,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 			`
 
-	} else {
+	case "":
+
+		break
+
+	default:
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -352,13 +356,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		if id == "SIGNED" || id == "" {
+		switch id {
+
+		case "SIGNED":
 
 			w.Header().Set("Content-Type", "text/html")
 			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
 			w.Write([]byte(content))
 
-		} else {
+		default:
+
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+			w.Write([]byte(content))
+
+		case "":
 
 			content =
 
@@ -566,37 +578,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(cont))
 
 			}
-
-			/*
-				var q struct {
-					FindAssetByID struct {
-						AssetEntry
-					} `graphql:"findAssetByID(id: $ID)"`
-				}
-
-				v := map[string]interface{}{
-					"ID": loop,
-				}
-
-				if err := caller.Query(context.Background(), &q, v); err != nil {
-					fmt.Fprintf(w, "error with asset query: %v\n", err)
-				}
-
-				if q.FindAssetByID.AssetID == graphql.String("") {
-
-					var m struct {
-						DeleteAsset struct {
-							AssetEntry
-						} `graphql:"deleteAsset(id: $ID)"`
-					}
-
-					if err := caller.Mutate(context.Background(), &m, v); err != nil {
-						fmt.Fprintf(w, "error with asset mutation: %v\n", err)
-					}
-
-				}
-
-			} */
 
 		}
 
