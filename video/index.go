@@ -702,7 +702,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						fmt.Fprintf(w, "error with asset update: %v\n", err)
 					} else {
 
-						http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
+						http.Redirect(w, r, "https://"+title+"_"+s+".code2go.dev/video", http.StatusSeeOther)
 
 					}
 
