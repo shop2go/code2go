@@ -46,31 +46,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id = strings.TrimSuffix(id, ".")
 
-	/* fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-	x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-	if err != nil {
-
-		fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-	}
-
-	var access *Access
-
-	x.Get(&access)
-
-	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: access.Secret},
-	)
-
-	access = &Access{}
-
-	httpClient := oauth2.NewClient(context.Background(), src)
-
-	caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient) */
-
-	if id == "" {
+	if id == "SIGNED" || id == "" {
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -101,7 +77,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
 			))
 
-		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
+		car := muxgo.CreateAssetRequest{}
+
+		switch id {
+
+		case "SIGNED":
+
+			car = muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
+
+		default:
+
+			car = muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
+
+		}
+
 		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
 
 		res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
@@ -363,7 +352,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		if pbid != "" {
+		if id == "SIGNED" || id == "" {
 
 			w.Header().Set("Content-Type", "text/html")
 			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
@@ -401,9 +390,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<form role="form" method="POST">
 
-			<input type="checkbox" id="Public" name="Public" value="PUBLIC">
-  <label for="Public">I want a public accessible Video.</label><br>
-  <button type="submit" class="btn btn-light">submit</button>
+			<input type="checkbox" id="Access" name="Access" value="SIGNED">
+ 			<label for="Access">I want signed video access.</label><br>
+  			<button type="submit" class="btn btn-light">submit</button>
 			
 			</form>
 
@@ -422,28 +411,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 
-		if id == "" {
+		switch id {
 
-			if pbid != "" {
+		case "SIGNED":
 
-				r.ParseForm()
+			r.ParseForm()
 
-				id = r.Form.Get("ID")
+			id = r.Form.Get("ID")
 
-				//fmt.Fprintf(w, "id: %v\n", i)
-				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+			//fmt.Fprintf(w, "id: %v\n", i)
+			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
-			} else {
+		case "":
 
-				r.ParseForm()
+			r.ParseForm()
 
-				pbid = r.Form.Get("pbID")
+			c := r.Form.Get("Access")
 
-				http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
+			if c != "" {
+
+				c = c + "."
 
 			}
 
-		} else {
+			http.Redirect(w, r, "https://"+c+"code2go.dev/video", http.StatusSeeOther)
+
+		default:
 
 			r.ParseForm()
 
