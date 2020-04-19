@@ -415,6 +415,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					for _, pb := range a.PlaybackIds {
 
 						if pb.Policy == muxgo.PUBLIC {
+
 							pbid = pb.Id
 
 						}
@@ -422,6 +423,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 				}
+
+			}
+
+			if a.Status == "ready" {
+
+				id = "ready"
 
 			}
 
@@ -458,11 +465,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<form role="form" method="POST">
 						
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
+
+			`
+
+		if id == "ready" {
+
+			content = content + `
+
 			<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last">
 			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
 			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title">
 			<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category">
 			<input class="form-control mr-sm-2" type="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content">
+			`
+
+		}
+
+		content = content + `
+			
 			<br>
 			
 			<button type="submit" class="btn btn-light">submit</button>
