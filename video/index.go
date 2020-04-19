@@ -167,7 +167,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  const upload = UpChunk.createUpload({
 					endpoint,
 					file,
-					chunkSize: 5120,
+					chunkSize: 20480,
 				  });
 				  upload.on('error', err => {
 					console.error('something went wrong', err.detail);
