@@ -332,8 +332,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 
-		var iD string
-
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
@@ -426,8 +424,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						}
 
-						iD = fmt.Sprintf("%s", q.AssetBySourceID.ID)
-
 						goto NEXT
 
 					}
@@ -471,10 +467,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<h1>video = ` + id + `:</h1>	
 			
 			<form role="form" method="POST">
-			
+
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
-			<input type="text" id ="ID" name ="ID" value="` + iD + `" hidden readonly>
-			
+
 			`
 
 		if _, err = strconv.Atoi(id); err == nil {
@@ -634,13 +629,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			title := r.Form.Get("Title")
 			category := r.Form.Get("Category")
 			content := r.Form.Get("Content")
-			iD := r.Form.Get("ID")
-
-			if iD != "" {
-
-				id = iD
-
-			}
 
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -666,60 +654,62 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-			var q struct {
-				FindAssetByID struct {
-					AssetEntry
-				} `graphql:"findAssetByID(id: $ID)"`
-			}
+			if _, err = strconv.Atoi(id); err == nil {
 
-			v := map[string]interface{}{
-				"ID": graphql.ID(id),
-			}
-
-			if err := caller.Query(context.Background(), &q, v); err != nil {
-				fmt.Fprintf(w, "error with asset source: %v\n", err)
-			}
-
-			switch string(q.FindAssetByID.Email) {
-
-			default:
-
-				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
-
-			case "":
-
-				var m struct {
-					UpdateAsset struct {
+				var q struct {
+					FindAssetByID struct {
 						AssetEntry
-					} `graphql:"updateAsset(id: $ID, data:{title: $Title, category: $Category, pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
+					} `graphql:"findAssetByID(id: $ID)"`
 				}
 
-				v = map[string]interface{}{
-					"ID":       graphql.ID(id),
-					"Email":    graphql.String(email),
-					"First":    graphql.String(first),
-					"Last":     graphql.String(last),
-					"Category": graphql.String(category),
-					"Title":    graphql.String(title),
-					"Content":  graphql.String(content),
-					"PbID":     graphql.String(pbid),
+				v := map[string]interface{}{
+					"ID": graphql.ID(id),
 				}
 
-				if err := caller.Mutate(context.Background(), &m, v); err != nil {
-					fmt.Fprintf(w, "error with asset update: %v\n", err)
-				} else {
-
-					http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
-
+				if err := caller.Query(context.Background(), &q, v); err != nil {
+					fmt.Fprintf(w, "error with asset source: %v\n", err)
 				}
 
-			case email:
+				switch string(q.FindAssetByID.Email) {
 
-				title = string(q.FindAssetByID.Title)
+				default:
 
-				content =
+					http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
-					`
+				case "":
+
+					var m struct {
+						UpdateAsset struct {
+							AssetEntry
+						} `graphql:"updateAsset(id: $ID, data:{title: $Title, category: $Category, pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
+					}
+
+					v = map[string]interface{}{
+						"ID":       graphql.ID(id),
+						"Email":    graphql.String(email),
+						"First":    graphql.String(first),
+						"Last":     graphql.String(last),
+						"Category": graphql.String(category),
+						"Title":    graphql.String(title),
+						"Content":  graphql.String(content),
+						"PbID":     graphql.String(pbid),
+					}
+
+					if err := caller.Mutate(context.Background(), &m, v); err != nil {
+						fmt.Fprintf(w, "error with asset update: %v\n", err)
+					} else {
+
+						http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
+
+					}
+
+				case email:
+
+					title = string(q.FindAssetByID.Title)
+
+					content =
+
+						`
 			<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -745,9 +735,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-				if pbid == "" {
+					if pbid == "" {
 
-					content = content + `
+						content = content + `
 				
 				<p>` + title + `<br>` + content + `</p>
 			</div>
@@ -758,13 +748,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-					w.Header().Set("Content-Type", "text/html")
-					w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-					w.Write([]byte(content))
+						w.Header().Set("Content-Type", "text/html")
+						w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+						w.Write([]byte(content))
 
-				} else {
+					} else {
 
-					content = content + `
+						content = content + `
 
 			<img src="https://image.mux.com/` + pbid + `/thumbnail.jpg?width=214&height=121&fit_mode=pad">
 			<br>
@@ -777,11 +767,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-					w.Header().Set("Content-Type", "text/html")
-					w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-					w.Write([]byte(content))
+						w.Header().Set("Content-Type", "text/html")
+						w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+						w.Write([]byte(content))
+
+					}
 
 				}
+
+			} else {
+
+				var q struct {
+					AssetsByEmail struct {
+						Data []struct {
+							AssetEntry
+						}
+					} `graphql:"assetsByEmail(email: $Email)"`
+				}
+
+				v := map[string]interface{}{
+					"Email": graphql.String(email),
+				}
+
+				if err := caller.Query(context.Background(), &q, v); err != nil {
+					fmt.Fprintf(w, "error with asset source: %v\n", err)
+				}
+
+				for _, s := range q.AssetsByEmail.Data {
+
+					if string(s.Title) == id {
+
+						id = fmt.Sprintf("%s", s.ID)
+
+						break
+
+					}
+
+				}
+
+				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
 			}
 
