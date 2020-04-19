@@ -735,7 +735,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-					if pbid == "" {
+					if string(q.FindAssetByID.PbID) == "" {
 
 						content = content + `
 				
@@ -756,7 +756,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						content = content + `
 
-			<img src="https://image.mux.com/` + pbid + `/thumbnail.jpg?width=214&height=121&fit_mode=pad">
+			<img src="https://image.mux.com/` + string(q.FindAssetByID.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad">
 			<br>
 			<p>` + title + `<br>` + content + `</p>
 			</div>
