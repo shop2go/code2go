@@ -432,8 +432,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-		} else {
-
 		}
 
 	NEXT:
@@ -654,6 +652,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
+		PREV:
+
 			if _, err = strconv.Atoi(id); err == nil {
 
 				var q struct {
@@ -805,7 +805,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+				goto PREV
 
 			}
 
