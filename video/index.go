@@ -639,11 +639,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			title := r.Form.Get("Title")
 			category := r.Form.Get("Category")
 			content := r.Form.Get("Content")
-			iD = r.Form.Get("ID")
+			i := r.Form.Get("ID")
 
-			if _, err := strconv.Atoi(id); err != nil {
+			if _, err := strconv.Atoi(i); err == nil {
 
-				id = iD
+				id = i
 
 			}
 
