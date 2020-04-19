@@ -470,7 +470,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<form role="form" method="POST">
 
-			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `" hidden>
+			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + id + `" hidden>
 			
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
 
@@ -642,7 +642,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				id = i
 
 			} 
-			
+
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
