@@ -46,7 +46,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch id {
 
-	case "PUBLIC":
+	case "public":
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -186,7 +186,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 			`
 
-	case "SIGNED":
+	case "signed":
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -452,7 +452,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<br>
 						
-			<h1>video` + id + `:</h1>	
+			<h1>video = ` + id + `:</h1>	
 			
 			<form role="form" method="POST">
 						
@@ -486,13 +486,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		switch id {
 
-		case "PUBLIC":
+		case "public":
 
 			w.Header().Set("Content-Type", "text/html")
 			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
 			w.Write([]byte(content))
 
-		case "SIGNED":
+		case "signed":
 
 			w.Header().Set("Content-Type", "text/html")
 			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
@@ -559,7 +559,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		switch id {
 
-		case "PUBLIC":
+		case "public":
 
 			r.ParseForm()
 
@@ -568,7 +568,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			//fmt.Fprintf(w, "id: %v\n", i)
 			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
-		case "SIGNED":
+		case "signed":
 
 			r.ParseForm()
 
@@ -585,11 +585,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if c != "" {
 
-				c = strings.ToUpper(c) + "."
+				c = c + "."
 
 			} else {
 
-				c = "PUBLIC."
+				c = "public."
 			}
 
 			http.Redirect(w, r, "https://"+c+"code2go.dev/video", http.StatusSeeOther)
