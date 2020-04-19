@@ -36,7 +36,7 @@ type AssetEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var content, pbid string
+	var content, pbid, iD string
 
 	id := r.Host
 
@@ -426,7 +426,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						}
 
-						id = fmt.Sprintf("%s", m.UpdateAsset.ID)
+						iD = fmt.Sprintf("%s", q.AssetBySourceID.ID)
 
 						goto NEXT
 
@@ -435,6 +435,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 			}
+
+		} else {
+
+
 
 		}
 
@@ -470,7 +474,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<form role="form" method="POST">
 
-			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + id + `" hidden>
+			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + iD + `" hidden>
 			
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
 
@@ -635,13 +639,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			title := r.Form.Get("Title")
 			category := r.Form.Get("Category")
 			content := r.Form.Get("Content")
-			i := r.Form.Get("ID")
+			iD = r.Form.Get("ID")
 
-			if i != "" {
+			if _, err := strconv.Atoi(id); err != nil {
 
-				id = i
+				id = iD
 
-			} 
+			}
 
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
