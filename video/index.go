@@ -369,64 +369,68 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		var i string
+		_, err = strconv.Atoi(id)
 
-		for _, a := range assets.Data {
+		if err == nil {
 
-			inputInfo, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+			for _, a := range assets.Data {
 
-			for _, b := range inputInfo.Data {
+				inputInfo, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
 
-				url := b.Settings.Url
+				for _, b := range inputInfo.Data {
 
-				url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+					url := b.Settings.Url
 
-				sl := strings.SplitN(url, "?", -1)
+					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
 
-				var q struct {
-					AssetBySourceID struct {
-						AssetEntry
-					} `graphql:"assetBySourceID(sourceID: $SourceID)"`
-				}
+					sl := strings.SplitN(url, "?", -1)
 
-				v := map[string]interface{}{
-					"SourceID": graphql.String(sl[0]),
-				}
-
-				if err := caller.Query(context.Background(), &q, v); err != nil {
-					fmt.Fprintf(w, "error with asset source: %v\n", err)
-				}
-
-				i = fmt.Sprintf("%s", q.AssetBySourceID.ID)
-
-				if q.AssetBySourceID.ID == graphql.ID(id) {
-
-					var m struct {
-						UpdateAsset struct {
+					var q struct {
+						AssetBySourceID struct {
 							AssetEntry
-						} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID})"`
+						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
 					}
 
 					v := map[string]interface{}{
-						"ID":      q.AssetBySourceID.ID,
-						"AssetID": graphql.String(a.Id),
+						"SourceID": graphql.String(sl[0]),
 					}
 
-					if err := caller.Mutate(context.Background(), &m, v); err != nil {
-						fmt.Fprintf(w, "error with asset ID: %v\n", err)
+					if err := caller.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with asset source: %v\n", err)
 					}
 
-					for _, pb := range a.PlaybackIds {
+					if q.AssetBySourceID.ID == graphql.ID(id) {
 
-						if pb.Policy == muxgo.PUBLIC {
+						var m struct {
+							UpdateAsset struct {
+								AssetEntry
+							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID})"`
+						}
 
-							pbid = pb.Id
+						v := map[string]interface{}{
+							"ID":      q.AssetBySourceID.ID,
+							"AssetID": graphql.String(a.Id),
+						}
+
+						if err := caller.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Fprintf(w, "error with asset ID: %v\n", err)
+						}
+
+						for _, pb := range a.PlaybackIds {
+
+							if pb.Policy == muxgo.PUBLIC {
+
+								pbid = pb.Id
+
+							}
 
 						}
 
-					}
+						id = fmt.Sprintf("%s", m.UpdateAsset.ID)
 
-					goto NEXT
+						goto NEXT
+
+					}
 
 				}
 
@@ -631,8 +635,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			title := r.Form.Get("Title")
 			category := r.Form.Get("Category")
 			content := r.Form.Get("Content")
-			id = r.Form.Get("ID")
+			i := r.Form.Get("ID")
 
+			if i != "" {
+
+				id = i
+
+			} 
+			
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
