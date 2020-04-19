@@ -36,7 +36,7 @@ type AssetEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var content, pbid, iD string
+	var content, pbid string
 
 	id := r.Host
 
@@ -332,6 +332,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 
+		var iD string
+
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
 		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
@@ -369,9 +371,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		_, err = strconv.Atoi(id)
-
-		if err == nil {
+		if _, err = strconv.Atoi(id); err == nil {
 
 			for _, a := range assets.Data {
 
@@ -438,8 +438,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-
-
 		}
 
 	NEXT:
@@ -473,16 +471,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<h1>video = ` + id + `:</h1>	
 			
 			<form role="form" method="POST">
-
-			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + iD + `" hidden>
 			
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
-
+			<input type="text" id ="ID" name ="ID" value="` + iD + `" hidden readonly>
+			
 			`
 
-		_, err = strconv.Atoi(id)
-
-		if err == nil {
+		if _, err = strconv.Atoi(id); err == nil {
 
 			content = content + `
 
@@ -639,11 +634,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			title := r.Form.Get("Title")
 			category := r.Form.Get("Category")
 			content := r.Form.Get("Content")
-			i := r.Form.Get("ID")
+			iD := r.Form.Get("ID")
 
-			if _, err := strconv.Atoi(i); err == nil {
+			if iD != "" {
 
-				id = i
+				id = iD
 
 			}
 
