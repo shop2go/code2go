@@ -422,11 +422,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+					goto NEXT
+
 				}
 
 			}
 
 		}
+
+	NEXT:
 
 		content =
 
@@ -462,14 +466,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-		if pbid != "" {
+		_, err = strconv.Atoi(id)
+
+		if err == nil {
 
 			content = content + `
 
 			<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last">
 			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
-			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title">
-			<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category">
+			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
+			<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category" required>
 			<input class="form-control mr-sm-2" type="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content">
 			`
 
@@ -687,7 +693,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with asset update: %v\n", err)
 				} else {
 
-					http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+					http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
 
 				}
 
