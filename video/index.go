@@ -29,6 +29,8 @@ type AssetEntry struct {
 	First    graphql.String `graphql:"first"`
 	Last     graphql.String `graphql:"last"`
 	Email    graphql.String `graphql:"email"`
+	Title    graphql.String `graphql:"title"`
+	Category graphql.String `graphql:"category"`
 	Content  graphql.String `graphql:"content"`
 }
 
@@ -162,7 +164,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<b>
 			<form>
 			<input id="picker" type="file" accept="video/*" />
-			<p>when upload done click ok</p>
+			<p>wait for the upload to complete => OK when prompted</p>
 			</form>		
 			
 			<form role="form" method="POST">
@@ -195,7 +197,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  });				  
 				
 				  upload.on('success', () => {
-					alert('video file upload done.');
+					alert('video file upload completed.');
 				  });
 				};
 				 
@@ -333,10 +335,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<form role="form" method="POST">
 						
-			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required>
+			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
 			<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last">
-			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First">
-			<input class="form-control mr-sm-2" tyoe="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content/Title"></textarea>
+			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
+			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title">
+			<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category">
+			<input class="form-control mr-sm-2" type="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content">
 			<br>
 			
 			<button type="submit" class="btn btn-light">submit</button>
@@ -359,20 +363,85 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-		w.Write([]byte(content))
+		if pbid != "" {
+
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+			w.Write([]byte(content))
+
+		} else {
+
+			content =
+
+				`
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<title>vdo2go</title>
+			<!-- CSS -->
+			<!-- Add Material font (Roboto) and Material icon as needed -->
+			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+			
+			<!-- Add Material CSS, replace Bootstrap CSS -->
+			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+			
+			</head>
+			<body style="background-color: #a1b116;">
+			
+			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
+			
+			<br>
+			<br>
+
+			
+			
+			<form role="form" method="POST">
+
+			<input type="checkbox" id="Public" name="Public" value="PUBLIC">
+  <label for="Public">I want a public accessible Video.</label><br>
+  <button type="submit" class="btn btn-light">submit</button>
+			
+			</form>
+
+
+			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+			</body>
+			</html>
+					
+			`
+
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+			w.Write([]byte(content))
+
+		}
 
 	case "POST":
 
 		if id == "" {
 
-			r.ParseForm()
+			if pbid != "" {
 
-			id = r.Form.Get("ID")
+				r.ParseForm()
 
-			//fmt.Fprintf(w, "id: %v\n", i)
-			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+				id = r.Form.Get("ID")
+
+				//fmt.Fprintf(w, "id: %v\n", i)
+				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+
+			} else {
+
+				r.ParseForm()
+
+				pbid = r.Form.Get("pbID")
+
+				http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
+
+			}
 
 		} else {
 
@@ -381,6 +450,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			first := r.Form.Get("First")
 			last := r.Form.Get("Last")
 			email := r.Form.Get("Email")
+			title := r.Form.Get("Title")
+			category := r.Form.Get("Category")
 			content := r.Form.Get("Content")
 
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -434,16 +505,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				var m struct {
 					UpdateAsset struct {
 						AssetEntry
-					} `graphql:"updateAsset(id: $ID, data:{pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
+					} `graphql:"updateAsset(id: $ID, data:{title: $Title, category: $Category, pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
 				}
 
 				v = map[string]interface{}{
-					"ID":      graphql.ID(id),
-					"Email":   graphql.String(email),
-					"First":   graphql.String(first),
-					"Last":    graphql.String(last),
-					"Content": graphql.String(content),
-					"PbID":    graphql.String(pbid),
+					"ID":       graphql.ID(id),
+					"Email":    graphql.String(email),
+					"First":    graphql.String(first),
+					"Last":     graphql.String(last),
+					"Category": graphql.String(category),
+					"Title":    graphql.String(title),
+					"Content":  graphql.String(content),
+					"PbID":     graphql.String(pbid),
 				}
 
 				if err := caller.Mutate(context.Background(), &m, v); err != nil {
