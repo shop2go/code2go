@@ -677,7 +677,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case "":
 
-					t := time.Unix(int64(access.Timestamp)/1e6, 0)
+					t := time.Unix(int64(access.Timestamp)/1e6, 0).UTC()
 
 					s := t.Format("20060102150405")
 
