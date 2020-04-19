@@ -369,6 +369,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		var i string
+
 		for _, a := range assets.Data {
 
 			inputInfo, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
@@ -394,6 +396,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if err := caller.Query(context.Background(), &q, v); err != nil {
 					fmt.Fprintf(w, "error with asset source: %v\n", err)
 				}
+
+				i = fmt.Sprintf("%s", q.AssetBySourceID.ID)
 
 				if q.AssetBySourceID.ID == graphql.ID(id) {
 
@@ -461,7 +465,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<h1>video = ` + id + `:</h1>	
 			
 			<form role="form" method="POST">
-						
+
+			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `" hidden>
+			
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
 
 			`
@@ -625,6 +631,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			title := r.Form.Get("Title")
 			category := r.Form.Get("Category")
 			content := r.Form.Get("Content")
+			id = r.Form.Get("ID")
 
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
