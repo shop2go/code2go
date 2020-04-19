@@ -416,6 +416,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 						if pb.Policy == muxgo.PUBLIC {
 							pbid = pb.Id
+
+						} else {
+
+							pbid = "signed video"
 						}
 
 					}
@@ -651,8 +655,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case "":
 
-				//authenticate
-
 				var m struct {
 					UpdateAsset struct {
 						AssetEntry
@@ -680,9 +682,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			case email:
 
-				content = string(q.FindAssetByID.Content)
+				title = string(q.FindAssetByID.Title)
 
-				cont :=
+				content =
 
 					`
 			<!DOCTYPE html>
@@ -708,9 +710,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<br>
 
+			`
+
+				if pbid == "signed video" {
+
+					content = content + `
+				
+				<p>` + title + `<br>` + content + `</p>
+			</div>
+
+			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+			</body>
+			</html>
+
+			`
+
+					w.Header().Set("Content-Type", "text/html")
+					w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+					w.Write([]byte(content))
+
+				} else {
+
+					content = content + `
+
 			<img src="https://image.mux.com/` + pbid + `/thumbnail.jpg?width=214&height=121&fit_mode=pad">
 			<br>
-			<p>` + content + `</p>
+			<p>` + title + `<br>` + content + `</p>
 			</div>
 						
 			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
@@ -719,9 +744,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-				w.Header().Set("Content-Type", "text/html")
-				w.Header().Set("Content-Length", strconv.Itoa(len(cont)))
-				w.Write([]byte(cont))
+					w.Header().Set("Content-Type", "text/html")
+					w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+					w.Write([]byte(content))
+
+				}
 
 			}
 
