@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
@@ -646,8 +647,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				&oauth2.Token{AccessToken: access.Secret},
 			)
 
-			access = &Access{}
-
 			httpClient := oauth2.NewClient(context.Background(), src)
 
 			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
@@ -678,6 +677,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case "":
 
+					t := time.Unix(int64(access.Timestamp)/1e6, 0)
+
+					s := t.Format("20060102150405")
+
 					var m struct {
 						UpdateAsset struct {
 							AssetEntry
@@ -690,7 +693,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						"First":    graphql.String(first),
 						"Last":     graphql.String(last),
 						"Category": graphql.String(category),
-						"Title":    graphql.String(title),
+						"Title":    graphql.String(title + "_" + s),
 						"Content":  graphql.String(content),
 						"PbID":     graphql.String(pbid),
 					}
