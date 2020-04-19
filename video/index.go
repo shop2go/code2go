@@ -426,12 +426,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			if a.Status == "ready" {
-
-				id = "ready"
-
-			}
-
 		}
 
 		content =
@@ -468,7 +462,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-		if id == "ready" {
+		if pbid != "" {
 
 			content = content + `
 
