@@ -677,9 +677,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case "":
 
-					t := time.Unix(int64(access.Timestamp)/1e6, 0).UTC()
+					t := time.Unix(int64(access.Timestamp)/1e6, 0)
 
-					s := t.Format("20060102150405")
+					s := t.Local().Format("20060102150405")
 
 					var m struct {
 						UpdateAsset struct {
