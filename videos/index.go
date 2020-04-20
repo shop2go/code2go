@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	
 
 	f "github.com/fauna/faunadb-go/faunadb"
@@ -100,7 +101,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "error with asset source: %v\n", err)
 			}
 
-			m[q.AssetByAssetID.ID] = q.AssetByAssetID.Category
+			m[q.AssetByAssetID.ID] = string(q.AssetByAssetID.Category)
 
 		}
 
