@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
@@ -90,7 +89,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var q struct {
 				AssetByAssetID struct {
 					AssetEntry
-				}`graphql:"assetByAssetID(assetID: $AssetID)"`
+				} `graphql:"assetByAssetID(assetID: $AssetID)"`
 			}
 
 			v := map[string]interface{}{
@@ -100,6 +99,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if err := caller.Query(context.Background(), &q, v); err != nil {
 				fmt.Fprintf(w, "error with asset source: %v\n", err)
 			}
+
+
 
 			m[q.AssetByAssetID.ID] = string(q.AssetByAssetID.Category)
 
@@ -111,8 +112,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		fmt.Fprint(w, m)
+		switch id {
 
+		case "":
+
+			fmt.Fprint(w, m)
+
+		}
 
 	}
 
