@@ -58,6 +58,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<meta charset="UTF-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<meta http-equiv="X-UA-Compatible" content="ie=edge">
+				<meta name="google-site-verification" content="oclzAqcU7qq0dwMfTw3rlaNqZD-7VxcLUa5EA_YG8Io" />
 				<title>CODE2GO</title>
 				<!-- CSS -->
 				<!-- Add Material font (Roboto) and Material icon as needed -->
