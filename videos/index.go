@@ -1,13 +1,11 @@
 package main
 
 import (
-	/* "context"
+	"context"
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
-	"strings"
-	"time" */
+	
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
