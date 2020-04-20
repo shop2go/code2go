@@ -394,9 +394,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						"SourceID": graphql.String(sl[0]),
 					}
 
-					if err := caller.Query(context.Background(), &q, v); err != nil {
-						fmt.Fprintf(w, "error with asset source: %v\n", err)
-					}
+						if err := caller.Query(context.Background(), &q, v); err != nil {
+							fmt.Fprintf(w, "error with asset source: %v\n", err)
+						}
 
 					if q.AssetBySourceID.ID == graphql.ID(id) {
 
