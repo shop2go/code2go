@@ -99,11 +99,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var m struct {
 			CreateAsset struct {
 				AssetEntry
-			} `graphql:"createAsset(data:{sourceID: $SourceID})"`
+			} `graphql:"createAsset(data:{sourceID: $SourceID, checked: $Checked})"`
 		}
 
 		v := map[string]interface{}{
 			"SourceID": graphql.String(sourceID),
+			"Checked":  graphql.Boolean(false),
 		}
 
 		if err = caller.Mutate(context.Background(), &m, v); err != nil {
@@ -239,11 +240,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		var m struct {
 			CreateAsset struct {
 				AssetEntry
-			} `graphql:"createAsset(data:{sourceID: $SourceID})"`
+			} `graphql:"createAsset(data:{sourceID: $SourceID, checked: $Checked})"`
 		}
 
 		v := map[string]interface{}{
 			"SourceID": graphql.String(sourceID),
+			"Checked":  graphql.Boolean(false),
 		}
 
 		if err = caller.Mutate(context.Background(), &m, v); err != nil {
@@ -387,28 +389,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					var q struct {
 						AssetBySourceID struct {
 							AssetEntry
-						} `graphql:"assetBySourceID(sourceID: $SourceID)"`
+						} `graphql:"assetBySourceID(sourceID: $SourceID, checked: $Checked)"`
 					}
 
 					v := map[string]interface{}{
 						"SourceID": graphql.String(sl[0]),
+						"Checked":  graphql.Boolean(false),
 					}
 
-						if err := caller.Query(context.Background(), &q, v); err != nil {
-							fmt.Fprintf(w, "error with asset source: %v\n", err)
-						}
+					if err := caller.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with asset source: %v\n", err)
+					}
 
 					if q.AssetBySourceID.ID == graphql.ID(id) {
 
 						var m struct {
 							UpdateAsset struct {
 								AssetEntry
-							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID})"`
+							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID, checked: $Checked})"`
 						}
 
 						v := map[string]interface{}{
 							"ID":      q.AssetBySourceID.ID,
 							"AssetID": graphql.String(a.Id),
+							"Checked": graphql.Boolean(false),
 						}
 
 						if err := caller.Mutate(context.Background(), &m, v); err != nil {
@@ -479,7 +483,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
 			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 			<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category" required>
-			<input class="form-control mr-sm-2" type="text" aria-label="Content" id ="Content" name ="Content" placeholder="Content">
+			
+			
+    		<textarea class="form-control" id="Content" name ="Content" rows="3"></textarea>
+			<label for="Content">content description</label>
+			
 			`
 
 		}
@@ -622,12 +630,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			r.ParseForm()
 
-			first := r.Form.Get("First")
-			last := r.Form.Get("Last")
-			email := r.Form.Get("Email")
-			title := r.Form.Get("Title")
-			category := r.Form.Get("Category")
-			content := r.Form.Get("Content")
+			first := strings.ToLower(r.Form.Get("First"))
+			last := strings.ToLower(r.Form.Get("Last"))
+			email := strings.ToLower(r.Form.Get("Email"))
+			title := strings.ToLower(r.Form.Get("Title"))
+			category := strings.ToLower(r.Form.Get("Category"))
+			content := strings.ToLower(r.Form.Get("Content"))
 
 			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
 
@@ -684,7 +692,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					var m struct {
 						UpdateAsset struct {
 							AssetEntry
-						} `graphql:"updateAsset(id: $ID, data:{title: $Title, category: $Category, pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content})"`
+						} `graphql:"updateAsset(id: $ID, data:{title: $Title, category: $Category, pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content, checked: $Checked})"`
 					}
 
 					v = map[string]interface{}{
@@ -696,6 +704,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						"Title":    graphql.String(title + "_" + s),
 						"Content":  graphql.String(content),
 						"PbID":     graphql.String(pbid),
+						"Checked":  graphql.Boolean(false),
 					}
 
 					if err := caller.Mutate(context.Background(), &m, v); err != nil {
@@ -708,7 +717,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				case email:
 
-					title = string(q.FindAssetByID.Title)
+					var m struct {
+						UpdateAsset struct {
+							AssetEntry
+						} `graphql:"updateAsset(id: $ID, data:{checked: $Checked})"`
+					}
+
+					v = map[string]interface{}{
+						"Checked": graphql.Boolean(true),
+					}
+
+					if err := caller.Mutate(context.Background(), &m, v); err != nil {
+						fmt.Fprintf(w, "error with asset update: %v\n", err)
+					}
 
 					content =
 
@@ -727,7 +748,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<!-- Add Material CSS, replace Bootstrap CSS -->
 			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-			
+			 
 			</head>
 			<body style="background-color: #a1b116;">
 
@@ -737,6 +758,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 
 			`
+					title = string(q.FindAssetByID.Title)
 
 					if string(q.FindAssetByID.PbID) == "" {
 
