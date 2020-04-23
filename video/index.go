@@ -542,7 +542,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<form role="form" method="POST">
 
 			<input type="checkbox" id="Access" name="Access" value="SIGNED">
- 			<label for="Access">I want signed video access.</label><br>
+ 			<label for="Access">I do not want public content.</label><br>
   			<button type="submit" class="btn btn-light">submit</button>
 			
 			</form>
@@ -606,8 +606,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			r.ParseForm()
 
-			first := strings.ToLower(r.Form.Get("First"))
-			last := strings.ToLower(r.Form.Get("Last"))
+			first := r.Form.Get("First")
+			last := r.Form.Get("Last")
 			email := strings.ToLower(r.Form.Get("Email"))
 			title := strings.ToLower(r.Form.Get("Title"))
 			category := strings.ToLower(r.Form.Get("Category"))
@@ -700,12 +700,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					v = map[string]interface{}{
+						"ID":       graphql.ID(id),
 						"Checked": graphql.Boolean(true),
 					}
 
 					if err := caller.Mutate(context.Background(), &m, v); err != nil {
 						fmt.Fprintf(w, "error with asset update: %v\n", err)
 					}
+
+					title = string(m.UpdateAsset.Title)
 
 					content =
 
