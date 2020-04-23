@@ -35,7 +35,6 @@ type AssetEntry struct {
 	Content  graphql.String  `graphql:"content"`
 	Policy   graphql.String  `graphql:"policy"`
 	Checked  graphql.Boolean `graphql:"checked"`
-	Token    graphql.String  `graphql:"content"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
