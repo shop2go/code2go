@@ -23,16 +23,19 @@ type Access struct {
 }
 
 type AssetEntry struct {
-	ID       graphql.ID     `graphql:"_id"`
-	SourceID graphql.String `graphql:"sourceID"`
-	AssetID  graphql.String `graphql:"assetID"`
-	PbID     graphql.String `graphql:"pbID"`
-	First    graphql.String `graphql:"first"`
-	Last     graphql.String `graphql:"last"`
-	Email    graphql.String `graphql:"email"`
-	Title    graphql.String `graphql:"title"`
-	Category graphql.String `graphql:"category"`
-	Content  graphql.String `graphql:"content"`
+	ID       graphql.ID      `graphql:"_id"`
+	SourceID graphql.String  `graphql:"sourceID"`
+	AssetID  graphql.String  `graphql:"assetID"`
+	PbID     graphql.String  `graphql:"pbID"`
+	First    graphql.String  `graphql:"first"`
+	Last     graphql.String  `graphql:"last"`
+	Email    graphql.String  `graphql:"email"`
+	Title    graphql.String  `graphql:"title"`
+	Category graphql.String  `graphql:"category"`
+	Content  graphql.String  `graphql:"content"`
+	Policy   graphql.String  `graphql:"policy"`
+	Checked  graphql.Boolean `graphql:"checked"`
+	Token    graphql.String  `graphql:"content"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -403,31 +406,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					if q.AssetBySourceID.ID == graphql.ID(id) {
 
+						policy := a.PlaybackIds[0].Policy
+
 						var m struct {
 							UpdateAsset struct {
 								AssetEntry
-							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID, checked: $Checked})"`
+							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID, checked: $Checked, policy: $Policy})"`
 						}
 
 						v := map[string]interface{}{
 							"ID":      q.AssetBySourceID.ID,
 							"AssetID": graphql.String(a.Id),
 							"Checked": graphql.Boolean(false),
+							"Policy":  graphql.String(policy),
 						}
 
 						if err := caller.Mutate(context.Background(), &m, v); err != nil {
 							fmt.Fprintf(w, "error with asset ID: %v\n", err)
 						}
 
-						for _, pb := range a.PlaybackIds {
-
-							if pb.Policy == muxgo.PUBLIC {
-
-								pbid = pb.Id
-
-							}
-
-						}
+						pbid = a.PlaybackIds[0].Id
 
 						goto NEXT
 
@@ -517,18 +515,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 
 		switch id {
-
-		case "public":
-
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-			w.Write([]byte(content))
-
-		case "signed":
-
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-			w.Write([]byte(content))
 
 		case "":
 
@@ -687,7 +673,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					t := time.Unix(int64(access.Timestamp)/1e6, 0)
 
-					s := t.Local().Format("20060102150405")
+					s := t.Format("20060102150405")
 
 					var m struct {
 						UpdateAsset struct {
@@ -734,69 +720,45 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					content =
 
 						`
-			<!DOCTYPE html>
-			<html lang="en">
-			<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta http-equiv="X-UA-Compatible" content="ie=edge">
-			<title>vdo2go</title>
-			<!-- CSS -->
-			<!-- Add Material font (Roboto) and Material icon as needed -->
-			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-			
-			<!-- Add Material CSS, replace Bootstrap CSS -->
-			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-			 
-			</head>
-			<body style="background-color: #a1b116;">
+					
+					<!DOCTYPE html>
+					<html lang="en">
+					<head>
+					<meta charset="UTF-8">
+					<meta name="viewport" content="width=device-width, initial-scale=1.0">
+					<meta http-equiv="X-UA-Compatible" content="ie=edge">
+					<title>vdo2go</title>
+					<!-- CSS -->
+					<!-- Add Material font (Roboto) and Material icon as needed -->
+					<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+					<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-			
-			<br>
-			<br>
+					<!-- Add Material CSS, replace Bootstrap CSS -->
+					<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 
-			`
-					title = string(q.FindAssetByID.Title)
+					</head>
+					<body style="background-color: #a1b116;">
 
-					if string(q.FindAssetByID.PbID) == "" {
+					<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
 
-						content = content + `
+					<br>
+					<br>
+
+					<a href="https://` + id + `code2go/content"><img src="https://image.mux.com/` + string(q.FindAssetByID.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
+					<br>
 				
-				<p>` + title + `<br>` + content + `</p>
-			</div>
+					<p>` + title + ` is "` + string(q.FindAssetByID.Policy) + `" content:<br>` + content + `</p>
+					</div>
 
-			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-			</body>
-			</html>
-
-			`
-
-						w.Header().Set("Content-Type", "text/html")
-						w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-						w.Write([]byte(content))
-
-					} else {
-
-						content = content + `
-
-			<img src="https://image.mux.com/` + string(q.FindAssetByID.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad">
-			<br>
-			<p>` + title + `<br>` + content + `</p>
-			</div>
+					<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+					</body>
+					</html>
 						
-			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-			</body>
-			</html>
+					`
 
-			`
-
-						w.Header().Set("Content-Type", "text/html")
-						w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-						w.Write([]byte(content))
-
-					}
+					w.Header().Set("Content-Type", "text/html")
+					w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+					w.Write([]byte(content))
 
 				}
 
