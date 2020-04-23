@@ -145,7 +145,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<b>
 			<form>
 				<input id="picker" type="file" accept="video/*" /><br>
-				<p>please wait for upload completion --> click OK/p>
+				<p>please wait for upload completion --> click OK</p>
 				</form>		
 				
 				<form role="form" method="POST">
@@ -286,7 +286,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<b>
 				<form>
 				<input id="picker" type="file" accept="video/*" /><br>
-				<p>please wait for upload completion --> click OK/p>
+				<p>please wait for upload completion --> click OK</p>
 				</form>		
 				
 				<form role="form" method="POST">
