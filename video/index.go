@@ -285,8 +285,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<h1>video upload:</h1>
 				<b>
 				<form>
-				<input id="picker" type="file" accept="video/*" />
-				<p>wait for the upload to complete => OK when prompted</p>
+				<input id="picker" type="file" accept="video/*" /><br>
+				<p>please wait for upload completion --> click OK/p>
 				</form>		
 				
 				<form role="form" method="POST">
@@ -294,7 +294,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `" hidden>
 				<br>
 							
-				<p>after file upload completion:</p>
+				<p>when file upload done, submit content:</p>
 				<button type="submit" class="btn btn-light">submit</button>
 				
 				</form>
@@ -400,7 +400,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<br>
 						
-			<h1>video = ` + id + `:</h1>	
+			<h1>content owner:</h1>	
 			
 			<form role="form" method="POST">
 
@@ -464,10 +464,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
 						<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 						<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category" required>
-						
-						
-						<textarea class="form-control" id="Content" name ="Content" rows="3"></textarea>
+						<br>
 						<label for="Content">content description</label>
+						<textarea class="form-control" id="Content" name ="Content" rows="3"></textarea>
+						
 						
 						`
 
@@ -700,15 +700,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					v = map[string]interface{}{
-						"ID":       graphql.ID(id),
+						"ID":      graphql.ID(id),
 						"Checked": graphql.Boolean(true),
 					}
 
 					if err := caller.Mutate(context.Background(), &m, v); err != nil {
 						fmt.Fprintf(w, "error with asset update: %v\n", err)
 					}
-
-					title = string(m.UpdateAsset.Title)
 
 					content =
 
@@ -737,10 +735,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<br>
 					<br>
 
-					<a href="https://` + id + `.code2go/content"><img src="https://image.mux.com/` + string(q.FindAssetByID.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
+					<a href="https://` + id + `.code2go/content"><img src="https://image.mux.com/` + string(m.UpdateAsset.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
 					<br>
 				
-					<p>` + title + ` is "` + string(q.FindAssetByID.Policy) + `" content:<br>` + content + `</p>
+					<p>` + string(m.UpdateAsset.First)+`<br>` + string(m.UpdateAsset.Title) + ` is "` + string(m.UpdateAsset.Policy) + `" content:<br>` + string(m.UpdateAsset.Content) + `</p>
 					</div>
 
 					<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
