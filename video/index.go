@@ -374,70 +374,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		if _, err = strconv.Atoi(id); err == nil {
-
-			for _, a := range assets.Data {
-
-				inputInfo, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
-
-				for _, b := range inputInfo.Data {
-
-					url := b.Settings.Url
-
-					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
-
-					sl := strings.SplitN(url, "?", -1)
-
-					var q struct {
-						AssetBySourceID struct {
-							AssetEntry
-						} `graphql:"assetBySourceID(sourceID: $SourceID, checked: $Checked)"`
-					}
-
-					v := map[string]interface{}{
-						"SourceID": graphql.String(sl[0]),
-						"Checked":  graphql.Boolean(false),
-					}
-
-					if err := caller.Query(context.Background(), &q, v); err != nil {
-						fmt.Fprintf(w, "error with asset source: %v\n", err)
-					}
-
-					if q.AssetBySourceID.ID == graphql.ID(id) {
-
-						policy := a.PlaybackIds[0].Policy
-
-						var m struct {
-							UpdateAsset struct {
-								AssetEntry
-							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID, checked: $Checked, policy: $Policy})"`
-						}
-
-						v := map[string]interface{}{
-							"ID":      q.AssetBySourceID.ID,
-							"AssetID": graphql.String(a.Id),
-							"Checked": graphql.Boolean(false),
-							"Policy":  graphql.String(policy),
-						}
-
-						if err := caller.Mutate(context.Background(), &m, v); err != nil {
-							fmt.Fprintf(w, "error with asset ID: %v\n", err)
-						}
-
-						pbid = a.PlaybackIds[0].Id
-
-						goto NEXT
-
-					}
-
-				}
-
-			}
-
-		}
-
-	NEXT:
-
 		content =
 
 			`
@@ -474,20 +410,78 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		if _, err = strconv.Atoi(id); err == nil {
 
-			content = content + `
+			for _, a := range assets.Data {
 
-			<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last">
-			<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
-			<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-			<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category" required>
-			
-			
-    		<textarea class="form-control" id="Content" name ="Content" rows="3"></textarea>
-			<label for="Content">content description</label>
-			
-			`
+				inputInfo, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
+
+				for _, b := range inputInfo.Data {
+
+					url := b.Settings.Url
+
+					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
+
+					sl := strings.SplitN(url, "?", -1)
+
+					var q struct {
+						AssetBySourceID struct {
+							AssetEntry
+						} `graphql:"assetBySourceID(sourceID: $SourceID, checked: $Checked)"`
+					}
+
+					v := map[string]interface{}{
+						"SourceID": graphql.String(sl[0]),
+						"Checked":  graphql.Boolean(false),
+					}
+
+					if err := caller.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with asset source: %v\n", err)
+					}
+
+					if q.AssetBySourceID.ID == graphql.ID(id) {
+
+						var m struct {
+							UpdateAsset struct {
+								AssetEntry
+							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID, checked: $Checked, policy: $Policy})"`
+						}
+
+						v := map[string]interface{}{
+							"ID":      q.AssetBySourceID.ID,
+							"AssetID": graphql.String(a.Id),
+							"Checked": graphql.Boolean(false),
+							"Policy":  graphql.String(a.PlaybackIds[0].Policy),
+						}
+
+						if err := caller.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Fprintf(w, "error with asset ID: %v\n", err)
+						}
+
+						pbid = a.PlaybackIds[0].Id
+
+						content = content + `
+
+						<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last">
+						<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
+						<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
+						<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category" required>
+						
+						
+						<textarea class="form-control" id="Content" name ="Content" rows="3"></textarea>
+						<label for="Content">content description</label>
+						
+						`
+
+						goto NEXT
+
+					}
+
+				}
+
+			}
 
 		}
+
+	NEXT:
 
 		content = content + `
 			
@@ -598,16 +592,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			r.ParseForm()
 
-			c := r.Form.Get("Access")
-
-			if c != "" {
-
-				c = c + "."
-
-			} else {
-
-				c = "public."
-			}
+			c := r.Form.Get("Access") + "."
 
 			http.Redirect(w, r, "https://"+c+"code2go.dev/video", http.StatusSeeOther)
 
