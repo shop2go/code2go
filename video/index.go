@@ -737,7 +737,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<br>
 					<br>
 
-					<a href="https://` + id + `code2go/content"><img src="https://image.mux.com/` + string(q.FindAssetByID.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
+					<a href="https://` + id + `.code2go/content"><img src="https://image.mux.com/` + string(q.FindAssetByID.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
 					<br>
 				
 					<p>` + title + ` is "` + string(q.FindAssetByID.Policy) + `" content:<br>` + content + `</p>
