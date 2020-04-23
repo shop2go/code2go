@@ -144,19 +144,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<h1>video upload:</h1>
 			<b>
 			<form>
-			<input id="picker" type="file" accept="video/*" />
-			<p>wait for the upload to complete => OK when prompted</p>
-			</form>		
-			
-			<form role="form" method="POST">
-						
-			<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `" hidden>
-			<br>
-						
-			<p>after file upload completion:</p>
-			<button type="submit" class="btn btn-light">submit</button>
-			
-			</form>
+				<input id="picker" type="file" accept="video/*" /><br>
+				<p>please wait for upload completion --> click OK/p>
+				</form>		
+				
+				<form role="form" method="POST">
+							
+				<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `" hidden>
+				<br>
+							
+				<p>when file upload done, submit content:</p>
+				<button type="submit" class="btn btn-light">submit</button>
+				
+				</form>
 			
 			</div>
 			<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
