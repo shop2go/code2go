@@ -592,9 +592,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			r.ParseForm()
 
-			c := r.Form.Get("Access") + "."
+			c := r.Form.Get("Access")
 
-			http.Redirect(w, r, "https://"+c+"code2go.dev/video", http.StatusSeeOther)
+			if c == "" {
+
+				c = "PUBLIC"
+
+			}
+
+			http.Redirect(w, r, "https://"+c+".code2go.dev/video", http.StatusSeeOther)
 
 		default:
 
@@ -753,11 +759,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						Data []struct {
 							AssetEntry
 						}
-					} `graphql:"assetsByEmail(email: $Email)"`
+					} `graphql:"assetsByEmail(email: $Email, checked: $Checked)"`
 				}
 
 				v := map[string]interface{}{
-					"Email": graphql.String(email),
+					"Email":   graphql.String(email),
+					"Checked": graphql.Boolean(false),
 				}
 
 				if err := caller.Query(context.Background(), &q, v); err != nil {
