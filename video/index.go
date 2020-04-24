@@ -49,6 +49,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch id {
 
+	//with public policy(stage 2)
 	case "public":
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -145,7 +146,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<b>
 			<form>
 				<input id="picker" type="file" accept="video/*" /><br>
-				<p>please wait for upload completion --> click OK</p>
+				<p>please wait for upload completion --> confirm</p>
 				</form>		
 				
 				<form role="form" method="POST">
@@ -190,6 +191,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 			`
 
+	//with signed policy(stage 2)
 	case "signed":
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -286,7 +288,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<b>
 				<form>
 				<input id="picker" type="file" accept="video/*" /><br>
-				<p>please wait for upload completion --> click OK</p>
+				<p>please wait for upload completion --> confirmK</p>
 				</form>		
 				
 				<form role="form" method="POST">
@@ -331,10 +333,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						
 				`
 
+	//policy option (stage 1)
 	case "":
 
 		break
 
+	//various stages
 	default:
 
 		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
@@ -391,10 +395,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<!-- Add Material CSS, replace Bootstrap CSS -->
 			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-			
+			<script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
 			</head>
-			<body style="background-color: #a1b116;">
-			
+			<body style="background-color: #a1b116;" onload="render()">
+
+			<div id="app">Loading...</div>
 			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
 			
 			<br>
@@ -408,6 +413,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
+		//assigned to db
 		if _, err = strconv.Atoi(id); err == nil {
 
 			for _, a := range assets.Data {
@@ -492,6 +498,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</form>
 			
 			</div>
+
+			`
+		if _, err = strconv.Atoi(id); err != nil {
+
+			content = content + `
+								
+				<script>
+				const magic = new Magic("MAGIC_KEY");
+	
+				/* 4️⃣ Implement Login Handler */
+				const handleLogin = async e => {
+				  e.preventDefault();
+				  const email = new FormData(e.target).get("email");
+				  if (email) {
+				/* One-liner login 🤯 */
+				await magic.auth.loginWithMagicLink({ email });
+				render();
+				  }
+				};
+	
+				</script>
+				
+				
+				`
+		}
+
+		content = content + `
 						
 			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 			</body>
@@ -501,14 +534,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	//http.NewRequest("PUT", s, nil)
-
 	switch r.Method {
 
 	case "GET":
 
 		switch id {
 
+		//start
 		case "":
 
 			content =
@@ -535,9 +567,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
 			
 			<br>
-			<br>
-
-			
+			<br>	
 			
 			<form role="form" method="POST">
 
@@ -558,6 +588,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
 			w.Write([]byte(content))
 
+		//stages
 		default:
 
 			w.Header().Set("Content-Type", "text/html")
@@ -653,6 +684,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with asset source: %v\n", err)
 				}
 
+				//basic auth assign
 				switch string(q.FindAssetByID.Email) {
 
 				default:
@@ -691,8 +723,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				//todo auth
 				case email:
 
+					//todo with token
 					var m struct {
 						UpdateAsset struct {
 							AssetEntry
@@ -705,8 +739,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					if err := caller.Mutate(context.Background(), &m, v); err != nil {
-						fmt.Fprintf(w, "error with asset update: %v\n", err)
+						fmt.Fprintf(w, "error with asset confirmation: %v\n", err)
 					}
+
+					//todo release blanks
 
 					content =
 
@@ -738,7 +774,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<a href="https://` + id + `.code2go.dev/content"><img src="https://image.mux.com/` + string(m.UpdateAsset.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
 					<br>
 				
-					<p>` + string(m.UpdateAsset.First)+`<br>` + string(m.UpdateAsset.Title) + ` is "` + string(m.UpdateAsset.Policy) + `" content:<br>` + string(m.UpdateAsset.Content) + `</p>
+					<p>` + string(m.UpdateAsset.First) + `<br>` + string(m.UpdateAsset.Title) + ` is "` + string(m.UpdateAsset.Policy) + `" content:<br>` + string(m.UpdateAsset.Content) + `</p>
 					</div>
 
 					<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
