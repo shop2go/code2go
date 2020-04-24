@@ -395,7 +395,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<!-- Add Material CSS, replace Bootstrap CSS -->
 			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-			<script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
 			</head>
 			<body style="background-color: #a1b116;">
 
@@ -470,11 +469,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
 						<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
 						<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category" required>
-						<br>
 						<label for="Content">content description</label>
 						<textarea class="form-control" id="Content" name ="Content" rows="3"></textarea>
-						
-						
+												
 						`
 
 						goto NEXT
