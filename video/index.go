@@ -395,6 +395,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			<!-- Add Material CSS, replace Bootstrap CSS -->
 			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+
+			<script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
 			</head>
 			<body style="background-color: #a1b116;">
 
@@ -481,6 +483,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 			}
+
+		} else {
+
+			content = content + `
+
+			<script>
+
+			import { Magic } from 'magic-sdk';
+
+			const magic = new Magic(` + os.Getenv("MAGIC_KEY") + `);
+
+			await magic.auth.loginWithMagicLink({ email: 'your.email@example.com' });
+
+			</script>
+
+			`
 
 		}
 
