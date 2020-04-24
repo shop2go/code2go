@@ -397,9 +397,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 			<script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
 			</head>
-			<body style="background-color: #a1b116;" onload="render()">
+			<body style="background-color: #a1b116;">
 
-			<div id="app">Loading...</div>
+			
 			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
 			
 			<br>
@@ -498,33 +498,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</form>
 			
 			</div>
-
-			`
-		if _, err = strconv.Atoi(id); err != nil {
-
-			content = content + `
-								
-				<script>
-				const magic = new Magic(` + os.Getenv("MAGIC_KEY")+ `);
-	
-				/* 4️⃣ Implement Login Handler */
-				const handleLogin = async e => {
-				  e.preventDefault();
-				  const email = new FormData(e.target).get("email");
-				  if (email) {
-				/* One-liner login 🤯 */
-				await magic.auth.loginWithMagicLink({ email });
-				render();
-				  }
-				};
-	
-				</script>
-				
-				
-				`
-		}
-
-		content = content + `
 						
 			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 			</body>
