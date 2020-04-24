@@ -32,6 +32,7 @@ type AssetEntry struct {
 	Title    graphql.String `graphql:"title"`
 	Category graphql.String `graphql:"category"`
 	Content  graphql.String `graphql:"content"`
+	Token graphql.String `graphql:"content"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {

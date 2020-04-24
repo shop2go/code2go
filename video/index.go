@@ -505,7 +505,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			content = content + `
 								
 				<script>
-				const magic = new Magic("MAGIC_KEY");
+				const magic = new Magic(` + os.Getenv("MAGIC_KEY")+ `);
 	
 				/* 4️⃣ Implement Login Handler */
 				const handleLogin = async e => {
