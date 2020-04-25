@@ -7,12 +7,13 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	f "github.com/fauna/faunadb-go/faunadb"
 	"github.com/muxinc/mux-go"
 	"github.com/shurcooL/graphql"
 	"golang.org/x/oauth2"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 type Access struct {
@@ -39,7 +40,7 @@ type AssetEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var content, pbid string
+	var content, pbid, ss string
 
 	id := r.Host
 
@@ -365,18 +366,79 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-		client := muxgo.NewAPIClient(
-			muxgo.NewConfiguration(
-				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
-			))
+		var q struct {
+			FindAssetByID struct {
+				AssetEntry
+			} `graphql:"findAssetByID(id: $ID)"`
+		}
 
-		assets, err := client.AssetsApi.ListAssets()
+		v := map[string]interface{}{
+			"ID": graphql.ID(id),
+		}
 
-		if err != nil {
+		if err := caller.Query(context.Background(), &q, v); err != nil {
+			fmt.Fprintf(w, "error with asset query: %v\n", err)
+		}
 
-			fmt.Fprintf(w, "%v", err)
+		pbid = string(q.FindAssetByID.PbID)
+
+		if q.FindAssetByID.Policy == "signed" {
+
+			client := muxgo.NewAPIClient(
+				muxgo.NewConfiguration(
+					muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
+				))
+
+			k, err := client.URLSigningKeysApi.CreateUrlSigningKey()
+
+			if err != nil {
+
+				fmt.Fprintf(w, "%v", err)
+
+			}
+
+			//mySigningKey := []byte("AllYourBase")
+
+			type Claims struct {
+				Kid string `json:"kid"`
+				jwt.StandardClaims
+			}
+
+			// Create the Claims
+			claims := Claims{
+				fmt.Sprintf("%s", k.Data.Id),
+				jwt.StandardClaims{
+					Subject:   pbid,
+					Audience:  "v",
+					ExpiresAt: 15000,
+					Issuer:    r.Host,
+					Id:        fmt.Sprintf("%s", k.Data.Id),
+				},
+			}
+
+			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+			ss, err = token.SignedString(k.Data.PrivateKey)
+
+			if err != nil {
+
+				fmt.Fprintf(w, "%v", err)
+
+			}
 
 		}
+
+		/* 		client := muxgo.NewAPIClient(
+		   			muxgo.NewConfiguration(
+		   				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
+		   			))
+
+		   		asset, err := client.AssetsApi.GetAsset(string(q.FindAssetByID.AssetID))
+
+		   		if err != nil {
+
+		   			fmt.Fprintf(w, "%v", err)
+
+		   		} */
 
 		content =
 
@@ -396,7 +458,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<!-- Add Material CSS, replace Bootstrap CSS -->
 			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 
-			<script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
 			</head>
 			<body style="background-color: #a1b116;">
 
@@ -411,100 +472,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<form role="form" method="POST">
 
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
-
-			`
-
-		//assigning to db
-		if _, err = strconv.Atoi(id); err == nil {
-
-			for _, a := range assets.Data {
-
-				inputInfo, _ := client.AssetsApi.GetAssetInputInfo(a.Id)
-
-				for _, b := range inputInfo.Data {
-
-					url := b.Settings.Url
-
-					url = strings.TrimPrefix(url, "https://storage.googleapis.com/video-storage-us-east1-uploads/")
-
-					sl := strings.SplitN(url, "?", -1)
-
-					var q struct {
-						AssetBySourceID struct {
-							AssetEntry
-						} `graphql:"assetBySourceID(sourceID: $SourceID, checked: $Checked)"`
-					}
-
-					v := map[string]interface{}{
-						"SourceID": graphql.String(sl[0]),
-						"Checked":  graphql.Boolean(false),
-					}
-
-					if err := caller.Query(context.Background(), &q, v); err != nil {
-						fmt.Fprintf(w, "error with asset source: %v\n", err)
-					}
-
-					if q.AssetBySourceID.ID == graphql.ID(id) {
-
-						var m struct {
-							UpdateAsset struct {
-								AssetEntry
-							} `graphql:"updateAsset(id: $ID, data:{assetID: $AssetID, checked: $Checked, policy: $Policy})"`
-						}
-
-						v := map[string]interface{}{
-							"ID":      q.AssetBySourceID.ID,
-							"AssetID": graphql.String(a.Id),
-							"Checked": graphql.Boolean(false),
-							"Policy":  graphql.String(a.PlaybackIds[0].Policy),
-						}
-
-						if err := caller.Mutate(context.Background(), &m, v); err != nil {
-							fmt.Fprintf(w, "error with asset ID: %v\n", err)
-						}
-
-						pbid = a.PlaybackIds[0].Id
-
-						content = content + `
-
-						<input class="form-control mr-sm-2" type="text" placeholder="Last" aria-label="Last" id ="Last" name ="Last">
-						<input class="form-control mr-sm-2" type="text" placeholder="First" aria-label="First" id ="First" name ="First"><br>
-						<input class="form-control mr-sm-2" type="text" placeholder="Title" aria-label="Title" id ="Title" name ="Title" required>
-						<input class="form-control mr-sm-2" type="text" placeholder="Category" aria-label="Category" id ="Category" name ="Category" required>
-						<label for="Content">content description</label>
-						<textarea class="form-control" id="Content" name ="Content" rows="3"></textarea>
-												
-						`
-
-						goto NEXT
-
-					}
-
-				}
-
-			}
-
-		} else {
-
-			content = content + `
-
-			<script>
-
-			import { Magic } from 'magic-sdk';
-
-			const magic = new Magic(` + os.Getenv("MAGIC_KEY") + `);
-
-			await magic.auth.loginWithMagicLink({ email: 'your.email@example.com' });
-
-			</script>
-
-			`
-
-		}
-
-	NEXT:
-
-		content = content + `
 			
 			<br>
 			
@@ -513,6 +480,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</form>
 			
 			</div>
+
+			<video id="myVideo" controls></video>
+
+<!-- Use HLS.js to support the HLS format in browsers. -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@0.8.2"></script>
+<script>
+  (function(){
+    // Replace with your asset's playback ID
+    var playbackId = "` + pbid + `";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + ss + `";
+
+    // HLS.js-specific setup code
+    if (Hls.isSupported()) {
+      var video = document.getElementById("myVideo");
+      var hls = new Hls();
+      hls.loadSource(url);
+      hls.attachMedia(video);
+    }
+  })();
+</script>
+
 						
 			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
 			</body>
@@ -529,54 +517,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		switch id {
 
 		//start
-		case "":
-
-			content =
-
-				`
-			<!DOCTYPE html>
-			<html lang="en">
-			<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta http-equiv="X-UA-Compatible" content="ie=edge">
-			<title>vdo2go</title>
-			<!-- CSS -->
-			<!-- Add Material font (Roboto) and Material icon as needed -->
-			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-			
-			<!-- Add Material CSS, replace Bootstrap CSS -->
-			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-			
-			</head>
-			<body style="background-color: #a1b116;">
-			
-			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-			
-			<br>
-			<br>	
-			
-			<form role="form" method="POST">
-
-			<input type="checkbox" id="Access" name="Access" value="SIGNED">
- 			<label for="Access">I do not want public content.</label><br>
-  			<button type="submit" class="btn btn-light">submit</button>
-			
-			</form>
-
-
-			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-			</body>
-			</html>
-					
-			`
-
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-			w.Write([]byte(content))
-
-		//stages
 		default:
 
 			w.Header().Set("Content-Type", "text/html")
@@ -585,232 +525,234 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-	case "POST":
+		/* 	case "POST":
 
-		switch id {
+			switch id {
 
-		case "public":
+			case "public":
 
-			r.ParseForm()
+				r.ParseForm()
 
-			id = r.Form.Get("ID")
+				id = r.Form.Get("ID")
 
-			//fmt.Fprintf(w, "id: %v\n", i)
-			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+				//fmt.Fprintf(w, "id: %v\n", i)
+				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
-		case "signed":
+			case "signed":
 
-			r.ParseForm()
+				r.ParseForm()
 
-			id = r.Form.Get("ID")
+				id = r.Form.Get("ID")
 
-			//fmt.Fprintf(w, "id: %v\n", i)
-			http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+				//fmt.Fprintf(w, "id: %v\n", i)
+				http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
-		case "":
+			case "":
 
-			r.ParseForm()
+				r.ParseForm()
 
-			c := r.Form.Get("Access")
+				c := r.Form.Get("Access")
 
-			if c == "" {
+				if c == "" {
 
-				c = "public"
+					c = "public"
 
-			}
-
-			http.Redirect(w, r, "https://"+c+".code2go.dev/video", http.StatusSeeOther)
-
-		default:
-
-			r.ParseForm()
-
-			first := r.Form.Get("First")
-			last := r.Form.Get("Last")
-			email := strings.ToLower(r.Form.Get("Email"))
-			title := strings.ToLower(r.Form.Get("Title"))
-			category := strings.ToLower(r.Form.Get("Category"))
-			content := strings.ToLower(r.Form.Get("Content"))
-
-			fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-			x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-			if err != nil {
-
-				fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-			}
-
-			var access *Access
-
-			x.Get(&access)
-
-			src := oauth2.StaticTokenSource(
-				&oauth2.Token{AccessToken: access.Secret},
-			)
-
-			httpClient := oauth2.NewClient(context.Background(), src)
-
-			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-		PREV:
-
-			if _, err = strconv.Atoi(id); err == nil {
-
-				var q struct {
-					FindAssetByID struct {
-						AssetEntry
-					} `graphql:"findAssetByID(id: $ID)"`
 				}
 
-				v := map[string]interface{}{
-					"ID": graphql.ID(id),
+				http.Redirect(w, r, "https://"+c+".code2go.dev/video", http.StatusSeeOther)
+
+			default:
+
+				r.ParseForm()
+
+				first := r.Form.Get("First")
+				last := r.Form.Get("Last")
+				email := strings.ToLower(r.Form.Get("Email"))
+				title := strings.ToLower(r.Form.Get("Title"))
+				category := strings.ToLower(r.Form.Get("Category"))
+				content := strings.ToLower(r.Form.Get("Content"))
+
+				fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
+
+				x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
+
+				if err != nil {
+
+					fmt.Fprintf(w, "a connection error occured: %v\n", err)
+
 				}
 
-				if err := caller.Query(context.Background(), &q, v); err != nil {
-					fmt.Fprintf(w, "error with asset source: %v\n", err)
-				}
+				var access *Access
 
-				//basic auth assign
-				switch string(q.FindAssetByID.Email) {
+				x.Get(&access)
 
-				default:
+				src := oauth2.StaticTokenSource(
+					&oauth2.Token{AccessToken: access.Secret},
+				)
 
-					http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
+				httpClient := oauth2.NewClient(context.Background(), src)
 
-				case "":
+				caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
 
-					t := time.Unix(int64(access.Timestamp)/1e6, 0)
+			PREV:
 
-					s := t.Format("20060102150405")
+				if _, err = strconv.Atoi(id); err == nil {
 
-					var m struct {
-						UpdateAsset struct {
+					var q struct {
+						FindAssetByID struct {
 							AssetEntry
-						} `graphql:"updateAsset(id: $ID, data:{title: $Title, category: $Category, pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content, checked: $Checked})"`
+						} `graphql:"findAssetByID(id: $ID)"`
 					}
 
-					v = map[string]interface{}{
-						"ID":       graphql.ID(id),
-						"Email":    graphql.String(email),
-						"First":    graphql.String(first),
-						"Last":     graphql.String(last),
-						"Category": graphql.String(category),
-						"Title":    graphql.String(title + "_" + s),
-						"Content":  graphql.String(content),
-						"PbID":     graphql.String(pbid),
-						"Checked":  graphql.Boolean(false),
+					v := map[string]interface{}{
+						"ID": graphql.ID(id),
 					}
 
-					if err := caller.Mutate(context.Background(), &m, v); err != nil {
-						fmt.Fprintf(w, "error with asset update: %v\n", err)
-					} else {
-
-						http.Redirect(w, r, "https://"+title+"_"+s+".code2go.dev/video", http.StatusSeeOther)
-
+					if err := caller.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with asset source: %v\n", err)
 					}
 
-				//todo auth
-				case email:
+					//basic auth assign
+					switch string(q.FindAssetByID.Email) {
 
-					//todo with token
-					var m struct {
-						UpdateAsset struct {
-							AssetEntry
-						} `graphql:"updateAsset(id: $ID, data:{checked: $Checked})"`
-					}
+					default:
 
-					v = map[string]interface{}{
-						"ID":      graphql.ID(id),
-						"Checked": graphql.Boolean(true),
-					}
+						http.Redirect(w, r, "https://"+id+".code2go.dev/video", http.StatusSeeOther)
 
-					if err := caller.Mutate(context.Background(), &m, v); err != nil {
-						fmt.Fprintf(w, "error with asset confirmation: %v\n", err)
-					}
+					case "":
 
-					content =
+						t := time.Unix(int64(access.Timestamp)/1e6, 0)
+
+						s := t.Format("20060102150405")
+
+						var m struct {
+							UpdateAsset struct {
+								AssetEntry
+							} `graphql:"updateAsset(id: $ID, data:{title: $Title, category: $Category, pbID: $PbID, email: $Email, first: $First, last: $Last, content: $Content, checked: $Checked})"`
+						}
+
+						v = map[string]interface{}{
+							"ID":       graphql.ID(id),
+							"Email":    graphql.String(email),
+							"First":    graphql.String(first),
+							"Last":     graphql.String(last),
+							"Category": graphql.String(category),
+							"Title":    graphql.String(title + "_" + s),
+							"Content":  graphql.String(content),
+							"PbID":     graphql.String(pbid),
+							"Checked":  graphql.Boolean(false),
+						}
+
+						if err := caller.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Fprintf(w, "error with asset update: %v\n", err)
+						} else {
+
+							http.Redirect(w, r, "https://"+title+"_"+s+".code2go.dev/video", http.StatusSeeOther)
+
+						}
+
+					//todo auth
+					case email:
+
+						//todo with token
+						var m struct {
+							UpdateAsset struct {
+								AssetEntry
+							} `graphql:"updateAsset(id: $ID, data:{checked: $Checked})"`
+						}
+
+						v = map[string]interface{}{
+							"ID":      graphql.ID(id),
+							"Checked": graphql.Boolean(true),
+						}
+
+						if err := caller.Mutate(context.Background(), &m, v); err != nil {
+							fmt.Fprintf(w, "error with asset confirmation: %v\n", err)
+						}
+
+						content =
+
+							`
+
+						<!DOCTYPE html>
+						<html lang="en">
+						<head>
+						<meta charset="UTF-8">
+						<meta name="viewport" content="width=device-width, initial-scale=1.0">
+						<meta http-equiv="X-UA-Compatible" content="ie=edge">
+						<title>vdo2go</title>
+						<!-- CSS -->
+						<!-- Add Material font (Roboto) and Material icon as needed -->
+						<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+						<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+						<!-- Add Material CSS, replace Bootstrap CSS -->
+						<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+
+						</head>
+						<body style="background-color: #a1b116;">
+
+						<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
+
+						<br>
+						<br>
+
+						<a href="https://` + id + `.code2go.dev/content"><img src="https://image.mux.com/` + string(m.UpdateAsset.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
+						<br>
+
+						<p>` + string(m.UpdateAsset.First) + `<br>` + string(m.UpdateAsset.Title) + ` is "` + string(m.UpdateAsset.Policy) + `" content:<br>` + string(m.UpdateAsset.Content) + `</p>
+						</div>
+
+						<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+						</body>
+						</html>
 
 						`
-					
-					<!DOCTYPE html>
-					<html lang="en">
-					<head>
-					<meta charset="UTF-8">
-					<meta name="viewport" content="width=device-width, initial-scale=1.0">
-					<meta http-equiv="X-UA-Compatible" content="ie=edge">
-					<title>vdo2go</title>
-					<!-- CSS -->
-					<!-- Add Material font (Roboto) and Material icon as needed -->
-					<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-					<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-					<!-- Add Material CSS, replace Bootstrap CSS -->
-					<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-
-					</head>
-					<body style="background-color: #a1b116;">
-
-					<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-
-					<br>
-					<br>
-
-					<a href="https://` + id + `.code2go.dev/content"><img src="https://image.mux.com/` + string(m.UpdateAsset.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
-					<br>
-				
-					<p>` + string(m.UpdateAsset.First) + `<br>` + string(m.UpdateAsset.Title) + ` is "` + string(m.UpdateAsset.Policy) + `" content:<br>` + string(m.UpdateAsset.Content) + `</p>
-					</div>
-
-					<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-					</body>
-					</html>
-						
-					`
-
-					w.Header().Set("Content-Type", "text/html")
-					w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-					w.Write([]byte(content))
-
-				}
-
-			} else {
-
-				var q struct {
-					AssetsByEmail struct {
-						Data []struct {
-							AssetEntry
-						}
-					} `graphql:"assetsByEmail(email: $Email, checked: $Checked)"`
-				}
-
-				v := map[string]interface{}{
-					"Email":   graphql.String(email),
-					"Checked": graphql.Boolean(false),
-				}
-
-				if err := caller.Query(context.Background(), &q, v); err != nil {
-					fmt.Fprintf(w, "error with asset source: %v\n", err)
-				}
-
-				for _, s := range q.AssetsByEmail.Data {
-
-					if string(s.Title) == id {
-
-						id = fmt.Sprintf("%s", s.ID)
-
-						break
+						w.Header().Set("Content-Type", "text/html")
+						w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+						w.Write([]byte(content))
 
 					}
 
-				}
+				} else {
 
-				goto PREV
+					var q struct {
+						AssetsByEmail struct {
+							Data []struct {
+								AssetEntry
+							}
+						} `graphql:"assetsByEmail(email: $Email, checked: $Checked)"`
+					}
+
+					v := map[string]interface{}{
+						"Email":   graphql.String(email),
+						"Checked": graphql.Boolean(false),
+					}
+
+					if err := caller.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with asset source: %v\n", err)
+					}
+
+					for _, s := range q.AssetsByEmail.Data {
+
+						if string(s.Title) == id {
+
+							id = fmt.Sprintf("%s", s.ID)
+
+							break
+
+						}
+
+					}
+
+					goto PREV
+
+				}
 
 			}
 
-		}
+		} */
 
 	}
 
