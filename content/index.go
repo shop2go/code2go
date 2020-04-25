@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/pem"
+	//"crypto/rsa"
 	"fmt"
 	"net/http"
 	"os"
@@ -406,6 +407,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "%s", "err")
 			}
 
+			pk := block.Bytes
+
 			type Claims struct {
 				Kid string `json:"kid"`
 				jwt.StandardClaims
@@ -424,7 +427,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-			ss, err = token.SignedString(block)
+			ss, err = /* token.SignedString(block) */token.SignedString(pk)
 
 			if err != nil {
 
@@ -496,7 +499,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + ss + `;
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token="` + ss + `";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
