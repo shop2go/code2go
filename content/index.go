@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"net/http"
 	"os"
@@ -397,7 +399,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			//mySigningKey := []byte("AllYourBase")
+			key, err := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+
+			block, _ := pem.Decode(key)
+			if block == nil || block.Type != "PRIVATE KEY" {
+				fmt.Fprintf(w, "%s", "err")
+			}
 
 			type Claims struct {
 				Kid string `json:"kid"`
@@ -417,7 +424,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-			ss, err = token.SignedString(k.Data.PrivateKey)
+			ss, err = token.SignedString(block)
 
 			if err != nil {
 
@@ -489,7 +496,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + ss + `";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + ss + `;
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
