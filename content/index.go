@@ -403,7 +403,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			key, err := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
 			block, _ := pem.Decode(key)
-			if block == nil || block.Type != "PRIVATE KEY" {
+			if block == nil {
 				fmt.Fprintf(w, "%s", "err")
 			}
 
