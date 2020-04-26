@@ -3,9 +3,6 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	"encoding/pem"
-	
-	"crypto/x509"
 	"fmt"
 	"net/http"
 	"os"
@@ -403,8 +400,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			key, err := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
-			block, _ := pem.Decode(key)
-			if /* block == nil ||  */block.Type != "RSA PRIVATE KEY" {
+			/* block, _ := pem.Decode(key)
+			if  block == nil ||block.Type != "RSA PRIVATE KEY" {
 				fmt.Fprintf(w, "%s %s", block.Type, "err!")
 			}
 
@@ -415,18 +412,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "%v", err)
 			}
 
-			//pk := block.Bytes
+			//pk := block.Bytes */
 
 			type Claims struct {
-				/* Kid string `json:"kid"`
-				Aud string `json:"aud"` */
+				Kid string `json:"kid"`
 				jwt.StandardClaims
 			}
 
 			// Create the Claims
 			claims := Claims{
-				/* k.Data.Id,
-				"v", */
+				 k.Data.Id,
 				jwt.StandardClaims{
 					Subject:   pbid,
 					Audience:  "v",
@@ -437,7 +432,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-			ss, err = /* token.SignedString(block) */token.SignedString(ppb)
+			ss, err = /* token.SignedString(block) */token.SignedString(key)
 
 			if err != nil {
 
