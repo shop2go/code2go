@@ -110,9 +110,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			pk, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+			//pk, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
-			block, _ := pem.Decode(pk)
+			block, _ := pem.Decode([]byte(k.Data.PrivateKey))
 			if block.Type != "RSA PRIVATE KEY" {
 				fmt.Fprintf(w, "%s %s", block.Type, "error!")
 			}
@@ -144,9 +144,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			   			t.Header = map[string]interface{}{
 			   				"kid": k.Data.Id,
-			   			} */
+						   } */
 
-			token, err := t.SignedString(block.Bytes)
+			var key []byte
+
+			base64.StdEncoding.Decode(key, block.Bytes)
+
+			token, err := t.SignedString(key)
 
 			if err != nil {
 
@@ -215,8 +219,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <script>
   (function(){
     // Replace with your asset's playback ID
-    var playbackId = ` + pbid + `;
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + token + `";
+    var playbackId = "` + pbid + `";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token={` + token + `}";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
