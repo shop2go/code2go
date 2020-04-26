@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	//"encoding/pem"
+	"encoding/pem"
 	"fmt"
 	"net/http"
 	"os"
@@ -51,295 +51,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	id = strings.TrimSuffix(id, ".")
 
 	switch id {
-
-	//with public policy(stage 2)
-	case "public":
-
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-		if err != nil {
-
-			fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-		}
-
-		var access *Access
-
-		x.Get(&access)
-
-		src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: access.Secret},
-		)
-
-		access = &Access{}
-
-		httpClient := oauth2.NewClient(context.Background(), src)
-
-		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-		client := muxgo.NewAPIClient(
-			muxgo.NewConfiguration(
-				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
-			))
-
-		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC}}
-
-		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
-
-		res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
-
-		if err != nil {
-
-			fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
-
-		}
-
-		sourceURL := res.Data.Url
-
-		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
-
-		sourceID := dul.Data.Id
-
-		var m struct {
-			CreateAsset struct {
-				AssetEntry
-			} `graphql:"createAsset(data:{sourceID: $SourceID, checked: $Checked})"`
-		}
-
-		v := map[string]interface{}{
-			"SourceID": graphql.String(sourceID),
-			"Checked":  graphql.Boolean(false),
-		}
-
-		if err = caller.Mutate(context.Background(), &m, v); err != nil {
-			fmt.Fprintf(w, "error with asset source: %v\n", err)
-		}
-
-		i := fmt.Sprintf("%s", m.CreateAsset.ID)
-
-		content =
-
-			`
-			<!DOCTYPE html>
-			<html lang="en">
-			<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta http-equiv="X-UA-Compatible" content="ie=edge">
-			<title>vdo2go</title>
-			<!-- CSS -->
-			<!-- Add Material font (Roboto) and Material icon as needed -->
-			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-			
-			<!-- Add Material CSS, replace Bootstrap CSS -->
-			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-			
-			</head>
-			<body style="background-color: #a1b116;">
-			
-			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-			
-			<br>
-			<br>
-						
-			<h1>video upload:</h1>
-			<b>
-			<form>
-				<input id="picker" type="file" accept="video/*" /><br>
-				<p>please wait for upload completion --> confirm</p>
-				</form>		
-				
-				<form role="form" method="POST">
-							
-				<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `" hidden>
-				<br>
-							
-				<p>when file upload done, submit content:</p>
-				<button type="submit" class="btn btn-light">submit</button>
-				
-				</form>
-			
-			</div>
-			<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
-			
-			<script>
-	
-				const picker = document.getElementById('picker');
-				picker.onchange = () => {
-				  const endpoint = '` + sourceURL + `';
-				  const file = picker.files[0];
-				
-				  const upload = UpChunk.createUpload({
-					endpoint,
-					file,
-					chunkSize: 20480,
-				  });
-				  upload.on('error', err => {
-					console.error('something went wrong', err.detail);
-				  });				  
-				
-				  upload.on('success', () => {
-					alert('video file upload completed.');
-				  });
-				};
-				 
-			</script>
-			
-			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-			</body>
-			</html>
-					
-			`
-
-	//with signed policy(stage 2)
-	case "signed":
-
-		fc := f.NewFaunaClient(os.Getenv("FAUNA_ACCESS"))
-
-		x, err := fc.Query(f.CreateKey(f.Obj{"database": f.Database("assets"), "role": "server"}))
-
-		if err != nil {
-
-			fmt.Fprintf(w, "a connection error occured: %v\n", err)
-
-		}
-
-		var access *Access
-
-		x.Get(&access)
-
-		src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: access.Secret},
-		)
-
-		access = &Access{}
-
-		httpClient := oauth2.NewClient(context.Background(), src)
-
-		caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
-
-		client := muxgo.NewAPIClient(
-			muxgo.NewConfiguration(
-				muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
-			))
-
-		car := muxgo.CreateAssetRequest{PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.SIGNED}}
-
-		cur := muxgo.CreateUploadRequest{NewAssetSettings: car, Timeout: 3600, CorsOrigin: "code2go.dev"}
-
-		res, err := client.DirectUploadsApi.CreateDirectUpload(cur)
-
-		if err != nil {
-
-			fmt.Fprintf(w, "%s %v", "something went wrong...\n", err)
-
-		}
-
-		sourceURL := res.Data.Url
-
-		dul, _ := client.DirectUploadsApi.GetDirectUpload(res.Data.Id)
-
-		sourceID := dul.Data.Id
-
-		var m struct {
-			CreateAsset struct {
-				AssetEntry
-			} `graphql:"createAsset(data:{sourceID: $SourceID, checked: $Checked})"`
-		}
-
-		v := map[string]interface{}{
-			"SourceID": graphql.String(sourceID),
-			"Checked":  graphql.Boolean(false),
-		}
-
-		if err = caller.Mutate(context.Background(), &m, v); err != nil {
-			fmt.Fprintf(w, "error with asset source: %v\n", err)
-		}
-
-		i := fmt.Sprintf("%s", m.CreateAsset.ID)
-
-		content =
-
-			`
-				<!DOCTYPE html>
-				<html lang="en">
-				<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<meta http-equiv="X-UA-Compatible" content="ie=edge">
-				<title>vdo2go</title>
-				<!-- CSS -->
-				<!-- Add Material font (Roboto) and Material icon as needed -->
-				<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-				<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-				
-				<!-- Add Material CSS, replace Bootstrap CSS -->
-				<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-				
-				</head>
-				<body style="background-color: #a1b116;">
-				
-				<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-				
-				<br>
-				<br>
-							
-				<h1>video upload:</h1>
-				<b>
-				<form>
-				<input id="picker" type="file" accept="video/*" /><br>
-				<p>please wait for upload completion --> confirmK</p>
-				</form>		
-				
-				<form role="form" method="POST">
-							
-				<input readonly="true" class="form-control-plaintext" id="ID" aria-label="ID" name ="ID" value="` + i + `" hidden>
-				<br>
-							
-				<p>when file upload done, submit content:</p>
-				<button type="submit" class="btn btn-light">submit</button>
-				
-				</form>
-				
-				</div>
-				<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
-				
-				<script>
-		
-					const picker = document.getElementById('picker');
-					picker.onchange = () => {
-					  const endpoint = '` + sourceURL + `';
-					  const file = picker.files[0];
-					
-					  const upload = UpChunk.createUpload({
-						endpoint,
-						file,
-						chunkSize: 5120,
-					  });
-					  upload.on('error', err => {
-						console.error('something went wrong', err.detail);
-					  });				  
-					
-					  upload.on('success', () => {
-						alert('video file upload completed.');
-					  });
-					};
-					 
-				</script>
-				
-				<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-				</body>
-				</html>
-						
-				`
-
-	//policy option (stage 1)
-	case "":
-
-		break
 
 	//various stages
 	default:
@@ -399,6 +110,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
+			pk, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+
+			block, _ := pem.Decode(pk)
+			if block.Type != "RSA PRIVATE KEY" {
+				fmt.Fprintf(w, "%s %s", block.Type, "error!")
+			}
+
 			type Claim struct {
 				Kid string `json:"kid"`
 				jwt.StandardClaims
@@ -417,7 +135,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			t := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
-			privKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+			//privKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
 			/* 			block, _ := pem.Decode(privKey)
 			   			if block.Type != "RSA PRIVATE KEY" {
@@ -428,7 +146,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			   				"kid": k.Data.Id,
 			   			} */
 
-			token, err := t.SignedString(privKey)
+			token, err := t.SignedString(block.Bytes)
 
 			if err != nil {
 
@@ -497,7 +215,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <script>
   (function(){
     // Replace with your asset's playback ID
-    var playbackId = "` + pbid + `";
+    var playbackId = ` + pbid + `;
     var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + token + `";
 
     // HLS.js-specific setup code
