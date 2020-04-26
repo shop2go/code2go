@@ -403,26 +403,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			key, err := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
 			block, _ := pem.Decode(key)
-			if block == nil || block.Type != "RSA PRIVATE KEY" {
-				fmt.Fprintf(w, "%s", "err")
+			if /* block == nil ||  */block.Type != "RSA PRIVATE KEY" {
+				fmt.Fprintf(w, "%s %s", block.Type, "err")
 			}
 
 			pk := block.Bytes
 
 			type Claims struct {
-				Kid string `json:"kid"`
+				/* Kid string `json:"kid"`
+				Aud string `json:"aud"` */
 				jwt.StandardClaims
 			}
 
 			// Create the Claims
 			claims := Claims{
-				fmt.Sprintf("%s", k.Data.Id),
+				/* k.Data.Id,
+				"v", */
 				jwt.StandardClaims{
 					Subject:   pbid,
 					Audience:  "v",
 					ExpiresAt: 15000,
 					Issuer:    r.Host,
-					Id:        fmt.Sprintf("%s", k.Data.Id),
+					Id:        k.Data.Id,
 				},
 			}
 
