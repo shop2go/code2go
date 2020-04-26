@@ -495,7 +495,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + token + `";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token={` + token + `}";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
