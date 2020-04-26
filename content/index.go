@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	"encoding/pem"
+	//"encoding/pem"
 	"fmt"
 	"net/http"
 	"os"
@@ -401,11 +401,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			key, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
-			block, _ := pem.Decode(key)
+			/* block, _ := pem.Decode(key)
 			if block.Type != "RSA PRIVATE KEY" {
 				fmt.Fprintf(w, "%s %s", block.Type, "err!")
 			}
-
+ */
 			/* type Claims struct {
 				//Kid string `json:"kid"`
 				jwt.StandardClaims
@@ -426,7 +426,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				"kid": k.Data.Id,
 			}
 
-			token, err := t.SignedString(block.Bytes)
+			token, err := t.SignedString(key)
 
 			/* 		client := muxgo.NewAPIClient(
 			   			muxgo.NewConfiguration(
