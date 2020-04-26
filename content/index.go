@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	"encoding/pem"
+	//"encoding/pem"
 	"fmt"
 	"net/http"
 	"os"
@@ -399,33 +399,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			privKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
-
-			block, _ := pem.Decode(privKey)
-			if block.Type != "RSA PRIVATE KEY" {
-				fmt.Fprintf(w, "%s %s", block.Type, "err!")
-			}
-			/* type Claims struct {
-				//Kid string `json:"kid"`
+			type Claim struct {
+				Kid string `json:"kid"`
 				jwt.StandardClaims
-			} */
+			}
 
-			// Create the Claims
-			claims := jwt.StandardClaims{
-				Subject:   pbid,
-				Audience:  "v",
-				ExpiresAt: 15000,
-				Issuer:    r.Host,
-				Id:        string(q.FindAssetByID.AssetID),
+			claims := Claim{
+				k.Data.Id,
+				jwt.StandardClaims{
+					Subject:   pbid,
+					Audience:  "v",
+					ExpiresAt: 15000,
+					Issuer:    r.Host,
+					Id:        string(q.FindAssetByID.AssetID),
+				},
 			}
 
 			t := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
-			t.Header = map[string]interface{}{
-				"kid": k.Data.Id,
-			}
+			privKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
-			token, err := t.SignedString(block.Bytes)
+			/* 			block, _ := pem.Decode(privKey)
+			   			if block.Type != "RSA PRIVATE KEY" {
+			   				fmt.Fprintf(w, "%s %s", block.Type, "err!")
+			   			}
+
+			   			t.Header = map[string]interface{}{
+			   				"kid": k.Data.Id,
+			   			} */
+
+			token, err := t.SignedString(privKey)
 
 			if err != nil {
 
