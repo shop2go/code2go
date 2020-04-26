@@ -110,20 +110,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			//pk, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+			pk, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
-			block, _ := pem.Decode([]byte(k.Data.PrivateKey))
+			/* block, _ := pem.Decode(pk)
 			if block.Type != "RSA PRIVATE KEY" {
 				fmt.Fprintf(w, "%s %s", block.Type, "error!")
-			}
+			} */
 
 			type Claim struct {
-				Kid string `json:"kid"`
+				//Kid string `json:"kid"`
 				jwt.StandardClaims
 			}
 
 			claims := Claim{
-				k.Data.Id,
+				//k.Data.Id,
 				jwt.StandardClaims{
 					Subject:   pbid,
 					Audience:  "v",
@@ -133,7 +133,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				},
 			}
 
-			t := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+			t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 			//privKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
@@ -141,16 +141,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			   			if block.Type != "RSA PRIVATE KEY" {
 			   				fmt.Fprintf(w, "%s %s", block.Type, "err!")
 			   			}
+			*/
+			t.Header = map[string]interface{}{
+				"kid": k.Data.Id,
+			}
 
-			   			t.Header = map[string]interface{}{
-			   				"kid": k.Data.Id,
-						   } */
-
-			var key []byte
-
-			base64.StdEncoding.Decode(key, block.Bytes)
-
-			token, err := t.SignedString(key)
+			token, err := t.SignedString(pk)
 
 			if err != nil {
 
