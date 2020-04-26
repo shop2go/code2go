@@ -399,7 +399,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			key, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+			privKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
 			/* block, _ := pem.Decode(key)
 			if block.Type != "RSA PRIVATE KEY" {
@@ -417,16 +417,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				Audience:  "v",
 				ExpiresAt: 15000,
 				Issuer:    r.Host,
-				Id:        k.Data.Id,
+				Id:        string(q.FindAssetByID.AssetID),
 			}
 
-			t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+			t := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
 			t.Header = map[string]interface{}{
 				"kid": k.Data.Id,
 			}
 
-			token, err := t.SignedString(key)
+			token, err := t.SignedString(privKey)
 
 			if err != nil {
 
