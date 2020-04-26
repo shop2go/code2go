@@ -118,12 +118,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} */
 
 			type Claim struct {
-				//Kid string `json:"kid"`
+				Kid string `json:"kid"`
 				jwt.StandardClaims
 			}
 
 			claims := Claim{
-				//k.Data.Id,
+				k.Data.Id,
 				jwt.StandardClaims{
 					Subject:   pbid,
 					Audience:  "v",
@@ -133,7 +133,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				},
 			}
 
-			t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+			t := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
 			//privKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
