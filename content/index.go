@@ -398,7 +398,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			key, err := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+			
+
+			key, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+
+			privKey, err := jwt.ParseRSAPrivateKeyFromPEM(key)
+
+			if err != nil {
+
+				fmt.Fprintf(w, "%v", err)
+			}
 
 			/* block, _ := pem.Decode(key)
 			if  block == nil ||block.Type != "RSA PRIVATE KEY" {
@@ -432,7 +441,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-			ss, err = /* token.SignedString(block) */token.SignedString(key)
+			ss, err = /* token.SignedString(block) */token.SignedString(privKey)
 
 			if err != nil {
 
@@ -504,7 +513,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token="` + ss + `";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + ss + `;
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
