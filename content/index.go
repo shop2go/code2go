@@ -405,7 +405,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if block.Type != "RSA PRIVATE KEY" {
 				fmt.Fprintf(w, "%s %s", block.Type, "err!")
 			}
- */
+			*/
 			/* type Claims struct {
 				//Kid string `json:"kid"`
 				jwt.StandardClaims
@@ -427,6 +427,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			token, err := t.SignedString(key)
+
+			if err != nil {
+
+				fmt.Fprintf(w, "%v", err)
+			}
 
 			/* 		client := muxgo.NewAPIClient(
 			   			muxgo.NewConfiguration(
@@ -490,7 +495,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + token + `;
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + token + `";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
