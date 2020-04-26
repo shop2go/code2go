@@ -4,7 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/pem"
-	//"crypto/rsa"
+	
+	"crypto/x509"
 	"fmt"
 	"net/http"
 	"os"
@@ -404,10 +405,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			block, _ := pem.Decode(key)
 			if /* block == nil ||  */block.Type != "RSA PRIVATE KEY" {
-				fmt.Fprintf(w, "%s %s", block.Type, "err")
+				fmt.Fprintf(w, "%s %s", block.Type, "err!")
 			}
 
-			pk := block.Bytes
+			ppb, err := x509.DecryptPEMBlock(block, []byte(k.Data.Id))
+
+			if err != nil {
+
+				fmt.Fprintf(w, "%v", err)
+			}
+
+			//pk := block.Bytes
 
 			type Claims struct {
 				/* Kid string `json:"kid"`
@@ -429,7 +437,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-			ss, err = /* token.SignedString(block) */token.SignedString(pk)
+			ss, err = /* token.SignedString(block) */token.SignedString(ppb)
 
 			if err != nil {
 
@@ -501,7 +509,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + ss + `;
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token="` + ss + `";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
