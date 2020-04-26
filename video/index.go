@@ -146,7 +146,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<b>
 			<form>
 				<input id="picker" type="file" accept="video/*" /><br>
-				<p>please wait for upload completion --> confirm</p>
+				<p>please wait for upload completion --> confirm </p>
 				</form>		
 				
 				<form role="form" method="POST">
@@ -484,7 +484,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-		} else {
+		} /*  else {
 
 			content = content + `
 
@@ -500,7 +500,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			`
 
-		}
+		} */
 
 	NEXT:
 
@@ -757,10 +757,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					<br>
 					<br>
 
-					<a href="https://` + id + `.code2go.dev/content"><img src="https://image.mux.com/` + string(m.UpdateAsset.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad"></a>
+					`
+
+					if string(m.UpdateAsset.Policy) == "public" {
+
+						content = content +
+
+							`
+
+					<img src="https://image.mux.com/` + string(m.UpdateAsset.PbID) + `/thumbnail.jpg?width=214&height=121&fit_mode=pad">
 					<br>
-				
-					<p>` + string(m.UpdateAsset.First) + `<br>` + string(m.UpdateAsset.Title) + ` is "` + string(m.UpdateAsset.Policy) + `" content:<br>` + string(m.UpdateAsset.Content) + `</p>
+
+					`
+
+					}
+
+					content = content +
+
+						`
+					<p>` + string(m.UpdateAsset.First) + `<br><a href="https://` + id + `.code2go.dev/content">` + string(m.UpdateAsset.Title) + `</a> is "` + string(m.UpdateAsset.Policy) + `" content:<br>` + string(m.UpdateAsset.Content) + `</p>
 					</div>
 
 					<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
