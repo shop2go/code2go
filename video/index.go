@@ -352,11 +352,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 				<div class="media">
 				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
-			<div class="media-body"><br><br>
+			<div class="media-body">
+
+			<h3 class="mt-0">`+string(q.AssetByTitle.Category)+`:</h3>
 					
-			<h2 class="mt-0">`+id+`</h2>
+			<h2>`+id+`</h2>
 					
-			<h3>`+string(q.AssetByTitle.Category)+`: </h3><p>`+string(q.AssetByTitle.Content)+`</p>
+			<p>`+string(q.AssetByTitle.Content)+`</p>
 			</div>
 			</div>
 
@@ -420,14 +422,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			<div class="media">
 				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
-			<div class="media-body"><br><br>
-					
-			<h2 class="mt-0">`+id+`</h2>
-					
-			<h3>`+string(q.AssetByTitle.Category)+`: </h3><p>`+string(q.AssetByTitle.Content)+`</p>
-			</div>
-			</div>
-			</div>
+				<div class="media-body">
+
+				<h3 class="mt-0">`+string(q.AssetByTitle.Category)+`:</h3>
+						
+				<h2>`+id+`</h2>
+						
+				<p>`+string(q.AssetByTitle.Content)+`</p>
+				</div>
+				</div>
+	
+				</div>
 
 <!-- Use HLS.js to support the HLS format in browsers. -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@0.8.2"></script>
