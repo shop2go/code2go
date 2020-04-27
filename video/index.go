@@ -43,8 +43,8 @@ type AssetEntry struct {
 }
 
 type KeyEntry struct {
-	Key   graphql.String  `graphql:"key"`
-	Token graphql.String  `graphql:"token"`
+	Key   graphql.String `graphql:"key"`
+	Token graphql.String `graphql:"token"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +58,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	id = strings.TrimSuffix(id, ".")
 
 	switch id {
+
+	case "":
 
 	//various stages
 	default:
@@ -306,11 +308,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 							KeyEntry
 						} `graphql:"keyByKey(key: $Key)"`
 					}
-		
+
 					v := map[string]interface{}{
-						"Key":   graphql.String(key)
+						"Key": graphql.String(key),
 					}
-		
+
 					if err := caller.Query(context.Background(), &q, v); err != nil {
 						fmt.Fprintf(w, "error with key query: %v\n", err)
 					}
@@ -435,48 +437,52 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		switch r.Method {
+	}
 
-		case "GET":
+	switch r.Method {
 
-			switch id {
+	case "GET":
 
-			//start
-			default:
+		switch id {
 
-				w.Header().Set("Content-Type", "text/html")
-				w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-				w.Write([]byte(content))
+		case "":
 
-			}
+		//start
+		default:
 
-		case "POST":
+			w.Header().Set("Content-Type", "text/html")
+			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+			w.Write([]byte(content))
 
-			switch id {
+		}
 
-			//various stages
-			default:
+	case "POST":
 
-				if _, err := strconv.Atoi(id); err == nil {
+		switch id {
 
-					r.ParseForm()
+		//various stages
+		default:
 
-					id = r.Form.Get("Email")
+			if _, err := strconv.Atoi(id); err == nil {
 
-					if id == email {
+				r.ParseForm()
 
-						http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
+				id = r.Form.Get("Email")
 
-					} else {
+				if id == email {
 
-						http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
+					http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
 
-					}
+				} else {
+
+					http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
 
 				}
 
 			}
+
 		}
+
 	}
 
 }
