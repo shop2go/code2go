@@ -43,8 +43,8 @@ type AssetEntry struct {
 }
 
 type KeyEntry struct {
-	Key   string
-	Token string
+	Key   graphql.String  `graphql:"key"`
+	Token graphql.String  `graphql:"token"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
