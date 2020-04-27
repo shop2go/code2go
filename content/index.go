@@ -235,7 +235,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 			`
 
-		} else if q.FindAssetByID.Policy == "signed" {
+		} else if q.FindAssetByID.Policy == "public" {
 
 			content =
 
