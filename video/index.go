@@ -61,6 +61,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "":
 
+		http.Redirect(w, r, "https://code2go.dev/videos", http.StatusSeeOther)
+
 	//various stages
 	default:
 
@@ -345,13 +347,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br>
 				<br>
 	
-
-
-			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-
-			<video id="myVideo" controls></video>
-
+				<div class="media">
+				<video id="Video" controls></video>		
+			<div class="media-body"><br><br>
+					
+			<h2>`+id+`</h2>
+					
+			<p><h3>`+string(q.KeyByKey.Category)+`</h3><br>`+string(q.KeyByKey.Content)+`</p>
 			</div>
+			</div>
+
+
+			
 
 <!-- Use HLS.js to support the HLS format in browsers. -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@0.8.2"></script>
@@ -363,7 +370,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
-      var video = document.getElementById("myVideo");
+      var video = document.getElementById("Video");
       var hls = new Hls();
       hls.loadSource(url);
       hls.attachMedia(video);
@@ -404,10 +411,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<br>
 
-			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
-
-			<video id="myVideo" controls></video>
-
+			<div class="media">
+				<video id="Video" controls></video>		
+			<div class="media-body"><br><br>
+					
+			<h2>`+id+`</h2>
+					
+			<p><h3>`+string(q.KeyByKey.Category)+`</h3><br>`+string(q.KeyByKey.Content)+`</p>
+			</div>
 			</div>
 
 <!-- Use HLS.js to support the HLS format in browsers. -->
@@ -444,18 +455,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 
-		switch id {
-
-		case "":
-
-		//start
-		default:
-
-			w.Header().Set("Content-Type", "text/html")
-			w.Header().Set("Content-Length", strconv.Itoa(len(content)))
-			w.Write([]byte(content))
-
-		}
+		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+		w.Write([]byte(content))
 
 	case "POST":
 
@@ -476,7 +478,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 				} else {
 
-					http.Redirect(w, r, "https://code2go.dev/video", http.StatusSeeOther)
+					http.Redirect(w, r, "https://code2go.dev/videos", http.StatusSeeOther)
 
 				}
 
