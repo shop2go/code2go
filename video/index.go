@@ -348,10 +348,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br>
 	
 				<div class="media">
-				<video id="Video" width="200" controls></video>		
+				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
 			<div class="media-body"><br><br>
 					
-			<h2>`+id+`</h2>
+			<h2 class="mt-0">`+id+`</h2>
 					
 			<p><h3>`+string(q.AssetByTitle.Category)+`</h3><br>`+string(q.AssetByTitle.Content)+`</p>
 			</div>
@@ -412,10 +412,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 
 			<div class="media">
-				<video id="Video" width="200" controls></video>		
+				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
 			<div class="media-body"><br><br>
 					
-			<h2>`+id+`</h2>
+			<h2 class="mt-0">`+id+`</h2>
 					
 			<p><h3>`+string(q.AssetByTitle.Category)+`</h3><br>`+string(q.AssetByTitle.Content)+`</p>
 			</div>
