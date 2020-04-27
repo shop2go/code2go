@@ -203,6 +203,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			
 			<button type="submit" class="btn btn-light">submit</button>
+
+			<br>
+			<br>
 			
 			</form>
 			
@@ -215,8 +218,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <script>
   (function(){
     // Replace with your asset's playback ID
-    var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token='` + token + `'";
+    
+    var url = "https://stream.mux.com/`+pbid+`.m3u8?token='` + token + `'";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
@@ -273,6 +276,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			
 			<button type="submit" class="btn btn-light">submit</button>
+
+			<br>
+			<br>
 			
 			</form>
 			
@@ -285,8 +291,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <script>
   (function(){
     // Replace with your asset's playback ID
-    var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8";
+    var url = "https://stream.mux.com/`+pbid+`.m3u8";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
