@@ -216,7 +216,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + token + `";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token='` + token + `'";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
@@ -236,6 +236,74 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			`
 
 		} else if q.FindAssetByID.Policy == "signed" {
+
+			content =
+
+				`
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<title>vdo2go</title>
+			<!-- CSS -->
+			<!-- Add Material font (Roboto) and Material icon as needed -->
+			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+			
+			<!-- Add Material CSS, replace Bootstrap CSS -->
+			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+
+			</head>
+			<body style="background-color: #a1b116;">
+
+			
+			<div class="container" id="video" style="color:rgb(255, 255, 255); font-size:30px;">
+			
+			<br>
+			<br>
+						
+			<h1>content owner:</h1>	
+			
+			<form role="form" method="POST">
+
+			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
+			
+			<br>
+			
+			<button type="submit" class="btn btn-light">submit</button>
+			
+			</form>
+			
+			</div>
+
+			<video id="myVideo" controls></video>
+
+<!-- Use HLS.js to support the HLS format in browsers. -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@0.8.2"></script>
+<script>
+  (function(){
+    // Replace with your asset's playback ID
+    var playbackId = "` + pbid + `";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8";
+
+    // HLS.js-specific setup code
+    if (Hls.isSupported()) {
+      var video = document.getElementById("myVideo");
+      var hls = new Hls();
+      hls.loadSource(url);
+      hls.attachMedia(video);
+    }
+  })();
+</script>
+
+						
+			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+			</body>
+			</html>
+					
+			`
 
 		}
 
