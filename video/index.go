@@ -286,7 +286,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						fmt.Fprintf(w, "error with asset update: %v\n", err)
 					}
 
-					var m struct {
+					var n struct {
 						CreateKey struct {
 							KeyEntry
 						} `graphql:"createKey(data:{key: $Key, token: $Token})"`
@@ -297,7 +297,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 						"Token": graphql.String(tokenString),
 					}
 
-					if err := caller.Mutate(context.Background(), &m, v); err != nil {
+					if err := caller.Mutate(context.Background(), &n, v); err != nil {
 						fmt.Fprintf(w, "error with key create: %v\n", err)
 					}
 
