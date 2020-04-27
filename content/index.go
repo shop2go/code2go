@@ -129,7 +129,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					Audience:  "v",
 					ExpiresAt: 15000,
 					Issuer:    r.Host,
-					Id:        string(q.FindAssetByID.AssetID),
+					Id:        k.Data.Id/* string(q.FindAssetByID.AssetID) */,
 				},
 			}
 
