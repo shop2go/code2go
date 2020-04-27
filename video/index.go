@@ -353,7 +353,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 			<h2 class="mt-0">`+id+`</h2>
 					
-			<p><h3>`+string(q.AssetByTitle.Category)+`</h3><br>`+string(q.AssetByTitle.Content)+`</p>
+			<p><h3>`+string(q.AssetByTitle.Category)+`: </h3>`+string(q.AssetByTitle.Content)+`</p>
 			</div>
 			</div>
 
@@ -417,7 +417,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 			<h2 class="mt-0">`+id+`</h2>
 					
-			<p><h3>`+string(q.AssetByTitle.Category)+`</h3><br>`+string(q.AssetByTitle.Content)+`</p>
+			<p><h3>`+string(q.AssetByTitle.Category)+`: </h3>`+string(q.AssetByTitle.Content)+`</p>
 			</div>
 			</div>
 
