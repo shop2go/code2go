@@ -274,12 +274,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					var m struct {
 						UpdateAsset struct {
 							AssetEntry
-						} `graphql:"updateAsset(id: $ID, data:{key: $Key})"`
+						} `graphql:"updateAsset(id: $ID, data:{key: $Key, checked: $Checked})"`
 					}
 
 					v := map[string]interface{}{
-						"ID":  q.AssetByTitle.ID,
-						"Key": graphql.String(k.Data.Id),
+						"ID":      q.AssetByTitle.ID,
+						"Key":     graphql.String(k.Data.Id),
+						"Checked": q.AssetByTitle.Checked,
 					}
 
 					if err := caller.Mutate(context.Background(), &m, v); err != nil {
