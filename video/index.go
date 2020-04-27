@@ -348,7 +348,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br>
 	
 				<div class="media">
-				<video id="Video" controls></video>		
+				<video id="Video" width="200" controls></video>		
 			<div class="media-body"><br><br>
 					
 			<h2>`+id+`</h2>
@@ -412,7 +412,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 
 			<div class="media">
-				<video id="Video" controls></video>		
+				<video id="Video" width="200" controls></video>		
 			<div class="media-body"><br><br>
 					
 			<h2>`+id+`</h2>
