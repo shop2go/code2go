@@ -112,10 +112,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			pk, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
-			block, _ := pem.Decode(pk)
+/* 			block, _ := pem.Decode(pk)
 			if block.Type != "RSA PRIVATE KEY" {
 				fmt.Fprintf(w, "%s %s", block.Type, "error!")
-			}
+			} */
 
 			type Claim struct {
 				Kid string `json:"kid"`
@@ -142,11 +142,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			   				fmt.Fprintf(w, "%s %s", block.Type, "err!")
 			   			}
 			*/
-			t.Header = map[string]interface{}{
+			/* t.Header = map[string]interface{}{
 				"kid": k.Data.Id,
-			}
+			} */
 
-			token, err := t.SignedString(block.Bytes)
+			token, err := t.SignedString(pk)
 
 			if err != nil {
 
@@ -234,6 +234,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			</html>
 					
 			`
+
+		} else if q.FindAssetByID.Policy == "signed" {
 
 		}
 
