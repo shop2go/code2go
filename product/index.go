@@ -251,7 +251,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</head>
 		<body style="background-color: #a1b116;">
 
-		<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
+			<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
 
 		<ul class="list-group">
 		<br>

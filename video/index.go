@@ -346,6 +346,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 				<br>
 				<br>
+
+				<div class="container" id="data">
+
 	
 				<div class="media">
 				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
@@ -355,6 +358,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					
 			<p><h3>`+string(q.AssetByTitle.Category)+`: </h3>`+string(q.AssetByTitle.Content)+`</p>
 			</div>
+			</div>
+
 			</div>
 
 
@@ -411,6 +416,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br>
 			<br>
 
+			<div class="container" id="data">
+
 			<div class="media">
 				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
 			<div class="media-body"><br><br>
@@ -418,6 +425,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<h2 class="mt-0">`+id+`</h2>
 					
 			<p><h3>`+string(q.AssetByTitle.Category)+`: </h3>`+string(q.AssetByTitle.Content)+`</p>
+			</div>
 			</div>
 			</div>
 
