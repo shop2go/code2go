@@ -182,7 +182,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var q struct {
 				AssetByTitle struct {
 					AssetEntry
-				} `graphql:"assetByTitle(id: $ID, checked: $Checked)"`
+				} `graphql:"assetByTitle(title: $Title, checked: $Checked)"`
 			}
 
 			v := map[string]interface{}{
