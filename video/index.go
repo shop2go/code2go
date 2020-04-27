@@ -28,6 +28,7 @@ type Access struct {
 
 type AssetEntry struct {
 	ID       graphql.ID      `graphql:"_id"`
+	Key      graphql.String  `graphql:"key"`
 	SourceID graphql.String  `graphql:"sourceID"`
 	AssetID  graphql.String  `graphql:"assetID"`
 	PbID     graphql.String  `graphql:"pbID"`
@@ -41,9 +42,14 @@ type AssetEntry struct {
 	Checked  graphql.Boolean `graphql:"checked"`
 }
 
+type KeyEntry struct {
+	Key   string
+	Token string
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	var content, email, title, pbid, policy string
+	var content, email, key, title, pbid, policy string
 
 	id := r.Host
 
@@ -96,6 +102,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "error with asset query: %v\n", err)
 			}
 
+			key = string(q.FindAssetByID.Key)
+
 			policy = string(q.FindAssetByID.Policy)
 
 			pbid = string(q.FindAssetByID.PbID)
@@ -135,7 +143,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<form role="form" method="POST">
 
 			<br>
-
+			<label for="Email">Email Address</label>
 			<input type="email" class="form-control" placeholder="name@example.com" aria-label="Email" id ="Email" name ="Email" required><br>
 			
 			<br>
@@ -223,36 +231,92 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			if policy == "signed" {
 
-				client := muxgo.NewAPIClient(
-					muxgo.NewConfiguration(
-						muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
-					))
+				var tokenString string
 
-				k, err := client.URLSigningKeysApi.CreateUrlSigningKey()
+				switch key {
 
-				if err != nil {
+				case "":
 
-					fmt.Fprintf(w, "%v", err)
+					client := muxgo.NewAPIClient(
+						muxgo.NewConfiguration(
+							muxgo.WithBasicAuth(os.Getenv("MUX_ID"), os.Getenv("MUX_SECRET")),
+						))
 
-				}
+					k, err := client.URLSigningKeysApi.CreateUrlSigningKey()
 
-				decodedKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+					if err != nil {
 
-				signKey, err := jwt.ParseRSAPrivateKeyFromPEM(decodedKey)
-				if err != nil {
-					fmt.Fprintf(w, "%v", err)
-				}
+						fmt.Fprintf(w, "%v", err)
 
-				token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
-					"sub": pbid,
-					"aud": "v",
-					"exp": time.Now().Add(time.Minute * 15).Unix(),
-					"kid": k.Data.Id,
-				})
+					}
 
-				tokenString, err := token.SignedString(signKey)
-				if err != nil {
-					fmt.Fprintf(w, "%v", err)
+					decodedKey, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
+
+					signKey, err := jwt.ParseRSAPrivateKeyFromPEM(decodedKey)
+					if err != nil {
+						fmt.Fprintf(w, "%v", err)
+					}
+
+					token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
+						"sub": pbid,
+						"aud": "v",
+						"exp": time.Now().Add(time.Minute * 15).Unix(),
+						"kid": k.Data.Id,
+					})
+
+					tokenString, err = token.SignedString(signKey)
+					if err != nil {
+						fmt.Fprintf(w, "%v", err)
+					}
+
+					var m struct {
+						UpdateAsset struct {
+							AssetEntry
+						} `graphql:"updateAsset(id: &ID, data:{key: $Key})"`
+					}
+
+					v := map[string]interface{}{
+						"ID":  q.AssetByTitle.ID,
+						"Key": graphql.String(k.Data.Id),
+					}
+
+					if err := caller.Mutate(context.Background(), &m, v); err != nil {
+						fmt.Fprintf(w, "error with asset update: %v\n", err)
+					}
+
+					var m struct {
+						CreateKey struct {
+							KeyEntry
+						} `graphql:"createKey(data:{key: $Key, token: $Token})"`
+					}
+
+					v = map[string]interface{}{
+						"Key":   graphql.String(k.Data.Id),
+						"Token": graphql.String(tokenString),
+					}
+
+					if err := caller.Mutate(context.Background(), &m, v); err != nil {
+						fmt.Fprintf(w, "error with key create: %v\n", err)
+					}
+
+				default:
+
+					var q struct {
+						KeyByKey struct {
+							KeyEntry
+						} `graphql:"keyByKey(key: $Key)"`
+					}
+		
+					v := map[string]interface{}{
+						"Key":   graphql.String(key)
+					}
+		
+					if err := caller.Query(context.Background(), &q, v); err != nil {
+						fmt.Fprintf(w, "error with key query: %v\n", err)
+					}
+
+					tokenString = string(q.KeyByKey.Token)
+
 				}
 
 				content = `
@@ -401,7 +465,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					if id == email {
 
-						http.Redirect(w, r, "https://"+title+".code2go.dev/content", http.StatusSeeOther)
+						http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
 
 					} else {
 
