@@ -274,7 +274,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					var m struct {
 						UpdateAsset struct {
 							AssetEntry
-						} `graphql:"updateAsset(id: &ID, data:{key: $Key})"`
+						} `graphql:"updateAsset(id: $ID, data:{key: $Key})"`
 					}
 
 					v := map[string]interface{}{
