@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	//"encoding/pem"
+	"encoding/pem"
 	"fmt"
 	"net/http"
 	"os"
@@ -112,10 +112,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			pk, _ := base64.StdEncoding.DecodeString(k.Data.PrivateKey)
 
-			/* block, _ := pem.Decode(pk)
+			block, _ := pem.Decode(pk)
 			if block.Type != "RSA PRIVATE KEY" {
 				fmt.Fprintf(w, "%s %s", block.Type, "error!")
-			} */
+			}
 
 			type Claim struct {
 				Kid string `json:"kid"`
@@ -146,7 +146,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				"kid": k.Data.Id,
 			}
 
-			token, err := t.SignedString(pk)
+			token, err := t.SignedString(block.Bytes)
 
 			if err != nil {
 
@@ -216,7 +216,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
   (function(){
     // Replace with your asset's playback ID
     var playbackId = "` + pbid + `";
-    var url = "https://stream.mux.com/"+playbackId+".m3u8?token={` + token + `}";
+    var url = "https://stream.mux.com/"+playbackId+".m3u8?token=` + token + `";
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
