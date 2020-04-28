@@ -28,6 +28,13 @@ type Access struct {
 	Role      string `fauna:"role"`
 }
 
+type CacheEntry struct {
+
+	Month   graphql.String `graphql:"month"`
+	Posts   []graphql.String `graphql:"posts"`
+
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
 	url := strings.TrimPrefix(r.URL.Path, "/")
@@ -401,14 +408,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var query struct {
 		CacheByMonth struct {
-			ID    graphql.ID       `graphql:"_id"`
-			Month graphql.String   `graphql:"month"`
-			Posts []graphql.String `graphql:"posts"`
-		} `graphql:"cacheByMonth(month: $month)"`
+			CacheEntry
+		} `graphql:"cacheByMonth(month: $Month)"`
 	}
 
 	v1 := map[string]interface{}{
-		"month": graphql.String(ye + `-` + mo),
+		"Month": graphql.String(ye + `-` + mo),
 	}
 
 	if err = call.Query(context.Background(), &query, v1); err != nil {
