@@ -86,8 +86,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				&oauth2.Token{AccessToken: access.Secret},
 			)
 
-			access = &Access{}
-
 			httpClient := oauth2.NewClient(context.Background(), src)
 
 			caller := graphql.NewClient("https://graphql.fauna.com/graphql", httpClient)
@@ -354,11 +352,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
 			<div class="media-body">
 
-			<h3 class="mt-0">`+string(q.AssetByTitle.Category)+`:</h3>
+			<h3 class="mt-0">` + string(q.AssetByTitle.Category) + `:</h3>
 					
-			<h2>`+id+`</h2>
+			<h2>` + id + `</h2>
 					
-			<p>`+string(q.AssetByTitle.Content)+`</p>
+			<p>` + string(q.AssetByTitle.Content) + `</p>
 			</div>
 			</div>
 
@@ -424,11 +422,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<video class="align-self-start mr-3" id="Video" width="214" controls></video>		
 				<div class="media-body">
 
-				<h3 class="mt-0">`+string(q.AssetByTitle.Category)+`:</h3>
+				<h3 class="mt-0">` + string(q.AssetByTitle.Category) + `:</h3>
 						
-				<h2>`+id+`</h2>
+				<h2>` + id + `</h2>
 						
-				<p>`+string(q.AssetByTitle.Content)+`</p>
+				<p>` + string(q.AssetByTitle.Content) + `</p>
 				</div>
 				</div>
 	
@@ -489,11 +487,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 					http.Redirect(w, r, "https://"+title+".code2go.dev/video", http.StatusSeeOther)
 
-				} else {
+				} /*  else {
 
 					http.Redirect(w, r, "https://code2go.dev/videos", http.StatusSeeOther)
 
-				}
+				} */
 
 			}
 

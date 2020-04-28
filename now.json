@@ -4,6 +4,8 @@
 
       {"src": "./main/index.go", "use": "@now/go"},
 
+      {"src": "./0/index.go", "use": "@now/go"},
+
       {"src": "./ticket/index.go", "use": "@now/go"},
 
       {"src": "./node/index.go", "use": "@now/go"},
