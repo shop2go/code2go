@@ -178,7 +178,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  NProgress.start();
 
 				  upload.on('error', err => {
-					console.error('something went wrong', err.detail);
+					console.error(err.detail);
 				  });	
 				  
 				  upload.on('progress', progress => {
@@ -186,10 +186,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  });
 				
 				  upload.on('success', () => {
+
+					NProgress.done();
 					
 					alert('file upload completed.');
 
-					NProgress.done(true);
+					
 				  });
 				};
 				 
