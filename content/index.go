@@ -130,7 +130,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<!-- Add Material font (Roboto) and Material icon as needed -->
 			<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
 			<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-			
+			<link href="https://unpkg.com/nprogress@0.2.0/nprogress.css" rel="stylesheet">
 			<!-- Add Material CSS, replace Bootstrap CSS -->
 			<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
 			
@@ -161,7 +161,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			
 			</div>
 			<script src="https://unpkg.com/@mux/upchunk@1.0.6/dist/upchunk.js"></script>
-			
+			<script src ="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
 			<script>
 	
 				const picker = document.getElementById('picker');
@@ -174,6 +174,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					file,
 					chunkSize: 20480,
 				  });
+
+				  NProgress.start();
 
 				  upload.on('error', err => {
 					console.error('something went wrong', err.detail);
