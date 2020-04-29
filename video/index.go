@@ -441,7 +441,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
     // HLS.js-specific setup code
     if (Hls.isSupported()) {
-      var video = document.getElementById("myVideo");
+      var video = document.getElementById("Video");
       var hls = new Hls();
       hls.loadSource(url);
       hls.attachMedia(video);
