@@ -174,6 +174,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					file,
 					chunkSize: 20480,
 				  });
+				  
 				  upload.on('error', err => {
 					console.error('something went wrong', err.detail);
 				  });	
