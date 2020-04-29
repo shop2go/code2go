@@ -182,12 +182,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  });	
 				  
 				  upload.on('progress', progress => {
-					console.log('Progress: ${progress}%');
+					NProgress.inc();
 				  });
 				
 				  upload.on('success', () => {
-					NProgress.done();
+					
 					alert('file upload completed.');
+
+					NProgress.done(true);
 				  });
 				};
 				 
