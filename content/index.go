@@ -186,8 +186,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  });
 				
 				  upload.on('success', () => {
-
-					NProgress.done();
 					
 					alert('file upload completed.');
 
@@ -195,6 +193,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  });
 				};
 				 
+				NProgress.done();
 			</script>
 			
 			<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
