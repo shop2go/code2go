@@ -186,6 +186,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				  });
 				
 				  upload.on('success', () => {
+					NProgress.done();
 					alert('file upload completed.');
 				  });
 				};
