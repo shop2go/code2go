@@ -27,6 +27,8 @@ type ProductEntry struct {
 	ID      graphql.ID     `graphql:"_id"`
 	ImgURL  graphql.String `graphql:"imgURL"`
 	Product graphql.String `graphql:"product"`
+
+	
 	Cat     graphql.String `graphql:"cat"`
 	Info    graphql.String `graphql:"info"`
 	Price   graphql.Float  `graphql:"price"`
