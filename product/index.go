@@ -24,16 +24,18 @@ type Access struct {
 }
 
 type ProductEntry struct {
-	ID      graphql.ID     `graphql:"_id"`
-	ImgURL  graphql.String `graphql:"imgURL"`
-	Product graphql.String `graphql:"product"`
-	Cat     graphql.String `graphql:"cat"`
-	Info    graphql.String `graphql:"info"`
-	Price   graphql.Float  `graphql:"price"`
-	Pack    graphql.Int    `graphql:"pack"`
-	InfoURL graphql.String `graphql:"infoURL"`
-	LinkURL graphql.String `graphql:"linkURL"`
-	LinkDIM graphql.Int    `graphql:"linkDIM"`
+	ID             graphql.ID     `graphql:"_id"`
+	ProductImgLink graphql.String `graphql:"productImgLink"`
+	ProductName    graphql.String `graphql:"productName"`
+	ProductCat     graphql.String `graphql:"productCat"`
+	ProductInfo    graphql.String `graphql:"productInfo"`
+	ProductPrice   graphql.Float  `graphql:"productPrice"`
+	PackSize       graphql.Int    `graphql:"packSize"`
+	PackUnit       graphql.String `graphql:"packUnit"`
+	ProductLink    graphql.String `graphql:"productLink"`
+	LogoLink       graphql.String `graphql:"logoLink"`
+	LogoDim        graphql.Int    `graphql:"logoDim"`
+	ProductQuant   graphql.Int    `graphql:"productQuant"`
 }
 
 type CartEntry struct {
@@ -55,13 +57,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id := r.Host
 
-	id = strings.TrimSuffix(id, "code2go.dev")
+	id = strings.TrimSuffix(id, "shop2go.cloud")
 
 	id = strings.TrimSuffix(id, ".")
 
 	if id == "" {
 
-		http.Redirect(w, r, "https://code2go.dev/", http.StatusSeeOther)
+		http.Redirect(w, r, "https://shop2go.cloud", http.StatusSeeOther)
 
 	}
 
@@ -167,7 +169,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
-				total = total + float64(n.FindProductByID.Price)
+				total = total + float64(n.FindProductByID.ProductPrice)
 
 			}
 
@@ -215,25 +217,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
+			http.Redirect(w, r, "https://shop2go.cloud/"+node, http.StatusSeeOther)
 
 		}
 
 	} else {
 
-		http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
+		http.Redirect(w, r, "https://shop2go.cloud/"+node, http.StatusSeeOther)
 
 	}
 
-	var s string
+	var cat string
 
-	switch r.Method {
+	content :=
 
-	case "GET":
-
-		str :=
-
-			`
+		`
 		<!DOCTYPE html>
 		<html lang="en">
 		<head>
@@ -263,11 +261,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		`
 
-		if id == "" {
+	if id == "" {
 
-			str = str +
+		content = content +
 
-				`
+			`
 			<div class="media">
 			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 					
@@ -282,15 +280,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br><br>
 			`
 
-		} else {
+	} else {
 
-			if total >= 14 {
+		if total >= 14 {
 
-				price := strconv.FormatFloat(total, 'f', 2, 64)
+			price := strconv.FormatFloat(total, 'f', 2, 64)
 
-				str = str +
+			content = content +
 
-					`				
+				`				
 					<div class="media">
 					<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 							
@@ -303,11 +301,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br><br>
 				`
 
-			} else {
+		} else {
 
-				str = str +
+			content = content +
 
-					`
+				`
 			<div class="media">
 			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 					
@@ -322,59 +320,59 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br><br>
 			`
 
-			}
-
 		}
 
-		for k, i := range m {
+	}
 
-			var q struct {
-				FindProductByID struct {
-					ProductEntry
-				} `graphql:"findProductByID(id: $ID)"`
-			}
+	for k, i := range m {
 
-			v := map[string]interface{}{
-				"ID": k,
-			}
+		var q struct {
+			FindProductByID struct {
+				ProductEntry
+			} `graphql:"findProductByID(id: $ID)"`
+		}
 
-			if err = call.Query(context.Background(), &q, v); err != nil {
-				fmt.Fprintf(w, "error with products: %v\n", err)
-			}
+		v := map[string]interface{}{
+			"ID": k,
+		}
 
-			if string(q.FindProductByID.Cat) != s {
+		if err = call.Query(context.Background(), &q, v); err != nil {
+			fmt.Fprintf(w, "error with products: %v\n", err)
+		}
 
-				s = string(q.FindProductByID.Cat)
+		if string(q.FindProductByID.ProductCat) != cat {
 
-				str = str + ` 
+			cat = string(q.FindProductByID.ProductCat)
+
+			content = content + ` 
 
 		<br>
-		<h1>` + s + `</h1>
+		<h1>` + cat + `</h1>
 
 		`
 
-			}
+		}
 
-			//if products[0].ID != nil {
-			id := fmt.Sprintf("%s", q.FindProductByID.ID)
-			price := strconv.FormatFloat(float64(q.FindProductByID.Price), 'f', 2, 64)
-			pack := strconv.Itoa(int(q.FindProductByID.Pack))
-			dim := strconv.Itoa(int(q.FindProductByID.LinkDIM))
+		//if products[0].ID != nil {
+		id := fmt.Sprintf("%s", q.FindProductByID.ID)
+		price := strconv.FormatFloat(float64(q.FindProductByID.ProductPrice), 'f', 2, 64)
+		pack := strconv.Itoa(int(q.FindProductByID.PackSize))
+		dim := strconv.Itoa(int(q.FindProductByID.LogoDim))
 
-			str = str + ` 
+		content = content + ` 
 
 		<li class="list-group-item">
 
 		<div class="media">
-		<img class="mr-3" src="` + string(q.FindProductByID.ImgURL) + `" width="100">
+		<img class="mr-3" src="` + string(q.FindProductByID.ProductImgLink) + `" width="100">
 
 		<div class="media-body">
 
-		<h2>` + string(q.FindProductByID.Product) + `</h2>
+		<h2>` + string(q.FindProductByID.ProductName) + `</h2>
 
-		<h4>` + string(q.FindProductByID.Info) + `</h4>
+		<h4>` + string(q.FindProductByID.ProductInfo) + `</h4>
 
-		<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
+		<p><h2>€ ` + price + `</h2>` + pack + ` ` + string(q.FindProductByID.PackUnit) + `<br><br>
 
 		<form class="form-inline" role="form" method="POST">
 				
@@ -383,25 +381,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
 			
 		`
-			//if j, ok := m[q.FindProductByID.ID]; ok {
+		//if j, ok := m[q.FindProductByID.ID]; ok {
 
-			i = i + 5
+		i = i + 3
 
-			for i >= 0 {
+		for i > 0 {
 
-				o := strconv.Itoa(i)
+			o := strconv.Itoa(i)
 
-				str = str + `
+			content = content + `
 				
 				
 				<option>` + o + `</option>
 				
 				`
-				i--
+			i--
 
-			}
+		}
 
-			str = str + `
+		content = content + `
 		</select>
 
 		<button type="submit" class="btn btn-light">ändern</button>
@@ -409,7 +407,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</form>
 		</p>
 		<br>
-		<a href="` + string(q.FindProductByID.InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(q.FindProductByID.LinkURL) + `" width="` + dim + `">
+		<a href="` + string(q.FindProductByID.ProductLink) + `" target="_blank"><img class="mr-3" src="` + string(q.FindProductByID.LogoLink) + `" width="` + dim + `">
 		</a>
 		
 		</div>
@@ -418,9 +416,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br><br>
 		`
 
-		}
+	}
 
-		str = str + `
+	content = content + `
 
 		</ul>
 		</div>
@@ -430,9 +428,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</html>
 		`
 
+	switch r.Method {
+
+	case "GET":
+
 		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+		w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+		w.Write([]byte(content))
 
 	case "POST":
 
@@ -493,7 +495,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		http.Redirect(w, r, "https://"+id+".code2go.dev/order", http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+id+".shop2go.cloud/order", http.StatusSeeOther)
 
 	}
 

@@ -24,16 +24,18 @@ type Access struct {
 }
 
 type ProductEntry struct {
-	ID      graphql.ID     `graphql:"_id"`
-	ImgURL  graphql.String `graphql:"imgURL"`
-	Product graphql.String `graphql:"product"`
-	Cat     graphql.String `graphql:"cat"`
-	Info    graphql.String `graphql:"info"`
-	Price   graphql.Float  `graphql:"price"`
-	Pack    graphql.Int    `graphql:"pack"`
-	InfoURL graphql.String `graphql:"infoURL"`
-	LinkURL graphql.String `graphql:"linkURL"`
-	LinkDIM graphql.Int    `graphql:"linkDIM"`
+	ID             graphql.ID     `graphql:"_id"`
+	ProductImgLink graphql.String `graphql:"productImgLink"`
+	ProductName    graphql.String `graphql:"productName"`
+	ProductCat     graphql.String `graphql:"productCat"`
+	ProductInfo    graphql.String `graphql:"productInfo"`
+	ProductPrice   graphql.Float  `graphql:"productPrice"`
+	PackSize       graphql.Int    `graphql:"packSize"`
+	PackUnit       graphql.String `graphql:"packUnit"`
+	ProductLink    graphql.String `graphql:"productLink"`
+	LogoLink       graphql.String `graphql:"logoLink"`
+	LogoDim        graphql.Int    `graphql:"logoDim"`
+	ProductQuant   graphql.Int    `graphql:"productQuant"`
 }
 
 type CartEntry struct {
@@ -51,14 +53,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	var total float64
 
-	//node id
-	node := r.URL.Path
+	var cat string
 
-	node = strings.TrimPrefix(node, "/")
+	node := strings.TrimPrefix(r.URL.Path, "/")
 
 	id := r.Host
 
-	id = strings.TrimSuffix(id, "code2go.dev")
+	id = strings.TrimSuffix(id, "shop2go.cloud")
 
 	id = strings.TrimSuffix(id, ".")
 
@@ -98,23 +99,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	sort.Slice(products, func(i, j int) bool {
 
-		if products[i].Cat < products[j].Cat {
+		if products[i].ProductCat < products[j].ProductCat {
 			return true
 		}
 
-		if products[i].Cat > products[j].Cat {
+		if products[i].ProductCat > products[j].ProductCat {
 			return false
 		}
 
-		if products[i].Price < products[j].Price {
+		if products[i].ProductPrice < products[j].ProductPrice {
 			return true
 		}
 
-		if products[i].Price > products[j].Price {
+		if products[i].ProductPrice > products[j].ProductPrice {
 			return false
 		}
 
-		return products[i].Product < products[j].Product
+		return products[i].ProductName < products[j].ProductName
 
 	})
 
@@ -154,7 +155,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "error with products: %v\n", err)
 				}
 
-				total = total + float64(q.FindProductByID.Price)
+				total = total + float64(q.FindProductByID.ProductPrice)
 
 				m[id] = struct{}{}
 
@@ -172,97 +173,90 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			http.Redirect(w, r, "https://code2go.dev/"+node, http.StatusSeeOther)
+			http.Redirect(w, r, "https://shop2go.cloud/"+node, http.StatusSeeOther)
 
 		}
 
 	}
 
-	var s string
+	content :=
 
-	switch r.Method {
+	`
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>shop2go</title>
+	<!-- CSS -->
+	<!-- Add Material font (Roboto) and Material icon as needed -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-	case "GET":
+	<!-- Add Material CSS, replace Bootstrap CSS -->
+	<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
+	</head>
+	<body style="background-color: #a1b116;">
 
-		str :=
+	<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
 
-			`
-		<!DOCTYPE html>
-		<html lang="en">
-		<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>shop2go</title>
-		<!-- CSS -->
-		<!-- Add Material font (Roboto) and Material icon as needed -->
-		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<ul class="list-group">
+	<br>
+	<br>
 
-		<!-- Add Material CSS, replace Bootstrap CSS -->
-		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		</head>
-		<body style="background-color: #a1b116;">
+	<h1>Bestellung</h1>
+	`
 
-		<div class="container" id="shop" style="color:rgb(255, 255, 255); font-size:30px;">
+	if id == "" {
 
-		<ul class="list-group">
-		<br>
-		<br>
-
-		<h1>Bestellung</h1>
-
-		<li class="list-group-item">
+		content = content +
 
 		`
+		<li class="list-group-item">
+		<div class="media">
+		<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 
-		if id == "" {
+		<div class="media-body"><br><br>
 
-			str = str +
+		<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
 
-				`
+		<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
+		</div>
+		</div>	
+		</li>
+		<br><br>
+		`
+
+	} else {
+
+		if total >= 14 {
+
+			price := strconv.FormatFloat(total, 'f', 2, 64)
+
+			content = content +
+
+			`
+			<li class="list-group-item">
 			<div class="media">
 			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 					
 			<div class="media-body"><br><br>
-					
-			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>
-					
-			<p><h2>€ 5</h2>Pauschal<br>Mindesteinkaufsumme: € 14</p>
-			</div>
-			</div>	
+
+			<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
+			<br><p>Lieferpauschale:<br><h2>€ 5</h2><br>Bestellsumme:<br><h2>€ ` + price + `</h2></p>
+			<button type="button" class="btn btn-light" onclick="window.location.href='order'">Ware jetzt bestellen</button>
+			</div></div>		
 			</li>
 			<br><br>
 			`
 
 		} else {
 
-			if total >= 14 {
+			content = content +
 
-				price := strconv.FormatFloat(total, 'f', 2, 64)
-
-				str = str +
-
-					`				
-					<div class="media">
-					<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
-							
-					<div class="media-body"><br><br>
-							
-								
-				<h3>In Stadt Salzburg innerhalb eines Tages an ihrer Haustür.</h3>				
-				<br><p>Lieferpauschale:<br><h2>€ 5</h2><br>Bestellsumme:<br><h2>€ ` + price + `</h2></p>
-				<button type="button" class="btn btn-light" onclick="window.location.href='order'">Ware jetzt bestellen</button>
-				</div></div>		
-				</li>
-				<br><br>
-				`
-
-			} else {
-
-				str = str +
-
-					`
+			`
+			<li class="list-group-item">
 			<div class="media">
 			<img class="mr-3" src="https://assets.medienwerk.now.sh/love.svg" width="100" >
 					
@@ -277,52 +271,53 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			<br><br>
 			`
 
-			}
-
 		}
 
-		if products[0].ID != nil {
+	}
 
-			s = string(products[0].Cat)
+	if products[0].ID != nil {
 
-			id := fmt.Sprintf("%s", products[0].ID)
-			price := strconv.FormatFloat(float64(products[0].Price), 'f', 2, 64)
-			pack := strconv.Itoa(int(products[0].Pack))
-			dim := strconv.Itoa(int(products[0].LinkDIM))
+		cat = string(products[0].ProductCat)
 
-			str = str + ` 
+		id := fmt.Sprintf("%s", products[0].ID)
+		price := strconv.FormatFloat(float64(products[0].ProductPrice), 'f', 2, 64)
+		pack := strconv.Itoa(int(products[0].PackSize))
 
+		dim := strconv.Itoa(int(products[0].LogoDim))
+		//quant := int(products[0].ProductQuant)
+
+		content = content + 
+		
+		`		 
+		<h1 id="` + cat + `">` + cat + `</h1>
 		<br>
-		<h1>` + s + `</h1>
 
 		<li class="list-group-item">
-
 		<div class="media">
-		<img class="mr-3" src="` + string(products[0].ImgURL) + `" width="100">
+		<img class="mr-3" src="` + string(products[0].ProductImgLink) + `" width="100">
 
 		<div class="media-body">
 
-		<h2>` + string(products[0].Product) + `</h2>
+		<h2>` + string(products[0].ProductName) + `</h2>
 
-		<h4>` + string(products[0].Info) + `</h4>
+		<h4>` + string(products[0].ProductInfo) + `</h4>
 
-		<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
+		<p><h2>€ ` + price + `</h2>` + pack + ` ` + string(products[0].PackUnit) + `<br><br>
 
 		<form class="form-inline" role="form" method="POST">
 				
 		<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 		
 		<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
-
-			<option>1</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
-			<option>5</option>
-			<option>6</option>
-			<option>7</option>
-			<option>8</option>
-			<option>9</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+		<option>6</option>
+		<option>7</option>
+		<option>8</option>
+		<option>9</option>
 		</select>
 
 		<button type="submit" class="btn btn-light">nehmen</button>
@@ -330,7 +325,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</form>
 		</p>
 		<br>
-		<a href="` + string(products[0].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[0].LinkURL) + `" width="` + dim + `">
+		<a href="` + string(products[0].ProductLink) + `" target="_blank"><img class="mr-3" src="` + string(products[0].LogoLink) + `" width="` + dim + `">
 		</a>
 		
 		</div>
@@ -339,50 +334,50 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<br><br>
 		`
 
-		}
+	}
 
-		for k := 1; k < len(products); k++ {
+	for k := 1; k < len(products); k++ {
 
-			if products[k].ID != nil {
+		if products[k].ID != nil {
 
-				if string(products[k].Cat) == s {
+			if string(products[k].ProductCat) == cat {
 
-					id := fmt.Sprintf("%s", products[k].ID)
-					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
-					pack := strconv.Itoa(int(products[k].Pack))
-					dim := strconv.Itoa(int(products[k].LinkDIM))
+				id := fmt.Sprintf("%s", products[k].ID)
+				price := strconv.FormatFloat(float64(products[k].ProductPrice), 'f', 2, 64)
+				pack := strconv.Itoa(int(products[k].PackSize))
+				dim := strconv.Itoa(int(products[k].LogoDim))
+				//quant := int(products[0].ProductQuant)
 
-					str = str +
-						`
-				
+				content = content +
+
+				`
+				<br>
 				<li class="list-group-item">
-
 				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="100">
+				<img class="mr-3" src="` + string(products[k].ProductImgLink) + `" width="100">
 				
 				<div class="media-body">
 
-				<h2>` + string(products[k].Product) + `</h2>
+				<h2>` + string(products[k].ProductName) + `</h2>
 
-				<h4>` + string(products[k].Info) + `</h4>
+				<h4>` + string(products[k].ProductInfo) + `</h4>
 	
-				<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
+				<p><h2>€ ` + price + `</h2>` + pack + ` ` + string(products[k].PackUnit) + `<br><br>
 		
 				<form class="form-inline" role="form" method="POST">
 		
 				<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 			
 				<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
-
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
-					<option>5</option>
-					<option>6</option>
-					<option>7</option>
-					<option>8</option>
-					<option>9</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				<option>7</option>
+				<option>8</option>
+				<option>9</option>
 				</select>
 
 			  	<button type="submit" class="btn btn-light">nehmen</button>
@@ -390,7 +385,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</form>
 				</p>
 				<br>
-				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
+				<a href="` + string(products[k].ProductLink) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LogoLink) + `" width="` + dim + `"></a>
 	
 				</div>
 				</div>
@@ -398,48 +393,48 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br><br>
 				`
 
-				} else {
+			} else {
 
-					s = string(products[k].Cat)
+				cat = string(products[k].ProductCat)
 
-					id := fmt.Sprintf("%s", products[k].ID)
-					price := strconv.FormatFloat(float64(products[k].Price), 'f', 2, 64)
-					pack := strconv.Itoa(int(products[k].Pack))
-					dim := strconv.Itoa(int(products[k].LinkDIM))
+				id := fmt.Sprintf("%s", products[k].ID)
+				price := strconv.FormatFloat(float64(products[k].ProductPrice), 'f', 2, 64)
+				pack := strconv.Itoa(int(products[k].PackSize))
+				dim := strconv.Itoa(int(products[k].LogoDim))
+				//quant := int(products[0].ProductQuant)
 
-					str = str +
-						`
+				content = content +
+
+				`
+				<h1 id="` + cat + `">` + cat + `</h1>
 				<br>
-				<h1>` + s + `</h1>
 
 				<li class="list-group-item">
-
 				<div class="media">
-				<img class="mr-3" src="` + string(products[k].ImgURL) + `" width="100">
+				<img class="mr-3" src="` + string(products[k].ProductImgLink) + `" width="100">
 			
 				<div class="media-body">
 			
-				<h2>` + string(products[k].Product) + `</h2>
+				<h2>` + string(products[k].ProductName) + `</h2>
 			
-				<h4>` + string(products[k].Info) + `</h4>
+				<h4>` + string(products[k].ProductInfo) + `</h4>
 			
-				<p><h2>€ ` + price + `</h2>` + pack + ` Gramm<br><br>
+				<p><h2>€ ` + price + `</h2>` + pack + ` ` + string(products[k].PackUnit) + `<br><br>
 				
 				<form class="form-inline" role="form" method="POST">
 				
 				<label class="form-check-label" for="` + id + `" style="font-size:25px;">Mengenauswahl:</label>
 				
 				<select style="font-size:30px;" class="form-control" id="` + id + `" name="` + id + `">
-
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
-					<option>5</option>
-					<option>6</option>
-					<option>7</option>
-					<option>8</option>
-					<option>9</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				<option>7</option>
+				<option>8</option>
+				<option>9</option>
 				</select>
 					 
 				<button type="submit" class="btn btn-light">nehmen</button>
@@ -447,7 +442,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</form>
 				</p>
 				<br>
-				<a href="` + string(products[k].InfoURL) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LinkURL) + `" width="` + dim + `"></a>
+				<a href="` + string(products[k].ProductLink) + `" target="_blank"><img class="mr-3" src="` + string(products[k].LogoLink) + `" width="` + dim + `"></a>
 			
 				</div>
 				</div>
@@ -455,28 +450,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				<br><br>
 				`
 
-				}
-
 			}
-
-			str = str + `
-
-		</ul>
-
-		`
 
 		}
 
-		str = str + `
-					   
-		<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
-		</body>
-		</html>
+		content = content +
+		
+		`
+		</ul>
 		`
 
+	}
+
+	content = content +
+
+	`			   
+	<script src="https://assets.medienwerk.now.sh/material.min.js"></script>
+	</body>
+	</html>
+	`
+
+	switch r.Method {
+
+	case "GET":
+
 		w.Header().Set("Content-Type", "text/html")
-		w.Header().Set("Content-Length", strconv.Itoa(len(str)))
-		w.Write([]byte(str))
+		w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+		w.Write([]byte(content))
 
 	case "POST":
 
@@ -611,7 +611,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		id = fmt.Sprintf("%s", cart.ID)
 
-		http.Redirect(w, r, "https://"+id+".code2go.dev/"+node, http.StatusSeeOther)
+		http.Redirect(w, r, "https://"+id+".shop2go.cloud/"+node, http.StatusSeeOther)
 
 	}
 
