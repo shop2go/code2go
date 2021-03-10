@@ -39,15 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	n, err := strconv.Atoi(url)
 
-	if err != nil {
-
-		fmt.Fprint(w, "... an error occured ... please reload browser window ...")
-
-		return
-
-	}
-
-	now := time.Now().AddDate(0, n, 0)
+	now := time.Now()
 
 	var c Cal
 
