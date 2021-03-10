@@ -16,17 +16,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.css" rel="stylesheet" />
     <!-- Custom styles -->
     <style>
-
-
-
+        body {
+  background-color: coral;
+}
     </style>
 </head>
 
 <body>
 
-    <div id="mdb-intro" class="container" style="background-color: #114ca5;">
 
-</div>
     <!-- Section: Content -->
 
     <script>
@@ -34,17 +32,15 @@
             .then(res => {
                 return res.text();
             })
-            .then(data => {
-                $('#container').html(data);
+
+            .then(function (data) {
+                appendData(data);
             });
     </script>
 
 </body>
 
-<script
-  type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"
-></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"></script>
 
 </script>
 
