@@ -49,28 +49,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	c.Days = day
 
 	str := `
-		<!DOCTYPE html>
-		<html lang="en">
-		<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>CODE2GO</title>
-		<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   		<link href="https://assets.medienwerk.now.sh/material.min.css" rel="stylesheet">
-		</head>
-		<body style="background-color:#adebad">
-		<div class="container">
-		<iframe src="https://code2go.dev" style="border:none;"></iframe>
-		</div>
-   		<div class="container" id="search" style="color:white; font-size:30px;">
-		<form class="form-inline" role="form">
-	   	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id ="find" name ="find">
-	   	<button class="btn btn-outline-light my-2 my-sm-1" type="submit">Search</button><br>
-		</form>
-		</div>
-		<br>
+
 		<div class="container" id="nav" style="color:white;">
 		` + time.Now().Format("2006") + `
 		<br>
@@ -790,15 +769,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		break
 
 	}
-
-	str = str + `
-		<script src="https://assets.medienwerk.now.sh/material.min.js">
-		</script>
-		</body>
-		</html>
 		`
 
-	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Type", "plain/text")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
 	w.Write([]byte(str))
 
