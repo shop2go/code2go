@@ -1,4 +1,4 @@
- package main
+package handler
 
 import (
 	"context"
@@ -29,10 +29,8 @@ type Access struct {
 }
 
 type CacheEntry struct {
-
-	Month   graphql.String `graphql:"month"`
-	Posts   []graphql.String `graphql:"posts"`
-
+	Month graphql.String   `graphql:"month"`
+	Posts []graphql.String `graphql:"posts"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +70,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		</head>
 		<body style="background-color:#adebad">
 		<div class="container">
-		<iframe src="https://code2go.dev" style="border:none;"></iframe> 
+		<iframe src="https://code2go.dev" style="border:none;"></iframe>
 		</div>
    		<div class="container" id="search" style="color:white; font-size:30px;">
 		<form class="form-inline" role="form">
@@ -207,7 +205,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if t == n {
 
 				str = str + `
-				
+
 				<button type="button" class="btn btn-light" onclick="window.location.href='` + strconv.Itoa(t) + `'">
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
@@ -216,7 +214,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} else {
 
 				str = str + `
-				
+
 				<button type="button" class="btn btn-outline-dark" onclick="window.location.href='` + strconv.Itoa(t) + `'">
 				` + time.Now().AddDate(0, t, 0).Format("Jan") + `
 				</button>
@@ -448,7 +446,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		d := fmt.Sprintf("%02d", k)
 
-		value = ye +"-"+ mo  +"-"+ d
+		value = ye + "-" + mo + "-" + d
 
 		switch c.Days[k] {
 
@@ -792,7 +790,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case "Sunday":
 		str = str + `
 			</ul>
-			</form>	
+			</form>
 			</div>
 			<br>
 			`
