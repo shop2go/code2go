@@ -769,7 +769,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		break
 
 	}
-		`
 
 	w.Header().Set("Content-Type", "plain/text")
 	w.Header().Set("Content-Length", strconv.Itoa(len(str)))
