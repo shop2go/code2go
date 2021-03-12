@@ -1,5 +1,8 @@
 {
+    "redirects": [
+        { "source": "/", "destination": "https://code2go.dev/app" }
+    ],
     "rewrites": [
-      { "source": "/", "destination": "/app.html" }
+      { "source": "/app", "destination": "/app.html" }
     ]
   }
