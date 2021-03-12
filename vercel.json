@@ -1,9 +1,8 @@
 {
     "rewrites": [
         {
-            "source": "/",
-            "destination": "/app",
-            "permanent": true
+            "source": "",
+            "destination": "/app"
         },
         {
             "source": "/app",
