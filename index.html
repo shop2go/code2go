@@ -7,7 +7,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>Material Design for Bootstrap</title>
     <!-- MDB icon -->
-    <link rel="icon" href="mdb-ui-kit/img/mdb-favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
     <!-- Google Fonts Roboto -->
@@ -17,25 +17,29 @@
     <!-- Custom styles -->
     <style>
         body {
-  background-color: coral;
-}
+            background-color: coral;
+        }
     </style>
 </head>
 
 <body>
 
+    <div id="app">load</div>
 
     <!-- Section: Content -->
 
     <script>
+
+        document.getElementById('app').addEventListener('click', function() {
         fetch('https://code2go.dev/api/index')
             .then(res => {
                 return res.text();
             })
 
             .then(data => {
-                document.body.innerHTML  = data;
-            });
+                document.body.innerHTML = data;
+            })
+        }, false);
     </script>
 
 </body>

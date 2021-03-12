@@ -35,9 +35,11 @@ type CacheEntry struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	url := strings.TrimPrefix(r.URL.Path, "/")
+	/* 	url := strings.TrimPrefix(r.URL.Path, "/")
 
-	n, err := strconv.Atoi(url)
+	   	n, err := strconv.Atoi(url) */
+
+	n := 0
 
 	now := time.Now()
 
@@ -102,7 +104,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if n == 0 {
 
 		str = str + `
-		<button type="button" class="btn btn-light">` + time.Now().Format("Jan") + `
+		<button type="button" class="btn btn-light" data-mdb-ripple-color="dark">` + time.Now().Format("Jan") + `
 		 </button>
 		 `
 
