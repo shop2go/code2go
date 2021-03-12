@@ -1,12 +1,9 @@
 {
-    "rewrites": [
-        {
-            "source": "/",
-            "destination": "https://code2go.dev/app"
-        },
-        {
-            "source": "/app",
-            "destination": "/app.html"
-        }
-    ]
+  "redirects": [{ "source": "/", "destination": "https://code2go.dev/app" }],
+  "rewrites": [
+    {
+      "source": "/app",
+      "destination": "/app.html"
+    }
+  ]
 }
