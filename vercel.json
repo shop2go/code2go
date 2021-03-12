@@ -1,0 +1,13 @@
+{
+    "rewrites": [
+        {
+            "source": "",
+            "destination": "/app",
+            "permanent": true
+        },
+        {
+            "source": "/app",
+            "destination": "/app.html"
+        }
+    ]
+}
