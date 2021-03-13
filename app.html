@@ -29,7 +29,14 @@
       <!-- Container wrapper -->
       <div class="container-fluid">
         <!-- Navbar brand -->
-        <a class="navbar-brand" href="#">Brand</a>
+        <a class="navbar-brand" href="#">
+            <img
+              src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png"
+              height="30"
+              alt=""
+              loading="lazy"
+            />
+          </a>
 
         <!-- Toggle button -->
         <button
@@ -116,7 +123,7 @@
             })
 
             .then(data => {
-                document.body.innerHTML = data;
+                document.getElementById('app').innerHTML = data;
             })
         }, false);
     </script>
