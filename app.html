@@ -26,54 +26,44 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <!-- Container wrapper -->
-      <div class="container-fluid">
-        <!-- Navbar brand -->
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Navbar brand -->
 
             <a class="navbar-brand" href="#">
-              <img
-                src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png"
-                height="30"
-                alt=""
-                loading="lazy"
-              />
-              devs&ops
+                <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="30" alt=""
+                    loading="lazy" />
+                devs&ops
             </a>
 
-            <div class="container-fluid"></div>
-        <!-- Collapsible wrapper -->
-        <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-mdb-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Function
-            </a>
-            <!-- Dropdown menu -->
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" id="calendar">Calendar</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </li>
+            <div class="container-fluid">
+            <!-- Collapsible wrapper -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    data-mdb-toggle="dropdown" aria-expanded="false">
+                    Function
+                </a>
+                <!-- Dropdown menu -->
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" id="calendar">Calendar</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li>
+                        <hr class="dropdown-divider" />
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
             </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"
-              >Disabled</a
-            >
-          </li>
-        </ul>
 
         </div>
         <!-- Collapsible wrapper -->
-      </div>
-      <!-- Container wrapper -->
+        </div>
+        <!-- Container wrapper -->
     </nav>
     <!-- Navbar -->
 
@@ -83,15 +73,15 @@
 
     <script>
 
-        document.getElementById('calendar').addEventListener('click', function() {
-        fetch('https://code2go.dev/api/cal')
-            .then(res => {
-                return res.text();
-            })
+        document.getElementById('calendar').addEventListener('click', function () {
+            fetch('https://code2go.dev/api/cal')
+                .then(res => {
+                    return res.text();
+                })
 
-            .then(data => {
-                document.getElementById('app').innerHTML = data;
-            })
+                .then(data => {
+                    document.getElementById('app').innerHTML = data;
+                })
         }, false);
     </script>
 
