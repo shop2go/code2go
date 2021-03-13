@@ -106,13 +106,13 @@
     </nav>
     <!-- Navbar -->
 
-    <div id="app">load</div>
+    <div id="app"></div>
 
     <!-- Section: Content -->
 
     <script>
 
-        document.getElementById('collapse navbar-collapse').addEventListener('click', function() {
+        document.getElementById('ccalendar').addEventListener('click', function() {
         fetch('https://code2go.dev/api/cal')
             .then(res => {
                 return res.text();
