@@ -40,13 +40,9 @@
 
         <!-- Toggle button -->
         <button
+          id="calendar"
           class="navbar-toggler"
           type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
         >
           <i class="fas fa-bars"></i>
         </button>
@@ -116,7 +112,7 @@
 
     <script>
 
-        document.getElementById('app').addEventListener('click', function() {
+        document.getElementById('collapse navbar-collapse').addEventListener('click', function() {
         fetch('https://code2go.dev/api/cal')
             .then(res => {
                 return res.text();
