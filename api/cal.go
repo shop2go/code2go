@@ -33,15 +33,25 @@ type CacheEntry struct {
 	Posts []graphql.String `graphql:"posts"`
 }
 
+var I int
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	/* 	url := strings.TrimPrefix(r.URL.Path, "/")
+	id := r.Host
 
-	   	n, err := strconv.Atoi(url) */
+	id = strings.TrimSuffix(id, ".code2go.dev")
+
+	I, _ := strconv.Atoi(id)
 
 	n := 0
 
-	now := time.Now()
+	if I != 0 {
+
+		n = n + I
+
+	}
+
+	now := time.Now().AddDate(0, n, 0)
 
 	var c Cal
 
@@ -111,7 +121,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 		str = str + `
-		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='0'">` + time.Now().Format("Jan") + `
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='app'">` + time.Now().Format("Jan") + `
 		 </button>
 		 `
 
