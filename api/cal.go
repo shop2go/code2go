@@ -39,7 +39,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id := r.Host
 
-	id = strings.TrimSuffix(id, ".code2go.dev")
+	id = strings.TrimSuffix(id, "code2go.dev")
+
+	id = strings.TrimSuffix(id, ".")
 
 	I, _ := strconv.Atoi(id)
 
