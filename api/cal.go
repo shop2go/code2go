@@ -43,7 +43,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	id = strings.TrimSuffix(id, ".")
 
-	I, _ := strconv.Atoi(id)
+	I, err := strconv.Atoi(id)
+
+	if err != nil {
+		fmt.Fprint(w, err)
+	}
 
 	n := 0
 

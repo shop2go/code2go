@@ -5,10 +5,10 @@
             "destination": "/app.html"
         }
     ],
-    "redirects":[
-    {
-        "source": "/",
-        "destination": "/app"
-    }
-]
+    "redirects": [
+        {
+            "source": "/",
+            "destination": "/app"
+        }
+    ]
 }
