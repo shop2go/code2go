@@ -127,7 +127,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 		str = str + `
-		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='app'">` + time.Now().Format("Jan") + `
+		<button type="button" class="btn btn-outline-dark" onclick="window.location.href='app'">` + now.Format("Jan") + `
 		 </button>
 		 `
 
